@@ -47,34 +47,35 @@ export default function PigeonsPage() {
     }
   };
 
-  const createOrUpdatePigeon = async (pigeon: Pigeon) => {
-    try {
-      if (!token) throw new Error("Not logged in");
+    const createPigeon = async (pigeon: Pigeon) => {
+      try {
+        if (!token) throw new Error("Not logged in");
 
-      if (pigeon.id) {
-        const payload: Partial<Pigeon> = {};
-        if (pigeon.name) payload.name = pigeon.name;
-        if (pigeon.color) payload.color = pigeon.color;
-        if (pigeon.gender) payload.gender = pigeon.gender;
-        if (pigeon.status) payload.status = pigeon.status;
-        if (pigeon.birthDate) payload.birthDate = pigeon.birthDate;
-        if (pigeon.fatherRingNumber) payload.fatherRingNumber = pigeon.fatherRingNumber;
-        if (pigeon.motherRingNumber) payload.motherRingNumber = pigeon.motherRingNumber;
-
-        await axios.patch(`http://localhost:8080/api/pigeons/${pigeon.id}`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
         await axios.post('http://localhost:8080/api/pigeons', pigeon, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      }
 
-      fetchPigeons();
-    } catch (err) {
-      console.error('Failed to create/update pigeon:', err);
-    }
-  };
+        fetchPigeons();
+      } catch (err) {
+        console.error('Failed to create pigeon:', err);
+      }
+    };
+
+    const updatePigeon = async (pigeon: Pigeon) => {
+      try {
+        if (!token) throw new Error("Not logged in");
+        if (!pigeon.id) throw new Error("Pigeon ID is required for update");
+
+      await axios.patch(
+        `http://localhost:8080/api/pigeons/${pigeon.id}`,
+        pigeon,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+        fetchPigeons();
+      } catch (err) {
+        console.error('Failed to update pigeon:', err);
+      }
+    };
 
   const deletePigeon = async (id: number) => {
     try {
@@ -139,6 +140,15 @@ const fetchParents = async (id: number) => {
     fetchPigeons();
   }, []);
 
+  const genderSymbol = (gender: string) => {
+    if (!gender) return { symbol: "", color: "inherit" };
+
+    const lower = gender.toLowerCase();
+    if (lower === "male") return { symbol: "♂", color: "blue" };
+    if (lower === "female") return { symbol: "♀", color: "pink" };
+    return { symbol: "", color: "inherit" };
+  };
+
   return (
     <Container sx={{ mt: 4 }}>
       {/* Header Section */}
@@ -202,8 +212,9 @@ const fetchParents = async (id: number) => {
                 <TableCell>{p.ringNumber}</TableCell>
                 <TableCell>{p.name}</TableCell>
                 <TableCell>{p.color}</TableCell>
-                <TableCell>{p.gender}</TableCell>
-                <TableCell>{p.status}</TableCell>
+                <TableCell sx={{ color: genderSymbol(p.gender).color, fontSize: '1.2rem', fontWeight: 'bold' }}>
+                  {genderSymbol(p.gender).symbol}
+                </TableCell>                <TableCell>{p.status}</TableCell>
                 <TableCell>{p.birthDate}</TableCell>
                 <TableCell align="center">
                   <Button
@@ -251,12 +262,18 @@ const fetchParents = async (id: number) => {
       </TableContainer>
 
       {openForm && (
-        <PigeonForm
-          open={openForm}
-          onClose={() => setOpenForm(false)}
-          onSubmit={createOrUpdatePigeon}
-          initialData={editingPigeon || undefined}
-        />
+      <PigeonForm
+        open={openForm}
+        onClose={() => setOpenForm(false)}
+        onSubmit={(pigeon: Pigeon) => {
+          if (editingPigeon?.id) {
+            updatePigeon(pigeon);
+          } else {
+            createPigeon(pigeon);
+          }
+        }}
+        initialData={editingPigeon || undefined}
+      />
       )}
     </Container>
   );
