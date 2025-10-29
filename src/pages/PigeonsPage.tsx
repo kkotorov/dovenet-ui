@@ -11,10 +11,14 @@ import {
   TableRow,
   Paper,
   Box,
+  Tooltip,
 } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import PigeonForm from './PigeonForm'; // your modal/form component
+import { useTranslation } from 'react-i18next';
+import PigeonForm from './PigeonForm';
+import { Edit, Delete } from '@mui/icons-material'; // import icons
+
 
 interface Pigeon {
   id?: number;
@@ -29,11 +33,13 @@ interface Pigeon {
 }
 
 export default function PigeonsPage() {
+  const { t } = useTranslation();
   const [pigeons, setPigeons] = useState<Pigeon[]>([]);
   const [openForm, setOpenForm] = useState(false);
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
-  const navigate = useNavigate();
+  const [highlightedParentIds, setHighlightedParentIds] = useState<number[]>([]);
 
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   const fetchPigeons = async () => {
@@ -43,39 +49,37 @@ export default function PigeonsPage() {
       });
       setPigeons(res.data);
     } catch (err) {
-      console.error('Failed to fetch pigeons:', err);
+      console.error(t('fetchFailed'), err);
     }
   };
 
-    const createPigeon = async (pigeon: Pigeon) => {
-      try {
-        if (!token) throw new Error("Not logged in");
+  const createPigeon = async (pigeon: Pigeon) => {
+    try {
+      if (!token) throw new Error(t('notLoggedIn'));
+      await axios.post('http://localhost:8080/api/pigeons', pigeon, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchPigeons();
+    } catch (err) {
+      console.error(t('createFailed'), err);
+    }
+  };
 
-        await axios.post('http://localhost:8080/api/pigeons', pigeon, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        fetchPigeons();
-      } catch (err) {
-        console.error('Failed to create pigeon:', err);
-      }
-    };
-
-    const updatePigeon = async (pigeon: Pigeon) => {
-      try {
-        if (!token) throw new Error("Not logged in");
-        if (!pigeon.id) throw new Error("Pigeon ID is required for update");
+  const updatePigeon = async (pigeon: Pigeon) => {
+    try {
+      if (!token) throw new Error(t('notLoggedIn'));
+      if (!pigeon.id) throw new Error(t('idRequired'));
 
       await axios.patch(
         `http://localhost:8080/api/pigeons/${pigeon.id}`,
         pigeon,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-        fetchPigeons();
-      } catch (err) {
-        console.error('Failed to update pigeon:', err);
-      }
-    };
+      fetchPigeons();
+    } catch (err) {
+      console.error(t('updateFailed'), err);
+    }
+  };
 
   const deletePigeon = async (id: number) => {
     try {
@@ -84,86 +88,77 @@ export default function PigeonsPage() {
       });
       fetchPigeons();
     } catch (err) {
-      console.error('Failed to delete pigeon:', err);
+      console.error(t('deleteFailed'), err);
     }
   };
 
   const downloadPedigreePdf = async (id: number) => {
-      try {
-        if (!token) throw new Error("Not logged in");
+    try {
+      if (!token) throw new Error(t('notLoggedIn'));
 
-        const res = await axios.get(`http://localhost:8080/api/pigeons/${id}/pedigree/pdf`, {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: 'blob', // important for binary files
-        });
+      const res = await axios.get(
+        `http://localhost:8080/api/pigeons/${id}/pedigree/pdf`,
+        { headers: { Authorization: `Bearer ${token}` }, responseType: 'blob' }
+      );
 
-        // Create a link to download the PDF
-        const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `pedigree_${id}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } catch (err) {
-        console.error('Failed to download PDF:', err);
-      }
+      const url = window.URL.createObjectURL(
+        new Blob([res.data], { type: 'application/pdf' })
+      );
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `pedigree_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error(t('downloadFailed'), err);
+    }
   };
 
-const [highlightedParentIds, setHighlightedParentIds] = useState<number[]>([]);
+  const fetchParents = async (id: number) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/api/pigeons/${id}/parents`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-const fetchParents = async (id: number) => {
-  try {
-    const res = await axios.get(`http://localhost:8080/api/pigeons/${id}/parents`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const parents: Pigeon[] = res.data;
+      const parentIds = parents.map((p) => p.id!);
+      setHighlightedParentIds(parentIds);
 
-    const parents: Pigeon[] = res.data;
-    const parentIds = parents.map((p) => p.id!);
-    setHighlightedParentIds(parentIds);
-
-    // Optional: clear the highlight after 5 seconds
-    setTimeout(() => setHighlightedParentIds([]), 5000);
-  } catch (err) {
-    console.error('Failed to fetch parents:', err);
-    alert('Failed to fetch parents.');
-  }
-};
-
+      setTimeout(() => setHighlightedParentIds([]), 5000);
+    } catch (err) {
+      console.error(t('fetchParentsFailed'), err);
+      alert(t('fetchParentsFailed'));
+    }
+  };
 
   const handleEdit = (pigeon: Pigeon) => {
     setEditingPigeon(pigeon);
     setOpenForm(true);
   };
 
-  useEffect(() => {
-    fetchPigeons();
-  }, []);
-
   const genderSymbol = (gender: string) => {
     if (!gender) return { symbol: "", color: "inherit" };
-
     const lower = gender.toLowerCase();
     if (lower === "male") return { symbol: "♂", color: "blue" };
     if (lower === "female") return { symbol: "♀", color: "pink" };
     return { symbol: "", color: "inherit" };
   };
 
+  useEffect(() => {
+    fetchPigeons();
+  }, []);
+
   return (
     <Container sx={{ mt: 4 }}>
-      {/* Header Section */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4" gutterBottom>
-          Manage Pigeons 🕊️
+          {t('managePigeons')} 🕊️
         </Typography>
 
         <Box display="flex" gap={2}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => navigate('/dashboard')}
-          >
-            ← Back to Dashboard
+          <Button variant="outlined" color="primary" onClick={() => navigate('/dashboard')}>
+            ← {t('backToDashboard')}
           </Button>
 
           <Button
@@ -174,106 +169,132 @@ const fetchParents = async (id: number) => {
               setOpenForm(true);
             }}
           >
-            + Create Pigeon
+            + {t('createPigeon')}
           </Button>
         </Box>
       </Box>
 
-      {/* Pigeons Table */}
       <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
         <Table>
           <TableHead sx={{ backgroundColor: '#f5f7fa' }}>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Ring Number</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Color</TableCell>
-              <TableCell>Gender</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Birth Date</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell>{t('id')}</TableCell>
+              <TableCell>{t('ringNumber')}</TableCell>
+              <TableCell>{t('name')}</TableCell>
+              <TableCell>{t('color')}</TableCell>
+              <TableCell>{t('gender')}</TableCell>
+              <TableCell>{t('status')}</TableCell>
+              <TableCell>{t('birthDate')}</TableCell>
+              <TableCell align="center">{t('actions')}</TableCell>
             </TableRow>
           </TableHead>
-
           <TableBody>
             {pigeons.map((p) => (
-                <TableRow
-                  key={p.id}
-                  sx={{
-                    '& td': {
-                      backgroundColor: highlightedParentIds.includes(p.id!)
-                        ? '#1fa13bff' // light blue highlight for parent rows
-                        : 'inherit',
-                      transition: 'background-color 0.3s ease',
-                    },
-                  }}
-                >
+              <TableRow
+                key={p.id}
+                hover
+                sx={{
+                  cursor: 'pointer',
+                  '& td': {
+                    backgroundColor: highlightedParentIds.includes(p.id!)
+                      ? '#1fa13bff'
+                      : 'inherit',
+                    transition: 'background-color 0.3s ease',
+                  },
+                }}
+                onClick={() => handleEdit(p)} // make row clickable
+              >
                 <TableCell>{p.id}</TableCell>
                 <TableCell>{p.ringNumber}</TableCell>
                 <TableCell>{p.name}</TableCell>
                 <TableCell>{p.color}</TableCell>
-                <TableCell sx={{ color: genderSymbol(p.gender).color, fontSize: '1.2rem', fontWeight: 'bold' }}>
+                <TableCell
+                  sx={{
+                    color: genderSymbol(p.gender).color,
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                >
                   {genderSymbol(p.gender).symbol}
-                </TableCell>                <TableCell>{p.status}</TableCell>
+                </TableCell>
+                <TableCell>{t(p.status)}</TableCell>
                 <TableCell>{p.birthDate}</TableCell>
                 <TableCell align="center">
+                  {/* Edit icon */}
+                <Tooltip title={t('editPigeon')}>
                   <Button
                     size="small"
-                    variant="outlined"
-                    onClick={() => handleEdit(p)}
-                    sx={{ mr: 1 }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent row click
+                      handleEdit(p);
+                    }}
                   >
-                    Edit
+                    <Edit />
                   </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    variant="outlined"
-                    onClick={() => deletePigeon(p.id!)}
-                  >
-                    Delete
-                  </Button>
+                </Tooltip>
 
-                  <Button
-                    size="small"
-                    variant="outlined"          // make it outlined like Edit/Delete
-                    onClick={() => downloadPedigreePdf(p.id!)}
-                    sx={{ ml: 1 }}              // margin-left for spacing
-                  >
-                    📄 Pedigree
-                  </Button>
+                  {/* Delete icon */}
+                  <Tooltip title={t('deletePigeon')}>
+                    <Button
+                      size="small"
+                      color="error"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deletePigeon(p.id!);
+                      }}
+                    >
+                      <Delete />
+                    </Button>
+                  </Tooltip>
 
+                  {/* Pedigree PDF */}
+                <Tooltip title={t('downloadPedigree')}>
                   <Button
                     size="small"
-                    variant="outlined"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      downloadPedigreePdf(p.id!);
+                    }}
+                  >
+                    📄
+                  </Button>
+                </Tooltip>
+
+
+                  {/* Parents */}
+                <Tooltip title={t('getParents')}>
+                  <Button
+                    size="small"
                     color="secondary"
-                    onClick={() => fetchParents(p.id!)}
-                    sx={{ ml: 1 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fetchParents(p.id!);
+                    }}
                   >
-                    👨‍👩‍👧 Parents
+                    👨‍👩‍👧
                   </Button>
-
-
+                </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
+
         </Table>
       </TableContainer>
 
       {openForm && (
-      <PigeonForm
-        open={openForm}
-        onClose={() => setOpenForm(false)}
-        onSubmit={(pigeon: Pigeon) => {
-          if (editingPigeon?.id) {
-            updatePigeon(pigeon);
-          } else {
-            createPigeon(pigeon);
-          }
-        }}
-        initialData={editingPigeon || undefined}
-      />
+        <PigeonForm
+          open={openForm}
+          onClose={() => setOpenForm(false)}
+          onSubmit={(pigeon: Pigeon) => {
+            if (editingPigeon?.id) {
+              updatePigeon(pigeon);
+            } else {
+              createPigeon(pigeon);
+            }
+          }}
+          initialData={editingPigeon || undefined}
+        />
       )}
     </Container>
   );

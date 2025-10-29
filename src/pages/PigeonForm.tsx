@@ -8,6 +8,8 @@ import {
   Button,
   MenuItem
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import '../i18n'; // your i18n config
 
 interface PigeonFormProps {
   open: boolean;
@@ -17,6 +19,8 @@ interface PigeonFormProps {
 }
 
 export default function PigeonForm({ open, onClose, onSubmit, initialData }: PigeonFormProps) {
+  const { t } = useTranslation();
+
   const [pigeon, setPigeon] = useState({
     ringNumber: '',
     name: '',
@@ -44,12 +48,12 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{initialData ? 'Update Pigeon' : 'Create Pigeon'}</DialogTitle>
+      <DialogTitle>{initialData ? t('updatePigeon') : t('createPigeon')}</DialogTitle>
       <DialogContent>
         <TextField
           fullWidth
           margin="dense"
-          label="Ring Number"
+          label={t('ringNumber')}
           name="ringNumber"
           value={pigeon.ringNumber}
           onChange={handleChange}
@@ -57,7 +61,7 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
         <TextField
           fullWidth
           margin="dense"
-          label="Name"
+          label={t('name')}
           name="name"
           value={pigeon.name}
           onChange={handleChange}
@@ -65,7 +69,7 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
         <TextField
           fullWidth
           margin="dense"
-          label="Color"
+          label={t('color')}
           name="color"
           value={pigeon.color}
           onChange={handleChange}
@@ -76,13 +80,13 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
           select
           fullWidth
           margin="dense"
-          label="Gender"
+          label={t('gender')}
           name="gender"
           value={pigeon.gender}
           onChange={handleChange}
         >
-          <MenuItem value="male">Male</MenuItem>
-          <MenuItem value="female">Female</MenuItem>
+          <MenuItem value="male">{t('male')}</MenuItem>
+          <MenuItem value="female">{t('female')}</MenuItem>
         </TextField>
 
         {/* Status Dropdown */}
@@ -90,21 +94,21 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
           select
           fullWidth
           margin="dense"
-          label="Status"
+          label={t('status')}
           name="status"
           value={pigeon.status}
           onChange={handleChange}
         >
-          <MenuItem value="alive">Alive</MenuItem>
-          <MenuItem value="deceased">Deceased</MenuItem>
-          <MenuItem value="sold">Sold</MenuItem>
+          <MenuItem value="alive">{t('alive')}</MenuItem>
+          <MenuItem value="deceased">{t('deceased')}</MenuItem>
+          <MenuItem value="sold">{t('sold')}</MenuItem>
         </TextField>
 
         <TextField
           fullWidth
           margin="dense"
           type="date"
-          label="Birth Date"
+          label={t('birthDate')}
           name="birthDate"
           value={pigeon.birthDate}
           onChange={handleChange}
@@ -113,7 +117,7 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
         <TextField
           fullWidth
           margin="dense"
-          label="Father Ring Number"
+          label={t('fatherRingNumber')}
           name="fatherRingNumber"
           value={pigeon.fatherRingNumber}
           onChange={handleChange}
@@ -121,16 +125,16 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
         <TextField
           fullWidth
           margin="dense"
-          label="Mother Ring Number"
+          label={t('motherRingNumber')}
           name="motherRingNumber"
           value={pigeon.motherRingNumber}
           onChange={handleChange}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('cancel')}</Button>
         <Button onClick={handleSubmit} variant="contained">
-          {initialData ? 'Update' : 'Create'}
+          {initialData ? t('update') : t('create')}
         </Button>
       </DialogActions>
     </Dialog>
