@@ -12,13 +12,13 @@ import {
   Paper,
   Box,
   Tooltip,
+  IconButton
 } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PigeonForm from './PigeonForm';
-import { Edit, Delete } from '@mui/icons-material'; // import icons
-
+import { Edit, Delete, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
 interface Pigeon {
   id?: number;
@@ -38,6 +38,8 @@ export default function PigeonsPage() {
   const [openForm, setOpenForm] = useState(false);
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [highlightedParentIds, setHighlightedParentIds] = useState<number[]>([]);
+  const [sortField, setSortField] = useState<keyof Pigeon>('ringNumber');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -138,11 +140,35 @@ export default function PigeonsPage() {
   };
 
   const genderSymbol = (gender: string) => {
-    if (!gender) return { symbol: "", color: "inherit" };
+    if (!gender) return { symbol: '', color: 'inherit' };
     const lower = gender.toLowerCase();
-    if (lower === "male") return { symbol: "♂", color: "blue" };
-    if (lower === "female") return { symbol: "♀", color: "pink" };
-    return { symbol: "", color: "inherit" };
+    if (lower === 'male') return { symbol: '♂', color: 'blue' };
+    if (lower === 'female') return { symbol: '♀', color: 'pink' };
+    return { symbol: '', color: 'inherit' };
+  };
+
+  const handleSort = (field: keyof Pigeon) => {
+    if (sortField === field) {
+      setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedPigeons = [...pigeons].sort((a, b) => {
+    const aVal = a[sortField] || '';
+    const bVal = b[sortField] || '';
+    if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const getSortIcon = (field: keyof Pigeon) => {
+    if (sortField !== field) return null;
+    return sortOrder === 'asc'
+      ? <ArrowUpward fontSize="small" sx={{ ml: 0.5 }} />
+      : <ArrowDownward fontSize="small" sx={{ ml: 0.5 }} />;
   };
 
   useEffect(() => {
@@ -178,18 +204,37 @@ export default function PigeonsPage() {
         <Table>
           <TableHead sx={{ backgroundColor: '#f5f7fa' }}>
             <TableRow>
-              <TableCell>{t('id')}</TableCell>
-              <TableCell>{t('ringNumber')}</TableCell>
-              <TableCell>{t('name')}</TableCell>
-              <TableCell>{t('color')}</TableCell>
-              <TableCell>{t('gender')}</TableCell>
-              <TableCell>{t('status')}</TableCell>
-              <TableCell>{t('birthDate')}</TableCell>
+              {[
+                ['id', t('id')],
+                ['ringNumber', t('ringNumber')],
+                ['name', t('name')],
+                ['color', t('color')],
+                ['gender', t('gender')],
+                ['status', t('status')],
+                ['birthDate', t('birthDate')]
+              ].map(([key, label]) => (
+                <TableCell
+                  key={key}
+                  onClick={() => handleSort(key as keyof Pigeon)}
+                  sx={{
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    userSelect: 'none',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <Box display="flex" alignItems="center">
+                    {label}
+                    {getSortIcon(key as keyof Pigeon)}
+                  </Box>
+                </TableCell>
+              ))}
               <TableCell align="center">{t('actions')}</TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {pigeons.map((p) => (
+            {sortedPigeons.map((p) => (
               <TableRow
                 key={p.id}
                 hover
@@ -202,7 +247,7 @@ export default function PigeonsPage() {
                     transition: 'background-color 0.3s ease',
                   },
                 }}
-                onClick={() => handleEdit(p)} // make row clickable
+                onClick={() => handleEdit(p)}
               >
                 <TableCell>{p.id}</TableCell>
                 <TableCell>{p.ringNumber}</TableCell>
@@ -220,22 +265,20 @@ export default function PigeonsPage() {
                 <TableCell>{t(p.status)}</TableCell>
                 <TableCell>{p.birthDate}</TableCell>
                 <TableCell align="center">
-                  {/* Edit icon */}
-                <Tooltip title={t('editPigeon')}>
-                  <Button
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation(); // prevent row click
-                      handleEdit(p);
-                    }}
-                  >
-                    <Edit />
-                  </Button>
-                </Tooltip>
+                  <Tooltip title={t('editPigeon')}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(p);
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
 
-                  {/* Delete icon */}
                   <Tooltip title={t('deletePigeon')}>
-                    <Button
+                    <IconButton
                       size="small"
                       color="error"
                       onClick={(e) => {
@@ -244,41 +287,37 @@ export default function PigeonsPage() {
                       }}
                     >
                       <Delete />
-                    </Button>
+                    </IconButton>
                   </Tooltip>
 
-                  {/* Pedigree PDF */}
-                <Tooltip title={t('downloadPedigree')}>
-                  <Button
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      downloadPedigreePdf(p.id!);
-                    }}
-                  >
-                    📄
-                  </Button>
-                </Tooltip>
+                  <Tooltip title={t('downloadPedigree')}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        downloadPedigreePdf(p.id!);
+                      }}
+                    >
+                      📄
+                    </IconButton>
+                  </Tooltip>
 
-
-                  {/* Parents */}
-                <Tooltip title={t('getParents')}>
-                  <Button
-                    size="small"
-                    color="secondary"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fetchParents(p.id!);
-                    }}
-                  >
-                    👨‍👩‍👧
-                  </Button>
-                </Tooltip>
+                  <Tooltip title={t('getParents')}>
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fetchParents(p.id!);
+                      }}
+                    >
+                      👨‍👩‍👧
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
-
         </Table>
       </TableContainer>
 
