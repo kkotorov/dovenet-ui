@@ -4,6 +4,7 @@ import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import { isLoggedIn } from '../api/user';
 import PigeonsPage from '../pages/PigeonsPage';
+import UserSettingsPage from '../pages/UserSettingsPage';
 
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
@@ -17,6 +18,7 @@ export default function AppRouter() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/pigeons" element={<PigeonsPage />} />
+        <Route path="/settings" element={<UserSettingsPage />} />
         <Route
           path="/dashboard"
           element={
