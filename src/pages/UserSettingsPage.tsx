@@ -28,9 +28,11 @@ export default function UserSettingsPage() {
   const [showEmailChange, setShowEmailChange] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
+  const [currentPasswordForEmail, setCurrentPasswordForEmail] = useState('');
 
   // Password change state
   const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -42,9 +44,7 @@ export default function UserSettingsPage() {
       .get('http://localhost:8080/api/users/me', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
-        setUser(res.data);
-      })
+      .then((res) => setUser(res.data))
       .catch(() => navigate('/login'));
   }, [navigate]);
 
@@ -60,11 +60,17 @@ export default function UserSettingsPage() {
       alert(t('emailsDoNotMatch'));
       return;
     }
+
+    if (!currentPasswordForEmail) {
+      alert(t('enterCurrentPassword'));
+      return;
+    }
+
     const token = localStorage.getItem('token');
     try {
       await axios.patch(
-        'http://localhost:8080/api/users/update-email',
-        { email: newEmail },
+        'http://localhost:8080/api/users/me/change-email',
+        { newEmail: newEmail, password: currentPasswordForEmail },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(t('emailUpdated'));
@@ -72,9 +78,10 @@ export default function UserSettingsPage() {
       setShowEmailChange(false);
       setNewEmail('');
       setConfirmEmail('');
-    } catch (err) {
+      setCurrentPasswordForEmail('');
+    } catch (err: any) {
       console.error(err);
-      alert(t('settingsFailed'));
+      alert(err.response?.data?.message || t('settingsFailed'));
     }
   };
 
@@ -83,20 +90,27 @@ export default function UserSettingsPage() {
       alert(t('passwordsDoNotMatch'));
       return;
     }
+
+    if (!oldPassword) {
+      alert(t('enterCurrentPassword'));
+      return;
+    }
+
     const token = localStorage.getItem('token');
     try {
       await axios.patch(
-        'http://localhost:8080/api/users/update-password',
-        { password: newPassword },
+        'http://localhost:8080/api/users/me/change-password',
+        { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(t('passwordUpdated'));
       setShowPasswordChange(false);
+      setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert(t('settingsFailed'));
+      alert(err.response?.data?.message || t('settingsFailed'));
     }
   };
 
@@ -118,7 +132,9 @@ export default function UserSettingsPage() {
 
         {/* Email section */}
         <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1">{t('email')}: {user.email}</Typography>
+          <Typography variant="subtitle1">
+            {t('email')}: {user.email}
+          </Typography>
           <Button
             sx={{ mt: 1 }}
             variant="outlined"
@@ -142,6 +158,14 @@ export default function UserSettingsPage() {
               onChange={(e) => setConfirmEmail(e.target.value)}
               sx={{ mb: 2 }}
             />
+            <TextField
+              fullWidth
+              label={t('currentPassword')}
+              type="password"
+              value={currentPasswordForEmail}
+              onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
+              sx={{ mb: 2 }}
+            />
             <Button variant="contained" onClick={handleEmailUpdate}>
               {t('saveEmail')}
             </Button>
@@ -160,6 +184,14 @@ export default function UserSettingsPage() {
           </Button>
 
           <Collapse in={showPasswordChange} sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label={t('currentPassword')}
+              type="password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              sx={{ mb: 2 }}
+            />
             <TextField
               fullWidth
               label={t('newPassword')}
