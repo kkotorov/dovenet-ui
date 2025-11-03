@@ -55,6 +55,15 @@ export default function LoginPage() {
         >
           Don’t have an account? Register
         </Button>
+
+        <Button
+          onClick={() => navigate('/forgot-password')}
+          fullWidth
+          sx={{ mt: 1, color: 'primary.main', textTransform: 'none' }}
+        >
+          Forgot your password?
+        </Button>
+
       </Paper>
     </Container>
   );

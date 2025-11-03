@@ -8,6 +8,7 @@ export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -15,6 +16,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
 
     try {
       await registerUser(username, email, password);
@@ -27,21 +34,77 @@ export default function RegisterPage() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
+    <Container
+      maxWidth="xs"
+      sx={{
+        mt: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       <Typography variant="h4" align="center" gutterBottom>
         Register
       </Typography>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error" sx={{ width: '100%' }}>{error}</Alert>}
 
-      <Box component="form" onSubmit={handleRegister} sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField label="Username" variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        <TextField label="Email" type="email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <TextField label="Password" type="password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
+      <Box
+        component="form"
+        onSubmit={handleRegister}
+        sx={{
+          mt: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '100%',
+        }}
+      >
+        <TextField
+          label="Username"
+          variant="outlined"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <TextField
+          label="Email"
+          type="email"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <TextField
+          label="Confirm Password"
+          type="password"
+          variant="outlined"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
           {loading ? 'Registering...' : 'Register'}
         </Button>
-        <Button onClick={() => navigate('/login')} color="secondary">
+
+        <Button
+          onClick={() => navigate('/login')}
+          color="secondary"
+        >
           Already have an account? Login
         </Button>
       </Box>

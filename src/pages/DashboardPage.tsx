@@ -67,32 +67,75 @@ export default function DashboardPage() {
           <LogoutIcon />
         </IconButton>
       </Box>
+    <Grid container spacing={3} justifyContent="start">
+      {/* Pigeons Card */}
+      <Grid item xs={12} sm={6} md={3}>
+        <Card
+          sx={{
+            minHeight: 180,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
+            '&:hover': { backgroundColor: '#f5f5f5' },
+          }}
+          onClick={() => navigate('/pigeons')}
+        >
+          <CardContent sx={{ flexGrow: 1 }}>
+            <Typography variant="h6" gutterBottom>
+              {t('pigeons')}
+            </Typography>
+            <Typography>{t('manageYourPigeons')}</Typography>
+          </CardContent>
+          <Box sx={{ p: 2 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ textTransform: 'none' }}
+              onClick={() => navigate('/pigeons')}
+            >
+              {t('managePigeons')}
+            </Button>
+          </Box>
+        </Card>
+      </Grid>
 
-      <Grid container spacing={3} justifyContent="start">
-        <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ minHeight: 150 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>{t('pigeons')}</Typography>
-              <Typography>{t('manageYourPigeons')}</Typography>
-              <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate('/pigeons')}>
-                {t('managePigeons')}
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-
+        {/* Profile / Settings Card */}
         <Grid item xs={12} sm={6} md={3}>
           <Card
-            sx={{ minHeight: 150, cursor: 'pointer', '&:hover': { backgroundColor: '#f5f5f5' } }}
+            sx={{
+              minHeight: 180,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+              '&:hover': { backgroundColor: '#f5f5f5' },
+            }}
             onClick={() => navigate('/settings')}
           >
-            <CardContent>
-              <Typography variant="h6" gutterBottom>{t('profile')}</Typography>
-              <Typography>{t('email', { email: user?.email })}</Typography>
-              <Typography variant="body2" sx={{ mt: 1, color: 'primary.main' }}>
-                {t('openSettings')}
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography variant="h6" gutterBottom>
+                {t('profile')}
               </Typography>
+              <Typography>{t('email', { email: user?.email })}</Typography>
             </CardContent>
+            <Box sx={{ p: 2 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                sx={{ textTransform: 'none' }}
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent double navigation
+                  navigate('/settings');
+                }}
+              >
+                {t('openSettings')}
+              </Button>
+            </Box>
           </Card>
         </Grid>
       </Grid>
