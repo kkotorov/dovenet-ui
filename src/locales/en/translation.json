@@ -61,5 +61,6 @@
   "back": "Back",
   "username": "Username",
   "openSettings": "Open Settings",
-  "manageProfileText": "Manage your profile"
+  "manageProfileText": "Manage your profile",
+  "currentPassword": "Current password"
 }

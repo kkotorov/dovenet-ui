@@ -61,5 +61,6 @@
   "back": "Назад",
   "username": "Потребителско име",
   "openSettings": "Отвори настройки",
-  "manageProfileText": "Упралвение на профила"
+  "manageProfileText": "Упралвение на профила",
+  "currentPassword": "Текуща парола"
 }
