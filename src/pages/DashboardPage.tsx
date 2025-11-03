@@ -102,42 +102,46 @@ export default function DashboardPage() {
         </Card>
       </Grid>
 
-        {/* Profile / Settings Card */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            sx={{
-              minHeight: 180,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              '&:hover': { backgroundColor: '#f5f5f5' },
-            }}
-            onClick={() => navigate('/settings')}
-          >
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography variant="h6" gutterBottom>
-                {t('profile')}
-              </Typography>
-              <Typography>{t('email', { email: user?.email })}</Typography>
-            </CardContent>
-            <Box sx={{ p: 2 }}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                sx={{ textTransform: 'none' }}
-                onClick={(e) => {
-                  e.stopPropagation(); // prevent double navigation
-                  navigate('/settings');
-                }}
-              >
-                {t('openSettings')}
-              </Button>
-            </Box>
-          </Card>
-        </Grid>
+              {/* Profile / Settings Card */}
+            {/* Profile / Settings Card */}
+      <Grid item xs={12} sm={6} md={3}>
+        <Card
+          sx={{
+            minHeight: 180,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
+            '&:hover': { backgroundColor: '#f5f5f5' },
+          }}
+          onClick={() => navigate('/settings')}
+        >
+          <CardContent sx={{ flexGrow: 1 }}>
+            <Typography variant="h6" gutterBottom>
+              {t('profile')}
+            </Typography>
+            <Typography>
+              {t('manageProfileText')} {/* <-- your new static text */}
+            </Typography>
+          </CardContent>
+          <Box sx={{ p: 2 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ textTransform: 'none' }}
+              onClick={(e) => {
+                e.stopPropagation(); // prevent double navigation
+                navigate('/settings');
+              }}
+            >
+              {t('openSettings')}
+            </Button>
+          </Box>
+        </Card>
+      </Grid>
+
       </Grid>
     </Container>
   );

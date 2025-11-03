@@ -4,7 +4,7 @@
   "manageYourPigeons": "Управлявай своите гълъби",
   "managePigeons": "Управление на гълъбите",
   "profile": "Профил",
-  "email": "Имейл: {{email}}",
+  "email": "Имейл",
   "backToDashboard": "Обратно към таблото",
   "createPigeon": "Създай гълъб",
   "edit": "Редактирай",
@@ -60,5 +60,6 @@
   "language": "Език",
   "back": "Назад",
   "username": "Потребителско име",
-  "openSettings": "Отвори настройки"
+  "openSettings": "Отвори настройки",
+  "manageProfileText": "Упралвение на профила"
 }

@@ -3,7 +3,7 @@
   "pigeons": "Pigeons",
   "manageYourPigeons": "Manage your pigeons",
   "profile": "Profile",
-  "email": "Email: {{email}}",
+  "email": "Email",
   "managePigeons": "Manage Pigeons",
   "backToDashboard": "Back to Dashboard",
   "createPigeon": "Create Pigeon",
@@ -60,5 +60,6 @@
   "language": "Language",
   "back": "Back",
   "username": "Username",
-  "openSettings": "Open Settings"
+  "openSettings": "Open Settings",
+  "manageProfileText": "Manage your profile"
 }
