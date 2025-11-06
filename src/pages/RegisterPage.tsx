@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../api/user';
 
@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,12 +26,17 @@ export default function RegisterPage() {
 
     try {
       await registerUser(username, email, password);
-      navigate('/login');
+      setShowDialog(true); // show success dialog
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDialogClose = () => {
+    setShowDialog(false);
+    navigate('/login');
   };
 
   return (
@@ -108,6 +114,22 @@ export default function RegisterPage() {
           Already have an account? Login
         </Button>
       </Box>
+
+      {/* ✅ Success Dialog */}
+      <Dialog open={showDialog} onClose={handleDialogClose}>
+        <DialogTitle>Check your email</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Your account has been created successfully! Please check your inbox and click the verification link to activate your account before logging in.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
+

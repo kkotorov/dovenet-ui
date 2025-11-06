@@ -131,8 +131,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     try {
       await axios.get('http://localhost:8080/api/users/trigger-verify', {
-        params: { token }, // pass the token as query param
-        headers: { Authorization: `Bearer ${token}` }, // optional, if backend needs auth
+        headers: { Authorization: `Bearer ${token}` },
       });
       alert(t('verificationEmailSent'));
     } catch (err: any) {
