@@ -12,14 +12,20 @@ import {
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import i18n from 'i18next'; // ✅ add this import at the top
 
 export default function UserSettingsPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<{ username: string; email: string }>({
+  const [user, setUser] = useState<{
+    username: string;
+    email: string;
+    emailVerified?: boolean; // <- track if email is verified
+  }>({
     username: '',
     email: '',
+    emailVerified: true, // default to true
   });
 
   const [language, setLanguage] = useState(localStorage.getItem('lang') || 'en');
@@ -48,12 +54,14 @@ export default function UserSettingsPage() {
       .catch(() => navigate('/login'));
   }, [navigate]);
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lang = e.target.value;
-    setLanguage(lang);
-    i18n.changeLanguage(lang);
-    localStorage.setItem('lang', lang);
-  };
+  
+const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const lang = e.target.value;
+  setLanguage(lang);
+  localStorage.setItem('lang', lang);
+  i18n.changeLanguage(lang); // ✅ tell i18next to switch now
+};
+
 
   const handleEmailUpdate = async () => {
     if (newEmail !== confirmEmail) {
@@ -70,11 +78,11 @@ export default function UserSettingsPage() {
     try {
       await axios.patch(
         'http://localhost:8080/api/users/me/change-email',
-        { newEmail: newEmail, password: currentPasswordForEmail },
+        { newEmail, password: currentPasswordForEmail },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(t('emailUpdated'));
-      setUser((prev) => ({ ...prev, email: newEmail }));
+      setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false })); // mark unverified
       setShowEmailChange(false);
       setNewEmail('');
       setConfirmEmail('');
@@ -114,6 +122,26 @@ export default function UserSettingsPage() {
     }
   };
 
+  const handleSendVerificationEmail = async () => {
+    const token = localStorage.getItem('token'); // your auth token
+    if (!token) {
+      alert(t('notLoggedIn'));
+      return;
+    }
+
+    try {
+      await axios.get('http://localhost:8080/api/users/trigger-verify', {
+        params: { token }, // pass the token as query param
+        headers: { Authorization: `Bearer ${token}` }, // optional, if backend needs auth
+      });
+      alert(t('verificationEmailSent'));
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || t('settingsFailed'));
+    }
+  };
+
+
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -133,10 +161,28 @@ export default function UserSettingsPage() {
         {/* Email section */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle1">
-            {t('email')}: {user.email}
+            {t('email')}: {user.email}{' '}
+            {!user.emailVerified && (
+              <Typography component="span" color="error">
+                ({t('notVerified')})
+              </Typography>
+            )}
           </Typography>
+
+          {/* Show verification button only if email not verified */}
+          {!user.emailVerified && (
+            <Button
+              sx={{ mt: 1, ml: 1 }}
+              variant="contained"
+              color="secondary"
+              onClick={handleSendVerificationEmail}
+            >
+              {t('verifyEmail')}
+            </Button>
+          )}
+
           <Button
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, ml: 1 }}
             variant="outlined"
             onClick={() => setShowEmailChange(!showEmailChange)}
           >

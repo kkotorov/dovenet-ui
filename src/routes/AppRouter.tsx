@@ -5,12 +5,9 @@ import DashboardPage from '../pages/DashboardPage';
 import PigeonsPage from '../pages/PigeonsPage';
 import UserSettingsPage from '../pages/UserSettingsPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
-import { isLoggedIn } from '../api/user';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
-
-function ProtectedRoute({ children }: { children: JSX.Element }) {
-  return isLoggedIn() ? children : <Navigate to="/login" replace />;
-}
+import VerifyEmailPage from '../pages/VerifyEmailPage';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 export default function AppRouter() {
   return (
@@ -22,33 +19,15 @@ export default function AppRouter() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/pigeons"
-          element={
-            <ProtectedRoute>
-              <PigeonsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <UserSettingsPage />
-            </ProtectedRoute>
-          }
-        />
+        {/* Email verification (public) */}
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-        {/* Catch-all redirect */}
+        {/* Protected routes (login required only) */}
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/pigeons" element={<ProtectedRoute><PigeonsPage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><UserSettingsPage /></ProtectedRoute>} />
+
+        {/* Catch-all → redirect to login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

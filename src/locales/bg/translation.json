@@ -62,5 +62,7 @@
   "username": "Потребителско име",
   "openSettings": "Отвори настройки",
   "manageProfileText": "Упралвение на профила",
-  "currentPassword": "Текуща парола"
+  "currentPassword": "Текуща парола",
+  "verifyEmail": "Потвърждаване на E-mail",
+  "notVerified": "Трябва да потвърдите своят E-mail адрес"
 }
