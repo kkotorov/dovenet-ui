@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Paper, Typography, Button, Alert, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function VerifyEmailPage() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token');
@@ -14,7 +16,7 @@ export default function VerifyEmailPage() {
 
   const handleVerify = async () => {
     if (!token) {
-      setError('Invalid verification link.');
+      setError(t('verifyEmailPage.invalidLink'));
       return;
     }
 
@@ -24,9 +26,9 @@ export default function VerifyEmailPage() {
 
     try {
       const res = await axios.get(`http://localhost:8080/api/users/verify?token=${token}`);
-      setSuccess(res.data?.message || 'Email verified successfully!');
+      setSuccess(res.data?.message || t('verifyEmailPage.successMessage'));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Verification failed.');
+      setError(err.response?.data?.message || t('verifyEmailPage.errorMessage'));
     } finally {
       setLoading(false);
     }
@@ -39,7 +41,7 @@ export default function VerifyEmailPage() {
     >
       <Paper elevation={6} sx={{ p: 5, width: '100%', borderRadius: 4, textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom>
-          Email Verification
+          {t('verifyEmailPage.title')}
         </Typography>
 
         {loading && <CircularProgress sx={{ mt: 2 }} />}
@@ -48,17 +50,16 @@ export default function VerifyEmailPage() {
 
         {!success && (
           <Button variant="contained" sx={{ mt: 3 }} onClick={handleVerify} disabled={loading}>
-            Verify Email
+            {t('verifyEmailPage.verifyButton')}
           </Button>
         )}
 
         {success && (
           <Button variant="contained" sx={{ mt: 3 }} onClick={() => navigate('/login')}>
-            Go to Login
+            {t('verifyEmailPage.goToLogin')}
           </Button>
         )}
       </Paper>
     </Container>
   );
 }
-

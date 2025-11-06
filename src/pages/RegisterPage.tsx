@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { registerUser } from '../api/user';
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -19,16 +21,16 @@ export default function RegisterPage() {
     setLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('registerPage.passwordsMismatch'));
       setLoading(false);
       return;
     }
 
     try {
       await registerUser(username, email, password);
-      setShowDialog(true); // show success dialog
+      setShowDialog(true);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.message || t('registerPage.registrationFailed'));
     } finally {
       setLoading(false);
     }
@@ -42,15 +44,10 @@ export default function RegisterPage() {
   return (
     <Container
       maxWidth="xs"
-      sx={{
-        mt: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
+      sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
     >
       <Typography variant="h4" align="center" gutterBottom>
-        Register
+        {t('registerPage.title')}
       </Typography>
 
       {error && <Alert severity="error" sx={{ width: '100%' }}>{error}</Alert>}
@@ -58,23 +55,17 @@ export default function RegisterPage() {
       <Box
         component="form"
         onSubmit={handleRegister}
-        sx={{
-          mt: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          width: '100%',
-        }}
+        sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}
       >
         <TextField
-          label="Username"
+          label={t('registerPage.username')}
           variant="outlined"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
         <TextField
-          label="Email"
+          label={t('registerPage.email')}
           type="email"
           variant="outlined"
           value={email}
@@ -82,7 +73,7 @@ export default function RegisterPage() {
           required
         />
         <TextField
-          label="Password"
+          label={t('registerPage.password')}
           type="password"
           variant="outlined"
           value={password}
@@ -90,7 +81,7 @@ export default function RegisterPage() {
           required
         />
         <TextField
-          label="Confirm Password"
+          label={t('registerPage.confirmPassword')}
           type="password"
           variant="outlined"
           value={confirmPassword}
@@ -98,38 +89,28 @@ export default function RegisterPage() {
           required
         />
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={loading}
-        >
-          {loading ? 'Registering...' : 'Register'}
+        <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          {loading ? t('registerPage.registering') : t('registerPage.register')}
         </Button>
 
-        <Button
-          onClick={() => navigate('/login')}
-          color="secondary"
-        >
-          Already have an account? Login
+        <Button onClick={() => navigate('/login')} color="secondary">
+          {t('registerPage.alreadyHaveAccount')}
         </Button>
       </Box>
 
-      {/* ✅ Success Dialog */}
       <Dialog open={showDialog} onClose={handleDialogClose}>
-        <DialogTitle>Check your email</DialogTitle>
+        <DialogTitle>{t('registerPage.dialogTitle')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Your account has been created successfully! Please check your inbox and click the verification link to activate your account before logging in.
+            {t('registerPage.dialogContent')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary" autoFocus>
-            OK
+            {t('registerPage.dialogOk')}
           </Button>
         </DialogActions>
       </Dialog>
     </Container>
   );
 }
-

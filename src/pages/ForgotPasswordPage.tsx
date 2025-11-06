@@ -10,8 +10,10 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -26,9 +28,9 @@ export default function ForgotPasswordPage() {
 
     try {
       const res = await axios.post('http://localhost:8080/api/users/forgot-password', { email });
-      setMessage(res.data?.message || 'Password reset link sent! Check your email.');
+      setMessage(res.data?.message || t('forgotPasswordPage.successMessage'));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send reset email.');
+      setError(err.response?.data?.message || t('forgotPasswordPage.errorMessage'));
     } finally {
       setLoading(false);
     }
@@ -46,10 +48,10 @@ export default function ForgotPasswordPage() {
           gutterBottom
           sx={{ color: 'primary.main', fontWeight: 700 }}
         >
-          Forgot Password
+          {t('forgotPasswordPage.title')}
         </Typography>
         <Typography align="center" color="text.secondary" mb={3}>
-          Enter your email to receive a password reset link.
+          {t('forgotPasswordPage.subtitle')}
         </Typography>
 
         {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
@@ -61,7 +63,7 @@ export default function ForgotPasswordPage() {
           sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
           <TextField
-            label="Email Address"
+            label={t('forgotPasswordPage.emailLabel')}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +77,7 @@ export default function ForgotPasswordPage() {
             size="large"
             disabled={loading}
           >
-            {loading ? 'Sending...' : 'Send Reset Link'}
+            {loading ? t('forgotPasswordPage.sending') : t('forgotPasswordPage.sendButton')}
           </Button>
         </Box>
 
@@ -84,7 +86,7 @@ export default function ForgotPasswordPage() {
           fullWidth
           sx={{ mt: 2, color: 'secondary.main', textTransform: 'none' }}
         >
-          Back to Login
+          {t('forgotPasswordPage.backToLogin')}
         </Button>
       </Paper>
     </Container>

@@ -1,4 +1,3 @@
-// src/components/TopBar.tsx
 import { AppBar, Toolbar, Typography, Button, MenuItem, Select, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -31,10 +30,18 @@ export default function TopBar() {
           <Select
             value={language}
             onChange={handleLanguageChange}
-            sx={{ color: 'white', borderColor: 'white', '& .MuiSvgIcon-root': { color: 'white' } }}
+            sx={{
+              color: 'white',
+              borderColor: 'white',
+              '& .MuiSvgIcon-root': { color: 'white' },
+            }}
           >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="bg">Български</MenuItem>
+            <MenuItem value="en">
+              <span style={{ marginRight: 8 }}>🇬🇧</span> English
+            </MenuItem>
+            <MenuItem value="bg">
+              <span style={{ marginRight: 8 }}>🇧🇬</span> Български
+            </MenuItem>
           </Select>
           <Button color="inherit" onClick={handleLogout} startIcon={<LogoutIcon />}>
             {t('logout')}

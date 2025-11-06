@@ -66,5 +66,57 @@
   "verifyEmail": "Verify Email",
   "notVerified": "You need to verify your email adress",
   "verificationEmailSent": "Check your e-mail to verify the new adress",
-  "appName": "DoveNet"
+  "appName": "DoveNet",
+  "logout": "Logout",
+  "login": "Sign in",
+  "register": "Sign up",
+  "languageOptions": {
+    "en": "English",
+    "bg": "Bulgarian"
+  },
+  "forgotPasswordPage": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email to receive a password reset link.",
+    "emailLabel": "Email Address",
+    "sendButton": "Send Reset Link",
+    "sending": "Sending...",
+    "backToLogin": "Back to Login",
+    "successMessage": "Password reset link sent! Check your email.",
+    "errorMessage": "Failed to send reset email."
+  },
+    "verifyEmailPage": {
+    "title": "Email Verification",
+    "verifyButton": "Verify Email",
+    "goToLogin": "Go to Login",
+    "invalidLink": "Invalid verification link.",
+    "successMessage": "Email verified successfully!",
+    "errorMessage": "Verification failed."
+  }, 
+
+  "loginPage": {
+    "title": "Welcome Back",
+    "description": "Sign in to manage your pigeons 🕊️",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "loggingInButton": "Signing in...",
+    "registerLink": "Don’t have an account? Register",
+    "forgotPasswordLink": "Forgot your password?",
+    "errorMessage": "Login failed"
+  },
+  "registerPage": {
+    "title": "Create an Account",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "register": "Register",
+    "registering": "Registering...",
+    "alreadyHaveAccount": "Already have an account? Login",
+    "passwordsMismatch": "Passwords do not match",
+    "registrationFailed": "Registration failed",
+    "dialogTitle": "Check your email",
+    "dialogContent": "Your account has been created successfully! Please check your inbox and click the verification link to activate your account before logging in.",
+    "dialogOk": "OK"
+  }
 }
