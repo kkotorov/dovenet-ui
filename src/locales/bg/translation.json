@@ -56,7 +56,6 @@
   "emailsDoNotMatch": "Имейлите не съвпадат",
   "passwordsDoNotMatch": "Паролите не съвпадат",
   "settingsFailed": "Неуспешно обновяване на настройките",
-  "cancel": "Отказ",
   "language": "Език",
   "back": "Назад",
   "username": "Потребителско име",
@@ -64,5 +63,6 @@
   "manageProfileText": "Упралвение на профила",
   "currentPassword": "Текуща парола",
   "verifyEmail": "Потвърждаване на E-mail",
-  "notVerified": "Трябва да потвърдите своят E-mail адрес"
+  "notVerified": "Трябва да потвърдите своят E-mail адрес",
+  "verificationEmailSent": "Проверете пощенската си кутия, за да потвърдите новият е-майл адрес",
 }

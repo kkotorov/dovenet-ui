@@ -21,11 +21,11 @@ export default function UserSettingsPage() {
   const [user, setUser] = useState<{
     username: string;
     email: string;
-    emailVerified?: boolean; // <- track if email is verified
+    emailVerified?: boolean;
   }>({
     username: '',
     email: '',
-    emailVerified: true, // default to true
+    emailVerified: true,
   });
 
   const [language, setLanguage] = useState(localStorage.getItem('lang') || 'en');
@@ -54,14 +54,12 @@ export default function UserSettingsPage() {
       .catch(() => navigate('/login'));
   }, [navigate]);
 
-  
-const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const lang = e.target.value;
-  setLanguage(lang);
-  localStorage.setItem('lang', lang);
-  i18n.changeLanguage(lang); // ✅ tell i18next to switch now
-};
-
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const lang = e.target.value;
+    setLanguage(lang);
+    localStorage.setItem('lang', lang);
+    i18n.changeLanguage(lang);
+  };
 
   const handleEmailUpdate = async () => {
     if (newEmail !== confirmEmail) {
@@ -82,7 +80,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert(t('emailUpdated'));
-      setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false })); // mark unverified
+      setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false }));
       setShowEmailChange(false);
       setNewEmail('');
       setConfirmEmail('');
@@ -123,23 +121,23 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   const handleSendVerificationEmail = async () => {
-    const token = localStorage.getItem('token'); // your auth token
+    const token = localStorage.getItem('token');
     if (!token) {
       alert(t('notLoggedIn'));
       return;
     }
 
     try {
-      await axios.get('http://localhost:8080/api/users/trigger-verify', {
+      const res = await axios.get('http://localhost:8080/api/users/trigger-verify', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert(t('verificationEmailSent'));
+      // Show server message if exists
+      alert(res.data?.message || t('verificationEmailSent'));
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.message || t('settingsFailed'));
     }
   };
-
 
   return (
     <Container sx={{ mt: 4 }}>
@@ -148,7 +146,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       </Typography>
 
       <Paper sx={{ p: 3, mt: 3, maxWidth: 500 }}>
-        {/* Username (static) */}
+        {/* Username */}
         <TextField
           fullWidth
           label={t('username')}
@@ -168,7 +166,6 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             )}
           </Typography>
 
-          {/* Show verification button only if email not verified */}
           {!user.emailVerified && (
             <Button
               sx={{ mt: 1, ml: 1 }}
@@ -272,7 +269,6 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           <MenuItem value="bg">Български</MenuItem>
         </TextField>
 
-        {/* Navigation */}
         <Button variant="outlined" onClick={() => navigate('/dashboard')}>
           {t('back')}
         </Button>
