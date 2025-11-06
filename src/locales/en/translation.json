@@ -64,6 +64,7 @@
   "manageProfileText": "Manage your profile",
   "currentPassword": "Current password",
   "verifyEmail": "Verify Email",
-  "notVerified": "You need to verify you email adress",
-  "verificationEmailSent": "Check your e-mail to verify the new adress"
+  "notVerified": "You need to verify your email adress",
+  "verificationEmailSent": "Check your e-mail to verify the new adress",
+  "appName": "DoveNet"
 }

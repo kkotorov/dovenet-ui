@@ -64,5 +64,6 @@
   "currentPassword": "Текуща парола",
   "verifyEmail": "Потвърждаване на E-mail",
   "notVerified": "Трябва да потвърдите своят E-mail адрес",
-  "verificationEmailSent": "Проверете пощенската си кутия, за да потвърдите новият е-майл адрес"
+  "verificationEmailSent": "Проверете пощенската си кутия, за да потвърдите новият е-майл адрес",
+  "appName": "DoveNet"
 }

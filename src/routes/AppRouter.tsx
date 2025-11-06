@@ -8,24 +8,28 @@ import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import VerifyEmailPage from '../pages/VerifyEmailPage';
 import ProtectedRoute from '../components/ProtectedRoute';
+import DashboardLayout from '../components/DashboardLayout';
+import PublicLayout from '../components/PublicLayout';
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        {/* Public pages wrapped in PublicLayout */}
+        <Route element={<PublicLayout />}>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+        </Route>
 
-        {/* Email verification (public) */}
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
-
-        {/* Protected routes (login required only) */}
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-        <Route path="/pigeons" element={<ProtectedRoute><PigeonsPage /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><UserSettingsPage /></ProtectedRoute>} />
+        {/* Protected routes with DashboardLayout */}
+        <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/pigeons" element={<PigeonsPage />} />
+          <Route path="/settings" element={<UserSettingsPage />} />
+        </Route>
 
         {/* Catch-all → redirect to login */}
         <Route path="*" element={<Navigate to="/login" replace />} />

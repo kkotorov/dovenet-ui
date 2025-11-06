@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useTranslation } from 'react-i18next';
 import '../i18n';
 
@@ -47,11 +46,6 @@ export default function DashboardPage() {
     fetchUser();
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   if (loading)
     return <CircularProgress sx={{ mt: 8, display: 'block', mx: 'auto' }} />;
 
@@ -63,9 +57,6 @@ export default function DashboardPage() {
           <Avatar>{user?.username[0].toUpperCase()}</Avatar>
           <Typography variant="h5">{t('welcome', { username: user?.username })}</Typography>
         </Box>
-        <IconButton color="secondary" onClick={handleLogout}>
-          <LogoutIcon />
-        </IconButton>
       </Box>
     <Grid container spacing={3} justifyContent="start">
       {/* Pigeons Card */}
