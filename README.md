@@ -1,73 +1,116 @@
-# React + TypeScript + Vite
+# 🕊️ Pigeon Management Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is the **frontend** for a pigeon management system — a web application designed to manage pigeon data such as ring numbers, names, parents, pedigrees, and user settings. It connects to a backend API (built separately) to provide full CRUD operations, authentication, and PDF pedigree generation.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧩 Overview
 
-## React Compiler
+This React frontend provides a clean, modern interface using **Material UI (MUI)** and **React Router** for navigation. It includes all essential user workflows:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🔐 **Authentication** — Register, Login, Password Reset  
+- 🕊️ **Pigeon Management** — Create, edit, delete, and view pigeons  
+- 🧬 **Pedigree Download** — Download pedigree PDFs  
+- 👨‍👩‍👧 **Parent Highlighting** — Quickly visualize parent pigeons  
+- ⚙️ **User Settings** — Change email, password, and language preferences  
+- 🌐 **Multilingual Support** — English and Bulgarian via `i18next`
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏗️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Category | Technology |
+|-----------|-------------|
+| **Frontend Framework** | React + TypeScript |
+| **UI Library** | Material UI (MUI) |
+| **Routing** | React Router DOM |
+| **State Management** | React Hooks |
+| **Internationalization** | i18next |
+| **HTTP Requests** | Axios |
+| **Forms & Modals** | MUI Dialogs, TextFields, Alerts |
+| **Icons** | MUI Icons |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Features
+
+### 👤 Authentication
+- Login with username and password  
+- Register with email verification  
+- Password reset via email token  
+
+### 🕊️ Pigeon Management
+- Add, edit, delete, and list pigeons  
+- Sort by any field (ID, name, gender, etc.)  
+- Highlight pigeon parents for easy tracing  
+- Download pedigree as a PDF  
+
+### ⚙️ User Settings
+- View and update user details  
+- Change password and email with verification  
+- Trigger email verification  
+- Switch app language (English / Български)
+
+---
+
+## 🧭 Pages Overview
+
+| Page | Description |
+|------|-------------|
+| `/login` | User login |
+| `/register` | New user registration |
+| `/forgot-password` | Send password reset link |
+| `/reset-password` | Reset password via email token |
+| `/dashboard` | Main pigeon overview and management |
+| `/settings` | User settings (email, password, language) |
+| `/verify-email` | Email verification callback page |
+
+---
+
+## ⚙️ Installation & Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone git@github.com:kkotorov/dovenet-ui.git
+   cd dovenet-ui
+2. **Install dependencies**
+   ```bash
+   npm install
+3. **Start the development server**
+   ```bash
+   npm run dev
+4. **The app will be available at**
+   ```bash
+   http://localhost:5173
+
+---
+
+## 🔌 Backend Connection
+  This frontend communicates with a backend API at:
+  ```bash
+  http://localhost:8080/api/
+   ```
+You can adjust this URL in your API calls or environment variables if your backend runs elsewhere.
+Example:
+  ```bash
+    axios.get('http://localhost:8080/api/pigeons', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+##🌍 Internationalization
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+All UI text is managed via i18next.
+Language can be switched in the user settings (English / Български).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+💬 Notes
+
+This is only the frontend — it requires the backend project dovenet - https://github.com/kkotorov/dovenet to be running for full functionality.
+If you develop your backend on your own, make sure your backend provides JWT-based authentication and all the API endpoints used in this app.
+
+Author: Krasen Kotorov
+
+📄 License
+
+This project is licensed under the MIT License.
+See the LICENSE file for details.
