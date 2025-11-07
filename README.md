@@ -1,4 +1,4 @@
-# 🕊️ Pigeon Management Frontend
+# DoveNet 🕊️
 
 This project is the **frontend** for a pigeon management system — a web application designed to manage pigeon data such as ring numbers, names, parents, pedigrees, and user settings. It connects to a backend API (built separately - https://github.com/kkotorov/dovenet) to provide full CRUD operations, authentication, and PDF pedigree generation.
 
