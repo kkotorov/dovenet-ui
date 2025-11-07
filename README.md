@@ -1,3 +1,14 @@
+[![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)  
+[![Material UI](https://img.shields.io/badge/Material_UI-0081CB?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/)  
+[![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)](https://reactrouter.com/)  
+[![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)](https://axios-http.com/)  
+[![i18next](https://img.shields.io/badge/i18next-FFDE00?style=for-the-badge&logo=i18next&logoColor=black)](https://www.i18next.com/)  
+[![React Hooks](https://img.shields.io/badge/React_Hooks-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/docs/hooks-intro.html)  
+[![MUI Icons](https://img.shields.io/badge/MUI_Icons-0081CB?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/components/icons/)  
+[![MUI Dialogs](https://img.shields.io/badge/MUI_Dialogs-0081CB?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/components/dialogs/)
+
+
 # DoveNet 🕊️
 
 This project is the **frontend** for a pigeon management system — a web application designed to manage pigeon data such as ring numbers, names, parents, pedigrees, and user settings. It connects to a backend API (built separately - https://github.com/kkotorov/dovenet) to provide full CRUD operations, authentication, and PDF pedigree generation.
