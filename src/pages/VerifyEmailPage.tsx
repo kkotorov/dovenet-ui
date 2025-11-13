@@ -25,7 +25,7 @@ export default function VerifyEmailPage() {
     setSuccess('');
 
     try {
-      const res = await axios.get(`http://localhost:8080/api/users/verify?token=${token}`);
+      const res = await axios.get(`http://161.35.73.100:8080/api/users/verify?token=${token}`);
       setSuccess(res.data?.message || t('verifyEmailPage.successMessage'));
     } catch (err: any) {
       setError(err.response?.data?.message || t('verifyEmailPage.errorMessage'));
