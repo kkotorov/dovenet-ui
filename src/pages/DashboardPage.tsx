@@ -8,7 +8,6 @@ import {
   CardContent,
   CircularProgress,
   Box,
-  IconButton,
   Avatar,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';

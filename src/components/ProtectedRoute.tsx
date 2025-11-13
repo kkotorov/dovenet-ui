@@ -1,7 +1,12 @@
+import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { getCurrentUser } from '../api/user';
 
-export default function ProtectedRoute({ children }: { children: JSX.Element }) {
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const user = getCurrentUser();
 
   if (!user) {
@@ -9,6 +14,6 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
     return <Navigate to="/login" replace />;
   }
 
-  // Logged in → allow access regardless of verification
-  return children;
+  // Logged in → allow access
+  return <>{children}</>;
 }

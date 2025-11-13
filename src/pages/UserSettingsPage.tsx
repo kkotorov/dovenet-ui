@@ -43,16 +43,23 @@ export default function UserSettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return navigate('/login');
+    const checkUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return navigate('/login');
 
-    axios
-      .get('http://localhost:8080/api/users/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setUser(res.data))
-      .catch(() => navigate('/login'));
+      try {
+        const res = await axios.get('http://localhost:8080/api/users/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(res.data);
+      } catch {
+        navigate('/login');
+      }
+    };
+
+    checkUser();
   }, [navigate]);
+
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const lang = e.target.value;

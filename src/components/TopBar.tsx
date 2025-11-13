@@ -1,4 +1,5 @@
 import { AppBar, Toolbar, Typography, Button, MenuItem, Select, Box } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material/Select'; 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import i18n from '../i18n';
@@ -10,8 +11,8 @@ export default function TopBar() {
   const navigate = useNavigate();
   const [language, setLanguage] = useState(localStorage.getItem('lang') || 'en');
 
-  const handleLanguageChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const lang = e.target.value as string;
+  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
+    const lang = event.target.value;
     setLanguage(lang);
     localStorage.setItem('lang', lang);
     i18n.changeLanguage(lang);

@@ -1,17 +1,18 @@
-// src/components/PublicLayout.tsx
-import { AppBar, Toolbar, Typography, Button, MenuItem, Select, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, MenuItem, Select, Box } from '@mui/material'; // runtime components
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Outlet } from 'react-router-dom';
 import i18n from '../i18n';
-import { useState } from 'react';
+import { useState } from 'react';              
+import type { SelectChangeEvent } from '@mui/material/Select'; 
+
 
 export default function PublicLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [language, setLanguage] = useState(localStorage.getItem('lang') || 'en');
 
-  const handleLanguageChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const lang = e.target.value as string;
+  const handleLanguageChange = (event: SelectChangeEvent<string>) => {
+    const lang = event.target.value;
     setLanguage(lang);
     localStorage.setItem('lang', lang);
     i18n.changeLanguage(lang);
@@ -54,4 +55,3 @@ export default function PublicLayout() {
     </>
   );
 }
-
