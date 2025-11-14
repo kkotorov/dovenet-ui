@@ -1,78 +1,105 @@
-
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import i18n from '../i18n';
+import { useTranslation } from "react-i18next";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import i18n from "../i18n";
 import { useState, useRef, useEffect } from "react";
 
 export default function TopBar() {
   const { t } = useTranslation();
+  const location = useLocation();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState(localStorage.getItem("lang") || "en");
-  const [openDropdown, setOpenDropdown] = useState(false);
+
+  const [langOpen, setLangOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const changeLang = (lang: string) => {
-    setLanguage(lang);
-    localStorage.setItem("lang", lang);
-    i18n.changeLanguage(lang);
-    setOpenDropdown(false);
-  };
+  // Hide top bar on landing page
+  const hideTopBar = location.pathname === "/";
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  // Close dropdown if clicked outside
+  // Close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpenDropdown(false);
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem("lang", lang);
+    setLangOpen(false);
+  };
+
   return (
-    <div className="w-full bg-white/70 backdrop-blur-md shadow-md px-6 py-3 flex justify-between items-center">
-      <div className="text-xl font-bold text-indigo-600">{t("appName")}</div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
 
-      <div className="flex items-center gap-4">
-        {/* Language Dropdown */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setOpenDropdown(!openDropdown)}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition"
+      {/* Top bar */}
+      {!hideTopBar && (
+        <div className="
+          w-full px-6 py-4 bg-white/70 backdrop-blur-lg shadow-sm
+          flex items-center justify-between z-50
+        ">
+          {/* Logo */}
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate("/")}
           >
-            {language === "en" ? "🇬🇧" : "🇧🇬"}
-          </button>
+            <span className="text-2xl font-bold text-indigo-600">DoveNet</span>
+            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow"></span>
+          </div>
 
-          {openDropdown && (
-            <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
+          {/* Right side buttons */}
+          <div className="flex items-center gap-6">
+            {/* Login */}
+            <button
+              onClick={() => navigate("/login")}
+              className="text-gray-700 hover:text-indigo-600 font-medium transition"
+            >
+              {t("login")}
+            </button>
+
+            {/* Register */}
+            <button
+              onClick={() => navigate("/register")}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
+            >
+              {t("register")}
+            </button>
+
+            {/* Language selector */}
+            <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => changeLang("en")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                onClick={() => setLangOpen(!langOpen)}
+                className="text-2xl text-gray-700 hover:text-indigo-600 transition"
               >
-                🇬🇧 {t("english")}
+                🌐
               </button>
-              <button
-                onClick={() => changeLang("bg")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
-              >
-                🇧🇬 {t("bulgarian")}
-              </button>
+
+              {langOpen && (
+                <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg border p-2 w-28 z-50">
+                  <button
+                    onClick={() => changeLanguage("en")}
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => changeLanguage("bg")}
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                  >
+                    Български
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
+      )}
 
-        {/* Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 flex items-center gap-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
-        >
-          {t("logout")}
-        </button>
+      {/* Page Content */}
+      <div className="flex-grow">
+        <Outlet />
       </div>
     </div>
   );

@@ -47,13 +47,36 @@ export default function DashboardPage() {
 
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {/* Pigeons */}
+        <div
+          onClick={() => navigate("/pigeons")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-indigo-600 mb-2">
+              {t("pigeons")}
+            </h2>
+            <p className="text-gray-500">{t("manageYourPigeons")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/pigeons");
+            }}
+            className="mt-4 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
+          >
+            {t("managePigeons")}
+          </button>
+        </div>
+
         {/* Subscriptions */}
         <div
           onClick={() => navigate("/subscriptions")}
           className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
         >
           <div>
-            <h2 className="text-lg font-semibold text-indigo-600 mb-2">
+            <h2 className="text-lg font-semibold text-purple-600 mb-2">
               {t("subscriptions")}
             </h2>
             <p className="text-gray-500">{t("manageSubscriptionsText")}</p>
@@ -63,7 +86,7 @@ export default function DashboardPage() {
               e.stopPropagation();
               navigate("/subscriptions");
             }}
-            className="mt-4 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
+            className="mt-4 w-full py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition"
           >
             {t("manageSubscriptions")}
           </button>
