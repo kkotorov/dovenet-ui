@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = 'http://161.35.73.100:8080/api';
+const API_BASE = 'https://api.dovenet.eu/api';
 
 export interface User {
   id: string;

@@ -46,7 +46,7 @@ export default function PigeonsPage() {
 
   const fetchPigeons = async () => {
     try {
-      const res = await axios.get('http://161.35.73.100:8080/api/pigeons', {
+      const res = await axios.get('https://api.dovenet.eu/api/pigeons', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPigeons(res.data);
@@ -58,7 +58,7 @@ export default function PigeonsPage() {
   const createPigeon = async (pigeon: Pigeon) => {
     try {
       if (!token) throw new Error(t('notLoggedIn'));
-      await axios.post('http://161.35.73.100:8080/api/pigeons', pigeon, {
+      await axios.post('https://api.dovenet.eu/api/pigeons', pigeon, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchPigeons();
@@ -73,7 +73,7 @@ export default function PigeonsPage() {
       if (!pigeon.id) throw new Error(t('idRequired'));
 
       await axios.patch(
-        `http://161.35.73.100:8080api/pigeons/${pigeon.id}`,
+        `https://api.dovenet.eu/api/pigeons/${pigeon.id}`,
         pigeon,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -85,7 +85,7 @@ export default function PigeonsPage() {
 
   const deletePigeon = async (id: number) => {
     try {
-      await axios.delete(`http://161.35.73.100:8080/api/pigeons/${id}`, {
+      await axios.delete(`https://api.dovenet.eu/api/pigeons/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchPigeons();
@@ -99,7 +99,7 @@ export default function PigeonsPage() {
       if (!token) throw new Error(t('notLoggedIn'));
 
       const res = await axios.get(
-        `http://161.35.73.100:8080/api/pigeons/${id}/pedigree/pdf`,
+        `https://api.dovenet.eu/api/pigeons/${id}/pedigree/pdf`,
         { headers: { Authorization: `Bearer ${token}` }, responseType: 'blob' }
       );
 
@@ -119,7 +119,7 @@ export default function PigeonsPage() {
 
   const fetchParents = async (id: number) => {
     try {
-      const res = await axios.get(`http://161.35.73.100:8080/api/pigeons/${id}/parents`, {
+      const res = await axios.get(`https://api.dovenet.eu/api/pigeons/${id}/parents`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

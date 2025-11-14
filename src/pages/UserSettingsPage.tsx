@@ -48,7 +48,7 @@ export default function UserSettingsPage() {
       if (!token) return navigate('/login');
 
       try {
-        const res = await axios.get('http://161.35.73.100:8080/api/users/me', {
+        const res = await axios.get('https://api.dovenet.eu/api/users/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data);
@@ -82,7 +82,7 @@ export default function UserSettingsPage() {
     const token = localStorage.getItem('token');
     try {
       await axios.patch(
-        'http://161.35.73.100:8080/api/users/me/change-email',
+        'https://api.dovenet.eu/api/users/me/change-email',
         { newEmail, password: currentPasswordForEmail },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -112,7 +112,7 @@ export default function UserSettingsPage() {
     const token = localStorage.getItem('token');
     try {
       await axios.patch(
-        'http://161.35.73.100:8080/api/users/me/change-password',
+        'https://api.dovenet.eu/api/users/me/change-password',
         { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -135,7 +135,7 @@ export default function UserSettingsPage() {
     }
 
     try {
-      const res = await axios.get('http://161.35.73.100:8080/api/users/trigger-verify', {
+      const res = await axios.get('https://api.dovenet.eu/api/users/trigger-verify', {
         headers: { Authorization: `Bearer ${token}` },
       });
       // Show server message if exists

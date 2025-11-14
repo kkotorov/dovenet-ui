@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://161.35.73.100:8080/api/users/forgot-password', { email });
+      const res = await axios.post('https://api.dovenet.eu/api/users/forgot-password', { email });
       setMessage(res.data?.message || t('forgotPasswordPage.successMessage'));
     } catch (err: any) {
       setError(err.response?.data?.message || t('forgotPasswordPage.errorMessage'));

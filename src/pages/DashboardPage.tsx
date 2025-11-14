@@ -32,7 +32,7 @@ export default function DashboardPage() {
         const token = localStorage.getItem('token');
         if (!token) return navigate('/login');
 
-        const res = await axios.get('http://161.35.73.100:8080/api/users/me', {
+        const res = await axios.get('https://api.dovenet.eu/api/users/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data);
