@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Container, Typography, Button, Grid, Card, CardContent, CircularProgress, Box, Avatar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import '../i18n';
-import api from '../api/api';
-import type { User } from '../api/auth';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import api from "../api/api";
+import type { User } from "../api/auth";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -15,10 +13,10 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await api.get('/users/me');
+        const res = await api.get("/users/me");
         setUser(res.data);
       } catch {
-        navigate('/login');
+        navigate("/login");
       } finally {
         setLoading(false);
       }
@@ -26,71 +24,117 @@ export default function DashboardPage() {
     fetchUser();
   }, [navigate]);
 
-  if (loading) return <CircularProgress sx={{ mt: 8, display: 'block', mx: 'auto' }} />;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Avatar>{user?.username[0].toUpperCase()}</Avatar>
-          <Typography variant="h5">{t('welcome', { username: user?.username })}</Typography>
-        </Box>
-      </Box>
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xl font-bold">
+            {user?.username[0].toUpperCase()}
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800">
+            {t("welcome", { username: user?.username })}
+          </h1>
+        </div>
+      </div>
 
-      <Grid container spacing={3} justifyContent="start">
-        {/* Pigeons Card */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            sx={{
-              minHeight: 180,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              '&:hover': { backgroundColor: '#f5f5f5' },
+      {/* Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Subscriptions */}
+        <div
+          onClick={() => navigate("/subscriptions")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-indigo-600 mb-2">
+              {t("subscriptions")}
+            </h2>
+            <p className="text-gray-500">{t("manageSubscriptionsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/subscriptions");
             }}
-            onClick={() => navigate('/pigeons')}
+            className="mt-4 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
           >
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography variant="h6" gutterBottom>{t('pigeons')}</Typography>
-              <Typography>{t('manageYourPigeons')}</Typography>
-            </CardContent>
-            <Box sx={{ p: 2 }}>
-              <Button fullWidth variant="contained" color="primary" sx={{ textTransform: 'none' }} onClick={() => navigate('/pigeons')}>
-                {t('managePigeons')}
-              </Button>
-            </Box>
-          </Card>
-        </Grid>
+            {t("manageSubscriptions")}
+          </button>
+        </div>
 
-        {/* Profile / Settings Card */}
-        <Grid item xs={12} sm={6} md={3}>
-          <Card
-            sx={{
-              minHeight: 180,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              '&:hover': { backgroundColor: '#f5f5f5' },
+        {/* Competitions */}
+        <div
+          onClick={() => navigate("/competitions")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-green-600 mb-2">
+              {t("competitions")}
+            </h2>
+            <p className="text-gray-500">{t("manageCompetitionsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/competitions");
             }}
-            onClick={() => navigate('/settings')}
+            className="mt-4 w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
           >
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography variant="h6" gutterBottom>{t('profile')}</Typography>
-              <Typography>{t('manageProfileText')}</Typography>
-            </CardContent>
-            <Box sx={{ p: 2 }}>
-              <Button fullWidth variant="contained" color="primary" sx={{ textTransform: 'none' }} onClick={(e) => { e.stopPropagation(); navigate('/settings'); }}>
-                {t('openSettings')}
-              </Button>
-            </Box>
-          </Card>
-        </Grid>
-      </Grid>
-    </Container>
+            {t("manageCompetitions")}
+          </button>
+        </div>
+
+        {/* Lofts */}
+        <div
+          onClick={() => navigate("/lofts")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-yellow-600 mb-2">
+              {t("lofts")}
+            </h2>
+            <p className="text-gray-500">{t("manageLoftsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/lofts");
+            }}
+            className="mt-4 w-full py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition"
+          >
+            {t("manageLofts")}
+          </button>
+        </div>
+
+        {/* Profile / Settings */}
+        <div
+          onClick={() => navigate("/settings")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-pink-600 mb-2">
+              {t("profile")}
+            </h2>
+            <p className="text-gray-500">{t("manageProfileText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/settings");
+            }}
+            className="mt-4 w-full py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 transition"
+          >
+            {t("openSettings")}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
