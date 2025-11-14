@@ -1,65 +1,83 @@
-import { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Container, Paper, Typography, Button, Alert, CircularProgress } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import api from '../api/api';
+import { useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import api from "../api/api";
 
 export default function VerifyEmailPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const token = searchParams.get('token');
+  const token = searchParams.get("token");
 
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const handleVerify = async () => {
     if (!token) {
-      setError(t('verifyEmailPage.invalidLink'));
+      setError(t("verifyEmailPage.invalidLink"));
       return;
     }
 
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
       const res = await api.get(`/users/verify?token=${token}`);
-      setSuccess(res.data?.message || t('verifyEmailPage.successMessage'));
+      setSuccess(res.data?.message || t("verifyEmailPage.successMessage"));
     } catch (err: any) {
-      setError(err.response?.data?.message || t('verifyEmailPage.errorMessage'));
+      setError(err.response?.data?.message || t("verifyEmailPage.errorMessage"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Paper elevation={6} sx={{ p: 5, width: '100%', borderRadius: 4, textAlign: 'center' }}>
-        <Typography variant="h4" gutterBottom>
-          {t('verifyEmailPage.title')}
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center">
 
-        {loading && <CircularProgress sx={{ mt: 2 }} />}
-        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-indigo-600 mb-4">
+          {t("verifyEmailPage.title")}
+        </h1>
 
-        {!success && (
-          <Button variant="contained" sx={{ mt: 3 }} onClick={handleVerify} disabled={loading}>
-            {t('verifyEmailPage.verifyButton')}
-          </Button>
+        {/* Messages */}
+        {loading && (
+          <div className="flex justify-center mt-4">
+            <div className="w-8 h-8 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+          </div>
         )}
-
         {success && (
-          <Button variant="contained" sx={{ mt: 3 }} onClick={() => navigate('/login')}>
-            {t('verifyEmailPage.goToLogin')}
-          </Button>
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
+            {success}
+          </div>
         )}
-      </Paper>
-    </Container>
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Buttons */}
+        {!success && (
+          <button
+            onClick={handleVerify}
+            disabled={loading}
+            className="mt-4 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            {t("verifyEmailPage.verifyButton")}
+          </button>
+        )}
+        {success && (
+          <button
+            onClick={() => navigate("/login")}
+            className="mt-4 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
+          >
+            {t("verifyEmailPage.goToLogin")}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

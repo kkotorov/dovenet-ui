@@ -1,125 +1,120 @@
-import { useState } from 'react';
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Paper,
-  Alert,
-} from '@mui/material';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import api from '../api/api'; 
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import api from "../api/api";
 
 export default function ResetPasswordPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token'); // Extract token from URL
+  const token = searchParams.get("token"); // Extract token from URL
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t("resetPasswordPage.passwordsMismatch"));
       return;
     }
 
     if (!token) {
-      setError('Invalid or missing reset token.');
+      setError(t("resetPasswordPage.invalidToken"));
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await api.post('/users/reset-password', {
+      const res = await api.post("/users/reset-password", {
         token,
         newPassword: password,
       });
 
-      setMessage(res.data?.message || 'Password has been reset successfully!');
+      setMessage(
+        res.data?.message || t("resetPasswordPage.successMessage")
+      );
 
       // Automatically navigate to login after short delay
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to reset password.');
+      setError(
+        err.response?.data?.message || t("resetPasswordPage.errorMessage")
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Paper elevation={6} sx={{ p: 5, width: '100%', borderRadius: 4 }}>
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-          sx={{ color: 'primary.main', fontWeight: 700 }}
-        >
-          Reset Password
-        </Typography>
-        <Typography align="center" color="text.secondary" mb={3}>
-          Enter your new password below.
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
 
-        {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-indigo-600 text-center mb-2">
+          {t("resetPasswordPage.title")}
+        </h1>
+        <p className="text-gray-500 text-center mb-6">
+          {t("resetPasswordPage.subtitle")}
+        </p>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-        >
-          <TextField
-            label="New Password"
+        {/* Messages */}
+        {message && (
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <input
             type="password"
+            placeholder={t("resetPasswordPage.newPasswordLabel")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            fullWidth
+            className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          <TextField
-            label="Confirm Password"
+          <input
             type="password"
+            placeholder={t("resetPasswordPage.confirmPasswordLabel")}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            fullWidth
+            className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
 
-          <Button
+          <button
             type="submit"
-            variant="contained"
-            fullWidth
-            size="large"
             disabled={loading}
+            className="mt-2 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
           >
-            {loading ? 'Resetting...' : 'Reset Password'}
-          </Button>
-        </Box>
+            {loading
+              ? t("resetPasswordPage.resettingButton")
+              : t("resetPasswordPage.resetButton")}
+          </button>
+        </form>
 
-        <Button
-          onClick={() => navigate('/login')}
-          fullWidth
-          sx={{ mt: 2, color: 'secondary.main', textTransform: 'none' }}
+        {/* Back to Login */}
+        <button
+          onClick={() => navigate("/login")}
+          className="mt-4 w-full text-indigo-600 hover:underline font-medium"
         >
-          Back to Login
-        </Button>
-      </Paper>
-    </Container>
+          {t("resetPasswordPage.backToLogin")}
+        </button>
+      </div>
+    </div>
   );
 }

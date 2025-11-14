@@ -1,91 +1,94 @@
-
-import { useState } from 'react';
-import { Container, TextField, Button, Typography, Box, Paper, Alert } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { loginUser } from '../api/auth';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { loginUser } from "../api/auth";
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       await loginUser(username, password);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || t('loginPage.errorMessage'));
+      setError(err.response?.data?.message || t("loginPage.errorMessage"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Paper elevation={6} sx={{ p: 5, width: '100%', borderRadius: 4 }}>
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-          sx={{ color: 'primary.main', fontWeight: 700 }}
-        >
-          {t('loginPage.title')}
-        </Typography>
-        <Typography align="center" color="text.secondary" mb={3}>
-          {t('loginPage.description')}
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+        
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-indigo-600 text-center mb-2">
+          {t("loginPage.title")}
+        </h1>
+        <p className="text-gray-500 text-center mb-6">
+          {t("loginPage.description")}
+        </p>
 
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
-        <Box component="form" onSubmit={handleLogin} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <TextField
-            label={t('loginPage.usernameLabel')}
+        {/* Form */}
+        <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+          <input
+            type="text"
+            placeholder={t("loginPage.usernameLabel")}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            fullWidth
+            className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          <TextField
-            label={t('loginPage.passwordLabel')}
+          <input
             type="password"
+            placeholder={t("loginPage.passwordLabel")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            fullWidth
+            className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          <Button type="submit" variant="contained" fullWidth size="large" disabled={loading}>
-            {loading ? t('loginPage.loggingInButton') : t('loginPage.loginButton')}
-          </Button>
-        </Box>
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-2 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
+          >
+            {loading ? t("loginPage.loggingInButton") : t("loginPage.loginButton")}
+          </button>
+        </form>
 
-        <Button
-          onClick={() => navigate('/register')}
-          fullWidth
-          sx={{ mt: 2, color: 'secondary.main', textTransform: 'none' }}
-        >
-          {t('loginPage.registerLink')}
-        </Button>
-
-        <Button
-          onClick={() => navigate('/forgot-password')}
-          fullWidth
-          sx={{ mt: 1, color: 'primary.main', textTransform: 'none' }}
-        >
-          {t('loginPage.forgotPasswordLink')}
-        </Button>
-
-      </Paper>
-    </Container>
+        {/* Links */}
+        <div className="flex flex-col gap-2 mt-4 text-center">
+          <button
+            onClick={() => navigate("/register")}
+            className="text-indigo-600 hover:underline font-medium"
+          >
+            {t("loginPage.registerLink")}
+          </button>
+          <button
+            onClick={() => navigate("/forgot-password")}
+            className="text-gray-600 hover:underline font-medium"
+          >
+            {t("loginPage.forgotPasswordLink")}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

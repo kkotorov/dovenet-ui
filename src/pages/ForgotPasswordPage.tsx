@@ -1,94 +1,84 @@
-import { useState } from 'react';
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Paper,
-  Alert,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import api from '../api/api';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import api from "../api/api";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
     setLoading(true);
 
     try {
-      const res = await api.post('/users/forgot-password', { email });
-      setMessage(res.data?.message || t('forgotPasswordPage.successMessage'));
+      const res = await api.post("/users/forgot-password", { email });
+      setMessage(res.data?.message || t("forgotPasswordPage.successMessage"));
     } catch (err: any) {
-      setError(err.response?.data?.message || t('forgotPasswordPage.errorMessage'));
+      setError(err.response?.data?.message || t("forgotPasswordPage.errorMessage"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Paper elevation={6} sx={{ p: 5, width: '100%', borderRadius: 4 }}>
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-          sx={{ color: 'primary.main', fontWeight: 700 }}
-        >
-          {t('forgotPasswordPage.title')}
-        </Typography>
-        <Typography align="center" color="text.secondary" mb={3}>
-          {t('forgotPasswordPage.subtitle')}
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
 
-        {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-indigo-600 text-center mb-2">
+          {t("forgotPasswordPage.title")}
+        </h1>
+        <p className="text-gray-500 text-center mb-6">
+          {t("forgotPasswordPage.subtitle")}
+        </p>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-        >
-          <TextField
-            label={t('forgotPasswordPage.emailLabel')}
+        {/* Messages */}
+        {message && (
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <input
             type="email"
+            placeholder={t("forgotPasswordPage.emailLabel")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            fullWidth
+            className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
-          <Button
+          <button
             type="submit"
-            variant="contained"
-            fullWidth
-            size="large"
             disabled={loading}
+            className="mt-2 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
           >
-            {loading ? t('forgotPasswordPage.sending') : t('forgotPasswordPage.sendButton')}
-          </Button>
-        </Box>
+            {loading ? t("forgotPasswordPage.sending") : t("forgotPasswordPage.sendButton")}
+          </button>
+        </form>
 
-        <Button
-          onClick={() => navigate('/login')}
-          fullWidth
-          sx={{ mt: 2, color: 'secondary.main', textTransform: 'none' }}
+        {/* Back to Login */}
+        <button
+          onClick={() => navigate("/login")}
+          className="mt-4 w-full text-indigo-600 hover:underline font-medium"
         >
-          {t('forgotPasswordPage.backToLogin')}
-        </Button>
-      </Paper>
-    </Container>
+          {t("forgotPasswordPage.backToLogin")}
+        </button>
+      </div>
+    </div>
   );
 }
