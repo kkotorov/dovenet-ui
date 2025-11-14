@@ -11,9 +11,6 @@ export default function TopBar() {
   const [langOpen, setLangOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Hide top bar on landing page
-  const hideTopBar = location.pathname === "/";
-
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -31,10 +28,16 @@ export default function TopBar() {
     setLangOpen(false);
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Clear auth token
+    navigate("/login"); // Redirect to login page
+  };
 
-      {/* Top bar */}
+  // Optionally hide topbar on landing
+  const hideTopBar = location.pathname === "/";
+
+  return (
+    <div className="min-h-screen flex flex-col">
       {!hideTopBar && (
         <div className="
           w-full px-6 py-4 bg-white/70 backdrop-blur-lg shadow-sm
@@ -51,20 +54,12 @@ export default function TopBar() {
 
           {/* Right side buttons */}
           <div className="flex items-center gap-6">
-            {/* Login */}
+            {/* Logout */}
             <button
-              onClick={() => navigate("/login")}
-              className="text-gray-700 hover:text-indigo-600 font-medium transition"
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition font-semibold"
             >
-              {t("login")}
-            </button>
-
-            {/* Register */}
-            <button
-              onClick={() => navigate("/register")}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
-            >
-              {t("register")}
+              {t("logout")}
             </button>
 
             {/* Language selector */}
@@ -97,7 +92,6 @@ export default function TopBar() {
         </div>
       )}
 
-      {/* Page Content */}
       <div className="flex-grow">
         <Outlet />
       </div>
