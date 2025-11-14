@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PigeonForm from './PigeonForm';
 import { Edit, Delete, ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import api from '../api/api';
 
 interface Pigeon {
   id?: number;
@@ -44,95 +45,74 @@ export default function PigeonsPage() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
-  const fetchPigeons = async () => {
-    try {
-      const res = await axios.get('https://api.dovenet.eu/api/pigeons', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setPigeons(res.data);
-    } catch (err) {
-      console.error(t('fetchFailed'), err);
-    }
-  };
+const fetchPigeons = async () => {
+  try {
+    const res = await api.get<Pigeon[]>('/pigeons');
+    setPigeons(res.data);
+  } catch (err) {
+    console.error(t('fetchFailed'), err);
+  }
+};
 
-  const createPigeon = async (pigeon: Pigeon) => {
-    try {
-      if (!token) throw new Error(t('notLoggedIn'));
-      await axios.post('https://api.dovenet.eu/api/pigeons', pigeon, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchPigeons();
-    } catch (err) {
-      console.error(t('createFailed'), err);
-    }
-  };
+const createPigeon = async (pigeon: Pigeon) => {
+  try {
+    await api.post('/pigeons', pigeon);
+    fetchPigeons();
+  } catch (err) {
+    console.error(t('createFailed'), err);
+  }
+};
 
-  const updatePigeon = async (pigeon: Pigeon) => {
-    try {
-      if (!token) throw new Error(t('notLoggedIn'));
-      if (!pigeon.id) throw new Error(t('idRequired'));
+const updatePigeon = async (pigeon: Pigeon) => {
+  try {
+    if (!pigeon.id) throw new Error(t('idRequired'));
+    await api.put(`/pigeons/${pigeon.id}`, pigeon);
+    fetchPigeons();
+  } catch (err) {
+    console.error(t('updateFailed'), err);
+  }
+};
 
-      await axios.patch(
-        `https://api.dovenet.eu/api/pigeons/${pigeon.id}`,
-        pigeon,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      fetchPigeons();
-    } catch (err) {
-      console.error(t('updateFailed'), err);
-    }
-  };
+const deletePigeon = async (id: number) => {
+  try {
+    await api.delete(`/pigeons/${id}`);
+    fetchPigeons();
+  } catch (err) {
+    console.error(t('deleteFailed'), err);
+  }
+};
 
-  const deletePigeon = async (id: number) => {
-    try {
-      await axios.delete(`https://api.dovenet.eu/api/pigeons/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchPigeons();
-    } catch (err) {
-      console.error(t('deleteFailed'), err);
-    }
-  };
+const downloadPedigreePdf = async (id: number) => {
+  try {
+    const res = await api.get(`/pigeons/${id}/pedigree/pdf`, { responseType: 'blob' });
 
-  const downloadPedigreePdf = async (id: number) => {
-    try {
-      if (!token) throw new Error(t('notLoggedIn'));
+    const url = window.URL.createObjectURL(
+      new Blob([res.data], { type: 'application/pdf' })
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `pedigree_${id}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err) {
+    console.error(t('downloadFailed'), err);
+  }
+};
 
-      const res = await axios.get(
-        `https://api.dovenet.eu/api/pigeons/${id}/pedigree/pdf`,
-        { headers: { Authorization: `Bearer ${token}` }, responseType: 'blob' }
-      );
+const fetchParents = async (id: number) => {
+  try {
+    const res = await api.get<Pigeon[]>(`/pigeons/${id}/parents`);
+    const parentIds = res.data.map((p) => p.id!);
+    setHighlightedParentIds(parentIds);
 
-      const url = window.URL.createObjectURL(
-        new Blob([res.data], { type: 'application/pdf' })
-      );
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `pedigree_${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      console.error(t('downloadFailed'), err);
-    }
-  };
+    setTimeout(() => setHighlightedParentIds([]), 5000);
+  } catch (err) {
+    console.error(t('fetchParentsFailed'), err);
+    alert(t('fetchParentsFailed'));
+  }
+};
 
-  const fetchParents = async (id: number) => {
-    try {
-      const res = await axios.get(`https://api.dovenet.eu/api/pigeons/${id}/parents`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const parents: Pigeon[] = res.data;
-      const parentIds = parents.map((p) => p.id!);
-      setHighlightedParentIds(parentIds);
-
-      setTimeout(() => setHighlightedParentIds([]), 5000);
-    } catch (err) {
-      console.error(t('fetchParentsFailed'), err);
-      alert(t('fetchParentsFailed'));
-    }
-  };
 
   const handleEdit = (pigeon: Pigeon) => {
     setEditingPigeon(pigeon);

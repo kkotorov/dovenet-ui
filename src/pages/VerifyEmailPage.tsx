@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Container, Paper, Typography, Button, Alert, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import api from '../api/api';
 
 export default function VerifyEmailPage() {
   const { t } = useTranslation();
@@ -25,7 +25,7 @@ export default function VerifyEmailPage() {
     setSuccess('');
 
     try {
-      const res = await axios.get(`https://api.dovenet.eu/api/users/verify?token=${token}`);
+      const res = await api.get(`/users/verify?token=${token}`);
       setSuccess(res.data?.message || t('verifyEmailPage.successMessage'));
     } catch (err: any) {
       setError(err.response?.data?.message || t('verifyEmailPage.errorMessage'));

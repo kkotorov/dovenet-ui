@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_BASE = 'https://api.dovenet.eu/api';
+import api from './api';
 
 export interface User {
   id: string;
@@ -12,22 +10,17 @@ export interface User {
 
 // Register user
 export const registerUser = (username: string, email: string, password: string) => {
-  return axios.post(`${API_BASE}/users/register`, { username, email, password });
+  return api.post('/users/register', { username, email, password });
 };
 
 // Login user
-export const loginUser = async (username: string, password: string) => {
-  const res = await axios.post(`${API_BASE}/auth/login`, { username, password });
+export const loginUser = async (username: string, password: string): Promise<User> => {
+  const res = await api.post('/auth/login', { username, password });
   const user: User = res.data;
 
-  // Save token in localStorage
+  // Save token and user info
   localStorage.setItem('token', user.token);
-
-  // Save user info in localStorage
   localStorage.setItem('user', JSON.stringify(user));
-
-  // Set default Authorization header for future requests
-  axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
 
   return user;
 };
@@ -36,7 +29,6 @@ export const loginUser = async (username: string, password: string) => {
 export const logoutUser = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  delete axios.defaults.headers.common['Authorization'];
 };
 
 // Get current user

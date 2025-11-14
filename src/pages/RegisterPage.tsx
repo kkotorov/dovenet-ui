@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { registerUser } from '../api/user';
+import { registerUser } from '../api/auth';
 
 export default function RegisterPage() {
   const { t } = useTranslation();

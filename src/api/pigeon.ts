@@ -1,24 +1,24 @@
-import api from './axios';
+import api from './api';
 import type { Pigeon } from '../types/index';
 
 export const getPigeons = async (): Promise<Pigeon[]> => {
-  const response = await api.get('/pigeons');
-  return response.data;
+  const res = await api.get('/pigeons');
+  return res.data;
 };
 
 export const getPigeonById = async (id: string): Promise<Pigeon> => {
-  const response = await api.get(`/pigeons/${id}`);
-  return response.data;
+  const res = await api.get(`/pigeons/${id}`);
+  return res.data;
 };
 
 export const createPigeon = async (data: Partial<Pigeon>): Promise<Pigeon> => {
-  const response = await api.post('/pigeons', data);
-  return response.data;
+  const res = await api.post('/pigeons', data);
+  return res.data;
 };
 
 export const updatePigeon = async (id: string, data: Partial<Pigeon>): Promise<Pigeon> => {
-  const response = await api.put(`/pigeons/${id}`, data);
-  return response.data;
+  const res = await api.put(`/pigeons/${id}`, data);
+  return res.data;
 };
 
 export const deletePigeon = async (id: string): Promise<void> => {

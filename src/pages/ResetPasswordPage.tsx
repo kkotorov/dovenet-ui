@@ -9,7 +9,7 @@ import {
   Alert,
 } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/api'; 
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -40,14 +40,14 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post('hhttps://api.dovenet.eu/api/users/reset-password', {
+      const res = await api.post('/users/reset-password', {
         token,
         newPassword: password,
       });
 
       setMessage(res.data?.message || 'Password has been reset successfully!');
 
-      // ✅ Automatically navigate to login after short delay
+      // Automatically navigate to login after short delay
       setTimeout(() => {
         navigate('/login');
       }, 2000);

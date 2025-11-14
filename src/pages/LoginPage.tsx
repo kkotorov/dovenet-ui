@@ -1,8 +1,9 @@
+
 import { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Paper, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { loginUser } from '../api/user';
+import { loginUser } from '../api/auth';
 
 export default function LoginPage() {
   const { t } = useTranslation();

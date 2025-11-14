@@ -9,10 +9,10 @@ import {
   Collapse,
   Paper,
 } from '@mui/material';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import i18n from 'i18next'; // ✅ add this import at the top
+import i18n from 'i18next';
+import api from '../api/api'; 
 
 export default function UserSettingsPage() {
   const { t } = useTranslation();
@@ -44,22 +44,15 @@ export default function UserSettingsPage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) return navigate('/login');
-
       try {
-        const res = await axios.get('https://api.dovenet.eu/api/users/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get('/users/me');
         setUser(res.data);
       } catch {
         navigate('/login');
       }
     };
-
     checkUser();
   }, [navigate]);
-
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const lang = e.target.value;
@@ -79,13 +72,12 @@ export default function UserSettingsPage() {
       return;
     }
 
-    const token = localStorage.getItem('token');
     try {
-      await axios.patch(
-        'https://api.dovenet.eu/api/users/me/change-email',
-        { newEmail, password: currentPasswordForEmail },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.patch('/users/me/change-email', {
+        newEmail,
+        password: currentPasswordForEmail,
+      });
+
       alert(t('emailUpdated'));
       setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false }));
       setShowEmailChange(false);
@@ -109,13 +101,12 @@ export default function UserSettingsPage() {
       return;
     }
 
-    const token = localStorage.getItem('token');
     try {
-      await axios.patch(
-        'https://api.dovenet.eu/api/users/me/change-password',
-        { oldPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.patch('/users/me/change-password', {
+        oldPassword,
+        newPassword,
+      });
+
       alert(t('passwordUpdated'));
       setShowPasswordChange(false);
       setOldPassword('');
@@ -128,17 +119,8 @@ export default function UserSettingsPage() {
   };
 
   const handleSendVerificationEmail = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert(t('notLoggedIn'));
-      return;
-    }
-
     try {
-      const res = await axios.get('https://api.dovenet.eu/api/users/trigger-verify', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // Show server message if exists
+      const res = await api.get('/users/trigger-verify');
       alert(res.data?.message || t('verificationEmailSent'));
     } catch (err: any) {
       console.error(err);

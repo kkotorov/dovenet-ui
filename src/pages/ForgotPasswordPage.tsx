@@ -9,8 +9,8 @@ import {
   Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import api from '../api/api';
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post('https://api.dovenet.eu/api/users/forgot-password', { email });
+      const res = await api.post('/users/forgot-password', { email });
       setMessage(res.data?.message || t('forgotPasswordPage.successMessage'));
     } catch (err: any) {
       setError(err.response?.data?.message || t('forgotPasswordPage.errorMessage'));
