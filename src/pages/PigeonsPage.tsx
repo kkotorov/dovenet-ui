@@ -42,7 +42,6 @@ export default function PigeonsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
 
 const fetchPigeons = async () => {
   try {
