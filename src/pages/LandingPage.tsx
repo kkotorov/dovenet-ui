@@ -1,6 +1,4 @@
-// src/pages/LandingPage.tsx
-import React from 'react';
-import { Box, Button, Typography, Container, Paper } from '@mui/material';
+import { Box, Button, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export default function LandingPage() {
