@@ -14,7 +14,6 @@ import {
   Tooltip,
   IconButton
 } from '@mui/material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PigeonForm from './PigeonForm';
