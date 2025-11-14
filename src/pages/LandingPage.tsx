@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
-import Pigeon from '../assets/pigeon.svg'; // make sure the SVG file is here
+import Pigeon from '../assets/pigeon.svg';
+import LandingNavbar from "../components/LandingNavBar";
 
 export default function LandingPage() {
   return (
     <div className="font-sans text-gray-900">
+              <LandingNavbar />
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white overflow-hidden">
         <div className="container mx-auto px-6 py-32 text-center relative z-10">
