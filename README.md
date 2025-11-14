@@ -4,7 +4,8 @@ This project is the **frontend** for a pigeon management system — a web applic
 
 ---
 
-- **Live Demo:** [DoveNet UI](https://youtu.be/ezMFsSjKeSA)  
+- **Live WebClient:** [DoveNet UI](https://dovenet.eu)  
+- **Live Video:** [DoveNet UI](https://youtu.be/ezMFsSjKeSA)  
 
 ## 🧩 Overview
 
