@@ -10,6 +10,7 @@ import VerifyEmailPage from '../pages/VerifyEmailPage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import DashboardLayout from '../components/DashboardLayout';
 import PublicLayout from '../components/PublicLayout';
+import LandingPage from '../pages/LandingPage';
 
 export default function AppRouter() {
   return (
@@ -17,6 +18,7 @@ export default function AppRouter() {
       <Routes>
         {/* Public pages wrapped in PublicLayout */}
         <Route element={<PublicLayout />}>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
