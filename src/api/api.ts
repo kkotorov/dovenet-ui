@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.dovenet.eu', // Caddy HTTPS backend
+  baseURL: 'https://api.dovenet.eu/api', // Caddy HTTPS backend
   withCredentials: true,
 });
 
