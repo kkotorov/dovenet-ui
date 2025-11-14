@@ -30,10 +30,9 @@ export default function TopBar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear auth token
-    navigate("/login"); // Redirect to login page
+    navigate("/login"); // Redirect to login
   };
 
-  // Optionally hide topbar on landing
   const hideTopBar = location.pathname === "/";
 
   return (
@@ -57,7 +56,7 @@ export default function TopBar() {
             {/* Logout */}
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition font-semibold"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
             >
               {t("logout")}
             </button>
