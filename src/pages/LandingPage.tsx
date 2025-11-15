@@ -1,11 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Pigeon from '../assets/pigeon.svg';
 import LandingNavbar from "../components/LandingNavBar";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem("token"); // check if user is logged in
+
   return (
     <div className="font-sans text-gray-900">
-              <LandingNavbar />
+      <LandingNavbar />
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white overflow-hidden">
@@ -17,18 +20,29 @@ export default function LandingPage() {
             Your ultimate pigeon management system. Track, manage, and monitor your pigeons effortlessly.
           </p>
           <div className="flex justify-center gap-6 animate-fadeInUp delay-400">
-            <Link
-              to="/login"
-              className="bg-white text-blue-600 font-semibold px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="bg-transparent border border-white text-white font-semibold px-8 py-4 rounded-xl transform hover:scale-105 hover:bg-white hover:text-blue-600 transition"
-            >
-              Sign Up
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link
+                  to="/login"
+                  className="bg-white text-blue-600 font-semibold px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-transparent border border-white text-white font-semibold px-8 py-4 rounded-xl transform hover:scale-105 hover:bg-white hover:text-blue-600 transition"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="px-8 py-4 bg-white text-indigo-600 font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
+              >
+                Go to Dashboard
+              </button>
+            )}
           </div>
         </div>
 
@@ -65,12 +79,22 @@ export default function LandingPage() {
         <p className="mb-10 text-lg md:text-xl animate-fadeInUp delay-200">
           Join DoveNet today and elevate your pigeon management experience.
         </p>
-        <Link
-          to="/register"
-          className="bg-white text-purple-600 font-semibold px-10 py-4 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition animate-fadeInUp delay-400"
-        >
-          Create Account
-        </Link>
+        {!isLoggedIn && (
+          <Link
+            to="/register"
+            className="bg-white text-purple-600 font-semibold px-10 py-4 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition animate-fadeInUp delay-400"
+          >
+            Create Account
+          </Link>
+        )}
+        {isLoggedIn && (
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="px-10 py-4 bg-white text-indigo-600 font-semibold rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition animate-fadeInUp delay-400"
+          >
+            Go to Dashboard
+          </button>
+        )}
       </section>
 
       {/* Footer */}
