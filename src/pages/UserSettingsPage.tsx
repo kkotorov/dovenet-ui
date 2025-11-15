@@ -81,22 +81,22 @@ export default function UserSettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 pt-6 flex flex-col items-center relative">
-      <Toaster position="top-right" />
+<div className="min-h-screen bg-gray-50 px-6 pt-6 flex flex-col items-center relative">
+  <Toaster position="top-right" />
 
-      {/* Container for cards + back button */}
-      <div className="relative w-full max-w-3xl flex flex-col items-center">
-        {/* Back button aligned with card right edge */}
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="absolute -top-16 right-0 flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 hover:-translate-y-0.5 transition transform"
-        >
-          <ChevronLeft className="w-4 h-4" /> {t("backToDashboard")}
-        </button>
+  {/* Container for cards + back button */}
+  <div className="w-full max-w-3xl flex flex-col items-center gap-4 mt-4">
+    {/* Back button aligned with card right edge */}
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="self-end flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 hover:-translate-y-0.5 transition transform mt-2"
+    >
+      <ChevronLeft className="w-4 h-4" /> {t("backToDashboard")}
+    </button>
 
-        {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-md w-full p-6 flex items-center justify-between mb-6 animate-fadeInUp">
-          <div className="flex items-center gap-4">
+    {/* Profile Card */}
+    <div className="bg-white rounded-2xl shadow-md w-full p-6 flex items-center justify-between mb-6 animate-fadeInUp">
+            <div className="flex items-center gap-4">
             <UserIcon className="w-8 h-8 text-indigo-600" />
             <div>
               <p className="font-semibold text-lg">{user.username}</p>
@@ -115,10 +115,10 @@ export default function UserSettingsPage() {
         </div>
 
         {/* Profile heading */}
-        <h2 className="w-full max-w-3xl text-lg font-semibold mb-4">{t("profile")}</h2>
+        <h2 className="w-full text-lg font-semibold mb-4">{t("profile")}</h2>
 
         {/* Change Email & Password Cards */}
-        <div className="w-full max-w-3xl grid gap-4">
+        <div className="w-full grid gap-4">
           {/* Change Email Card */}
           <div
             className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
