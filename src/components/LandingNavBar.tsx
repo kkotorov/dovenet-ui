@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 
 export default function LandingNavbar() {
+  const { t } = useTranslation();
   const [langOpen, setLangOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -32,16 +34,26 @@ export default function LandingNavbar() {
         className="text-2xl font-bold text-indigo-600 cursor-pointer"
         onClick={() => navigate("/")}
       >
-        DoveNet
+        {t("appName")}
       </div>
 
       {/* Center Menu */}
       <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
-        <a href="#features" className="hover:text-indigo-600 transition">Features</a>
-        <a href="#pricing" className="hover:text-indigo-600 transition">Pricing</a>
-        <a href="#faq" className="hover:text-indigo-600 transition">FAQ</a>
-        <a href="#support" className="hover:text-indigo-600 transition">Support</a>
-        <a href="#about" className="hover:text-indigo-600 transition">About Us</a>
+        <a href="#features" className="hover:text-indigo-600 transition">
+          {t("landingNavbar.features")}
+        </a>
+        <a href="#pricing" className="hover:text-indigo-600 transition">
+          {t("landingNavbar.pricing")}
+        </a>
+        <a href="#faq" className="hover:text-indigo-600 transition">
+          {t("landingNavbar.faq")}
+        </a>
+        <a href="#support" className="hover:text-indigo-600 transition">
+          {t("landingNavbar.support")}
+        </a>
+        <a href="#about" className="hover:text-indigo-600 transition">
+          {t("landingNavbar.aboutUs")}
+        </a>
       </div>
 
       {/* Right side buttons */}
@@ -49,14 +61,14 @@ export default function LandingNavbar() {
         {!isLoggedIn ? (
           <>
             <Link to="/login" className="text-gray-700 hover:text-indigo-600 font-medium">
-              Login
+              {t("topBar.login")}
             </Link>
 
             <Link
               to="/register"
               className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
             >
-              Sign Up
+              {t("topBar.signup")}
             </Link>
           </>
         ) : (
@@ -64,7 +76,7 @@ export default function LandingNavbar() {
             onClick={() => navigate("/dashboard")}
             className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
           >
-            Go to Dashboard
+            {t("landingNavbar.goToDashboard")}
           </button>
         )}
 
@@ -83,13 +95,13 @@ export default function LandingNavbar() {
                 onClick={() => changeLanguage("en")}
                 className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
               >
-                English
+                {t("topBar.languageEnglish")}
               </button>
               <button
                 onClick={() => changeLanguage("bg")}
                 className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
               >
-                Български
+                {t("topBar.languageBulgarian")}
               </button>
             </div>
           )}

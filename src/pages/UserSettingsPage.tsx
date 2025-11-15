@@ -41,62 +41,61 @@ export default function UserSettingsPage() {
   const handleSendVerificationEmail = async () => {
     try {
       const res = await api.get("/users/trigger-verify");
-      toast.success(res.data?.message || t("verificationEmailSent"));
+      toast.success(res.data?.message || t("userSettingsPage.verificationEmailSent"));
     } catch (err: any) {
-      toast.error(err.response?.data?.message || t("settingsFailed"));
+      toast.error(err.response?.data?.message || t("userSettingsPage.settingsFailed"));
     }
   };
 
   const handleEmailUpdate = async () => {
-    if (newEmail !== confirmEmail) return toast.error(t("emailsDoNotMatch"));
-    if (!currentPasswordForEmail) return toast.error(t("enterCurrentPassword"));
+    if (newEmail !== confirmEmail) return toast.error(t("userSettingsPage.emailsDoNotMatch"));
+    if (!currentPasswordForEmail) return toast.error(t("userSettingsPage.enterCurrentPassword"));
 
     try {
       await api.patch("/users/me/change-email", { newEmail, password: currentPasswordForEmail });
-      toast.success(t("emailUpdated"));
+      toast.success(t("userSettingsPage.emailUpdated"));
       setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false }));
       setNewEmail("");
       setConfirmEmail("");
       setCurrentPasswordForEmail("");
       setShowEmailEdit(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || t("settingsFailed"));
+      toast.error(err.response?.data?.message || t("userSettingsPage.settingsFailed"));
     }
   };
 
   const handlePasswordUpdate = async () => {
-    if (newPassword !== confirmPassword) return toast.error(t("passwordsDoNotMatch"));
-    if (!oldPassword) return toast.error(t("enterCurrentPassword"));
+    if (newPassword !== confirmPassword) return toast.error(t("userSettingsPage.passwordsDoNotMatch"));
+    if (!oldPassword) return toast.error(t("userSettingsPage.enterCurrentPassword"));
 
     try {
       await api.patch("/users/me/change-password", { oldPassword, newPassword });
-      toast.success(t("passwordUpdated"));
+      toast.success(t("userSettingsPage.passwordUpdated"));
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setShowPasswordEdit(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || t("settingsFailed"));
+      toast.error(err.response?.data?.message || t("userSettingsPage.settingsFailed"));
     }
   };
 
   return (
-<div className="min-h-screen bg-gray-50 px-6 pt-6 flex flex-col items-center relative">
-  <Toaster position="top-right" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 px-6 pt-6 flex flex-col items-center relative">
+      <Toaster position="top-right" />
 
-  {/* Container for cards + back button */}
-  <div className="w-full max-w-3xl flex flex-col items-center gap-4 mt-4">
-    {/* Back button aligned with card right edge */}
-    <button
-      onClick={() => navigate("/dashboard")}
-      className="self-end flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 hover:-translate-y-0.5 transition transform mt-2"
-    >
-      <ChevronLeft className="w-4 h-4" /> {t("backToDashboard")}
-    </button>
+      <div className="w-full max-w-3xl flex flex-col items-center gap-4 mt-4">
+        {/* Back button */}
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="self-end flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 hover:-translate-y-0.5 transition transform mt-2"
+        >
+          <ChevronLeft className="w-4 h-4" /> {t("userSettingsPage.backToDashboard")}
+        </button>
 
-    {/* Profile Card */}
-    <div className="bg-white rounded-2xl shadow-md w-full p-6 flex items-center justify-between mb-6 animate-fadeInUp">
-            <div className="flex items-center gap-4">
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl shadow-md w-full p-6 flex items-center justify-between mb-6 animate-fadeInUp">
+          <div className="flex items-center gap-4">
             <UserIcon className="w-8 h-8 text-indigo-600" />
             <div>
               <p className="font-semibold text-lg">{user.username}</p>
@@ -104,20 +103,17 @@ export default function UserSettingsPage() {
             </div>
           </div>
 
-          {/* Verified badge */}
           <button
             onClick={!user.emailVerified ? handleSendVerificationEmail : undefined}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition 
               ${user.emailVerified ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"}`}
           >
-            {user.emailVerified ? t("verified") : t("notVerified")}
+            {user.emailVerified ? t("userSettingsPage.verified") : t("userSettingsPage.notVerified")}
           </button>
         </div>
 
-        {/* Profile heading */}
-        <h2 className="w-full text-lg font-semibold mb-4">{t("profile")}</h2>
+        <h2 className="w-full text-lg font-semibold mb-4">{t("userSettingsPage.profile")}</h2>
 
-        {/* Change Email & Password Cards */}
         <div className="w-full grid gap-4">
           {/* Change Email Card */}
           <div
@@ -126,28 +122,28 @@ export default function UserSettingsPage() {
           >
             <div className="flex items-center gap-2 mb-2">
               <MailIcon className="w-5 h-5 text-indigo-600" />
-              <h3 className="font-semibold">{t("changeEmail")}</h3>
+              <h3 className="font-semibold">{t("userSettingsPage.changeEmail")}</h3>
             </div>
 
             {showEmailEdit && (
               <div className="flex flex-col md:flex-row gap-3 mt-2">
                 <input
                   type="email"
-                  placeholder={t("newEmail")}
+                  placeholder={t("userSettingsPage.newEmail")}
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
                 />
                 <input
                   type="email"
-                  placeholder={t("confirmEmail")}
+                  placeholder={t("userSettingsPage.confirmEmail")}
                   value={confirmEmail}
                   onChange={(e) => setConfirmEmail(e.target.value)}
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
                 />
                 <input
                   type="password"
-                  placeholder={t("currentPassword")}
+                  placeholder={t("userSettingsPage.currentPassword")}
                   value={currentPasswordForEmail}
                   onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
@@ -156,7 +152,7 @@ export default function UserSettingsPage() {
                   onClick={handleEmailUpdate}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                 >
-                  {t("saveEmail")}
+                  {t("userSettingsPage.saveEmail")}
                 </button>
               </div>
             )}
@@ -169,28 +165,28 @@ export default function UserSettingsPage() {
           >
             <div className="flex items-center gap-2 mb-2">
               <LockIcon className="w-5 h-5 text-indigo-600" />
-              <h3 className="font-semibold">{t("changePassword")}</h3>
+              <h3 className="font-semibold">{t("userSettingsPage.changePassword")}</h3>
             </div>
 
             {showPasswordEdit && (
               <div className="flex flex-col md:flex-row gap-3 mt-2">
                 <input
                   type="password"
-                  placeholder={t("currentPassword")}
+                  placeholder={t("userSettingsPage.currentPassword")}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
                 />
                 <input
                   type="password"
-                  placeholder={t("newPassword")}
+                  placeholder={t("userSettingsPage.newPassword")}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
                 />
                 <input
                   type="password"
-                  placeholder={t("confirmPassword")}
+                  placeholder={t("userSettingsPage.confirmPassword")}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
@@ -199,7 +195,7 @@ export default function UserSettingsPage() {
                   onClick={handlePasswordUpdate}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                 >
-                  {t("savePassword")}
+                  {t("userSettingsPage.savePassword")}
                 </button>
               </div>
             )}

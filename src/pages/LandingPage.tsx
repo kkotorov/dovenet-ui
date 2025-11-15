@@ -1,9 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
-import Pigeon from '../assets/pigeon.svg';
+import { Link, useNavigate } from "react-router-dom";
+import Pigeon from "../assets/pigeon.svg";
 import LandingNavbar from "../components/LandingNavBar";
+import { useTranslation, Trans } from "react-i18next";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const isLoggedIn = !!localStorage.getItem("token"); // check if user is logged in
 
   return (
@@ -14,10 +16,14 @@ export default function LandingPage() {
       <section className="relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white overflow-hidden">
         <div className="container mx-auto px-6 py-32 text-center relative z-10">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6 animate-fadeInUp">
-            Welcome to <span className="text-yellow-300">DoveNet</span>
+            <Trans
+              i18nKey="landingPage.heroTitle"
+              components={{ highlight: <span className="text-yellow-300" /> }}
+              values={{ appName: t("appName") }}
+            />
           </h1>
           <p className="text-lg md:text-2xl mb-10 animate-fadeInUp delay-200">
-            Your ultimate pigeon management system. Track, manage, and monitor your pigeons effortlessly.
+            {t("landingPage.heroSubtitle")}
           </p>
           <div className="flex justify-center gap-6 animate-fadeInUp delay-400">
             {!isLoggedIn ? (
@@ -26,13 +32,13 @@ export default function LandingPage() {
                   to="/login"
                   className="bg-white text-blue-600 font-semibold px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition"
                 >
-                  Login
+                  {t("topBar.login")}
                 </Link>
                 <Link
                   to="/register"
                   className="bg-transparent border border-white text-white font-semibold px-8 py-4 rounded-xl transform hover:scale-105 hover:bg-white hover:text-blue-600 transition"
                 >
-                  Sign Up
+                  {t("topBar.signup")}
                 </Link>
               </>
             ) : (
@@ -40,7 +46,7 @@ export default function LandingPage() {
                 onClick={() => navigate("/dashboard")}
                 className="px-8 py-4 bg-white text-indigo-600 font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
               >
-                Go to Dashboard
+                {t("landingPage.goToDashboard")}
               </button>
             )}
           </div>
@@ -48,26 +54,38 @@ export default function LandingPage() {
 
         {/* Hero Illustration */}
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-64 opacity-30 animate-float">
-          <img src={Pigeon} alt="Flying Pigeon" className="w-64 mx-auto opacity-30 animate-float" />
+          <img
+            src={Pigeon}
+            alt={t("landingPage.flyingPigeon")}
+            className="w-64 mx-auto opacity-30 animate-float"
+          />
         </div>
       </section>
 
       {/* Features Section */}
       <section className="py-24 bg-gray-50">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-16 animate-fadeInUp">Why Choose DoveNet?</h2>
+          <h2 className="text-4xl font-bold mb-16 animate-fadeInUp">
+            {t("landingPage.featuresTitle")}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 animate-fadeInUp delay-100">
-              <h3 className="text-2xl font-semibold mb-4">Easy Tracking</h3>
-              <p>Keep track of your pigeons' health, breeding, and performance in one place.</p>
+              <h3 className="text-2xl font-semibold mb-4">
+                {t("landingPage.feature1.title")}
+              </h3>
+              <p>{t("landingPage.feature1.description")}</p>
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 animate-fadeInUp delay-200">
-              <h3 className="text-2xl font-semibold mb-4">Smart Analytics</h3>
-              <p>Analyze your pigeons' data with built-in stats and insights to make informed decisions.</p>
+              <h3 className="text-2xl font-semibold mb-4">
+                {t("landingPage.feature2.title")}
+              </h3>
+              <p>{t("landingPage.feature2.description")}</p>
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 animate-fadeInUp delay-300">
-              <h3 className="text-2xl font-semibold mb-4">Community Support</h3>
-              <p>Connect with other pigeon enthusiasts and share knowledge effortlessly.</p>
+              <h3 className="text-2xl font-semibold mb-4">
+                {t("landingPage.feature3.title")}
+              </h3>
+              <p>{t("landingPage.feature3.description")}</p>
             </div>
           </div>
         </div>
@@ -75,31 +93,35 @@ export default function LandingPage() {
 
       {/* Call-to-Action Section */}
       <section className="py-24 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-fadeInUp">Ready to Get Started?</h2>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-fadeInUp">
+          {t("landingPage.ctaTitle")}
+        </h2>
         <p className="mb-10 text-lg md:text-xl animate-fadeInUp delay-200">
-          Join DoveNet today and elevate your pigeon management experience.
+          {t("landingPage.ctaSubtitle")}
         </p>
-        {!isLoggedIn && (
+        {!isLoggedIn ? (
           <Link
             to="/register"
             className="bg-white text-purple-600 font-semibold px-10 py-4 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition animate-fadeInUp delay-400"
           >
-            Create Account
+            {t("landingPage.createAccount")}
           </Link>
-        )}
-        {isLoggedIn && (
+        ) : (
           <button
             onClick={() => navigate("/dashboard")}
             className="px-10 py-4 bg-white text-indigo-600 font-semibold rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition animate-fadeInUp delay-400"
           >
-            Go to Dashboard
+            {t("landingPage.goToDashboard")}
           </button>
         )}
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-8 text-center">
-        <p>&copy; {new Date().getFullYear()} DoveNet. All rights reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} {t("appName")}.{" "}
+          {t("landingPage.footerText")}
+        </p>
       </footer>
 
       {/* Tailwind Animations */}
