@@ -133,5 +133,31 @@
     "logout": "Изход",
     "languageEnglish": "Английски",
     "languageBulgarian": "Български"
+  },
+  "pigeonsPage": {
+    "managePigeons": "Управление на гълъби",
+    "backToDashboard": "Назад към таблото",
+    "createPigeon": "Създай гълъб",
+    "id": "ID",
+    "ringNumber": "Номер на пръстен",
+    "name": "Име",
+    "color": "Цвят",
+    "gender": "Пол",
+    "status": "Статус",
+    "birthDate": "Дата на раждане",
+    "actions": "Действия",
+    "editPigeon": "Редактирай гълъб",
+    "deletePigeon": "Изтрий гълъб",
+    "downloadPedigree": "Свали родословие PDF",
+    "getParents": "Покажи родители",
+    "fetchFailed": "Неуспешно зареждане на гълъби",
+    "createFailed": "Неуспешно създаване на гълъб",
+    "updateFailed": "Неуспешно обновяване на гълъб",
+    "deleteFailed": "Неуспешно изтриване на гълъб",
+    "downloadFailed": "Неуспешно сваляне на PDF",
+    "fetchParentsFailed": "Неуспешно зареждане на родители",
+    "idRequired": "ID е задължително",
+    "male": "Мъжки",
+    "female": "Женски"
   }
 }

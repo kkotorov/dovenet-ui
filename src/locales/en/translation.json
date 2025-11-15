@@ -133,5 +133,31 @@
     "logout": "Logout",
     "languageEnglish": "English",
     "languageBulgarian": "Bulgarian"
+  },
+  "pigeonsPage": {
+    "managePigeons": "Manage Pigeons",
+    "backToDashboard": "Back to Dashboard",
+    "createPigeon": "Create Pigeon",
+    "id": "ID",
+    "ringNumber": "Ring Number",
+    "name": "Name",
+    "color": "Color",
+    "gender": "Gender",
+    "status": "Status",
+    "birthDate": "Birth Date",
+    "actions": "Actions",
+    "editPigeon": "Edit Pigeon",
+    "deletePigeon": "Delete Pigeon",
+    "downloadPedigree": "Download Pedigree PDF",
+    "getParents": "Show Parents",
+    "fetchFailed": "Failed to fetch pigeons",
+    "createFailed": "Failed to create pigeon",
+    "updateFailed": "Failed to update pigeon",
+    "deleteFailed": "Failed to delete pigeon",
+    "downloadFailed": "Failed to download PDF",
+    "fetchParentsFailed": "Failed to fetch parents",
+    "idRequired": "ID is required",
+    "male": "Male",
+    "female": "Female"
   }
 }
