@@ -48,6 +48,28 @@ export default function DashboardPage() {
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
+        {/* Lofts */}
+        <div
+          onClick={() => navigate("/lofts")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-yellow-600 mb-2">
+              {t("dashboardPage.lofts")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageLoftsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/lofts");
+            }}
+            className="mt-4 w-full py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition"
+          >
+            {t("dashboardPage.manageLofts")}
+          </button>
+        </div>
+
         {/* Pigeons */}
         <div
           onClick={() => navigate("/pigeons")}
@@ -67,28 +89,6 @@ export default function DashboardPage() {
             className="mt-4 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
           >
             {t("dashboardPage.managePigeons")}
-          </button>
-        </div>
-
-        {/* Subscriptions */}
-        <div
-          onClick={() => navigate("/subscriptions")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-purple-600 mb-2">
-              {t("dashboardPage.subscriptions")}
-            </h2>
-            <p className="text-gray-500">{t("dashboardPage.manageSubscriptionsText")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/subscriptions");
-            }}
-            className="mt-4 w-full py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition"
-          >
-            {t("dashboardPage.manageSubscriptions")}
           </button>
         </div>
 
@@ -114,28 +114,6 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* Lofts */}
-        <div
-          onClick={() => navigate("/lofts")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-yellow-600 mb-2">
-              {t("dashboardPage.lofts")}
-            </h2>
-            <p className="text-gray-500">{t("dashboardPage.manageLoftsText")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/lofts");
-            }}
-            className="mt-4 w-full py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition"
-          >
-            {t("dashboardPage.manageLofts")}
-          </button>
-        </div>
-
         {/* Profile / Settings */}
         <div
           onClick={() => navigate("/settings")}
@@ -157,8 +135,30 @@ export default function DashboardPage() {
             {t("dashboardPage.openSettings")}
           </button>
         </div>
+
+        {/* Subscriptions */}
+        <div
+          onClick={() => navigate("/subscriptions")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-purple-600 mb-2">
+              {t("dashboardPage.subscriptions")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageSubscriptionsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/subscriptions");
+            }}
+            className="mt-4 w-full py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition"
+          >
+            {t("dashboardPage.manageSubscriptions")}
+          </button>
+        </div>
+
       </div>
     </div>
   );
 }
-
