@@ -116,17 +116,20 @@ export default function UserSettingsPage() {
 
         <div className="w-full grid gap-4">
           {/* Change Email Card */}
-          <div
-            className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
-            onClick={() => setShowEmailEdit(!showEmailEdit)}
-          >
-            <div className="flex items-center gap-2 mb-2">
+          <div className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp">
+            <div
+              className="flex items-center gap-2 mb-2"
+              onClick={() => setShowEmailEdit(!showEmailEdit)}
+            >
               <MailIcon className="w-5 h-5 text-indigo-600" />
               <h3 className="font-semibold">{t("userSettingsPage.changeEmail")}</h3>
             </div>
 
             {showEmailEdit && (
-              <div className="flex flex-col md:flex-row gap-3 mt-2">
+              <div
+                className="flex flex-col md:flex-row gap-3 mt-2"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <input
                   type="email"
                   placeholder={t("userSettingsPage.newEmail")}
@@ -159,17 +162,20 @@ export default function UserSettingsPage() {
           </div>
 
           {/* Change Password Card */}
-          <div
-            className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
-            onClick={() => setShowPasswordEdit(!showPasswordEdit)}
-          >
-            <div className="flex items-center gap-2 mb-2">
+          <div className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp">
+            <div
+              className="flex items-center gap-2 mb-2"
+              onClick={() => setShowPasswordEdit(!showPasswordEdit)}
+            >
               <LockIcon className="w-5 h-5 text-indigo-600" />
               <h3 className="font-semibold">{t("userSettingsPage.changePassword")}</h3>
             </div>
 
             {showPasswordEdit && (
-              <div className="flex flex-col md:flex-row gap-3 mt-2">
+              <div
+                className="flex flex-col md:flex-row gap-3 mt-2"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <input
                   type="password"
                   placeholder={t("userSettingsPage.currentPassword")}
@@ -203,6 +209,7 @@ export default function UserSettingsPage() {
         </div>
       </div>
 
+      {/* Animations */}
       <style>{`
         .animate-fadeInUp {
           animation: fadeInUp 0.5s ease forwards;
