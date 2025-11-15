@@ -1,15 +1,5 @@
-import { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  MenuItem
-} from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import '../i18n'; // your i18n config
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface PigeonFormProps {
   open: boolean;
@@ -22,23 +12,23 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
   const { t } = useTranslation();
 
   const [pigeon, setPigeon] = useState({
-    ringNumber: '',
-    name: '',
-    color: '',
-    gender: '',
-    status: '',
-    birthDate: '',
-    fatherRingNumber: '',
-    motherRingNumber: ''
+    ringNumber: "",
+    name: "",
+    color: "",
+    gender: "",
+    status: "",
+    birthDate: "",
+    fatherRingNumber: "",
+    motherRingNumber: "",
   });
 
   useEffect(() => {
     if (initialData) setPigeon(initialData);
   }, [initialData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setPigeon(prev => ({ ...prev, [name]: value }));
+    setPigeon((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = () => {
@@ -46,97 +36,113 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     onClose();
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{initialData ? t('updatePigeon') : t('createPigeon')}</DialogTitle>
-      <DialogContent>
-        <TextField
-          fullWidth
-          margin="dense"
-          label={t('ringNumber')}
-          name="ringNumber"
-          value={pigeon.ringNumber}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          label={t('name')}
-          name="name"
-          value={pigeon.name}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          label={t('color')}
-          name="color"
-          value={pigeon.color}
-          onChange={handleChange}
-        />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 animate-fadeInUp">
+        <h2 className="text-2xl font-bold mb-4">
+          {initialData ? t("pigeonForm.updatePigeon") : t("pigeonForm.createPigeon")}
+        </h2>
 
-        {/* Gender Dropdown */}
-        <TextField
-          select
-          fullWidth
-          margin="dense"
-          label={t('gender')}
-          name="gender"
-          value={pigeon.gender}
-          onChange={handleChange}
-        >
-          <MenuItem value="male">{t('male')}</MenuItem>
-          <MenuItem value="female">{t('female')}</MenuItem>
-        </TextField>
+        <div className="space-y-4">
+          <input
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            placeholder={t("pigeonForm.ringNumber")}
+            name="ringNumber"
+            value={pigeon.ringNumber}
+            onChange={handleChange}
+          />
+          <input
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            placeholder={t("pigeonForm.name")}
+            name="name"
+            value={pigeon.name}
+            onChange={handleChange}
+          />
+          <input
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            placeholder={t("pigeonForm.color")}
+            name="color"
+            value={pigeon.color}
+            onChange={handleChange}
+          />
 
-        {/* Status Dropdown */}
-        <TextField
-          select
-          fullWidth
-          margin="dense"
-          label={t('status')}
-          name="status"
-          value={pigeon.status}
-          onChange={handleChange}
-        >
-          <MenuItem value="alive">{t('alive')}</MenuItem>
-          <MenuItem value="deceased">{t('deceased')}</MenuItem>
-          <MenuItem value="sold">{t('sold')}</MenuItem>
-        </TextField>
+          {/* Gender Dropdown */}
+          <select
+            name="gender"
+            value={pigeon.gender}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">{t("pigeonForm.selectGender")}</option>
+            <option value="male">{t("pigeonForm.male")}</option>
+            <option value="female">{t("pigeonForm.female")}</option>
+          </select>
 
-        <TextField
-          fullWidth
-          margin="dense"
-          type="date"
-          label={t('birthDate')}
-          name="birthDate"
-          value={pigeon.birthDate}
-          onChange={handleChange}
-          InputLabelProps={{ shrink: true }}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          label={t('fatherRingNumber')}
-          name="fatherRingNumber"
-          value={pigeon.fatherRingNumber}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          label={t('motherRingNumber')}
-          name="motherRingNumber"
-          value={pigeon.motherRingNumber}
-          onChange={handleChange}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>{t('cancel')}</Button>
-        <Button onClick={handleSubmit} variant="contained">
-          {initialData ? t('update') : t('create')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          {/* Status Dropdown */}
+          <select
+            name="status"
+            value={pigeon.status}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">{t("pigeonForm.selectStatus")}</option>
+            <option value="alive">{t("pigeonForm.alive")}</option>
+            <option value="deceased">{t("pigeonForm.deceased")}</option>
+            <option value="sold">{t("pigeonForm.sold")}</option>
+          </select>
+
+          <input
+            type="date"
+            name="birthDate"
+            value={pigeon.birthDate}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+          />
+          <input
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            placeholder={t("pigeonForm.fatherRingNumber")}
+            name="fatherRingNumber"
+            value={pigeon.fatherRingNumber}
+            onChange={handleChange}
+          />
+          <input
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            placeholder={t("pigeonForm.motherRingNumber")}
+            name="motherRingNumber"
+            value={pigeon.motherRingNumber}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+          >
+            {t("pigeonForm.cancel")}
+          </button>
+          <button
+            onClick={handleSubmit}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+          >
+            {initialData ? t("pigeonForm.update") : t("pigeonForm.create")}
+          </button>
+        </div>
+      </div>
+
+      {/* Tailwind animation */}
+      <style>
+        {`
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInUp { animation: fadeInUp 0.4s ease-out; }
+        `}
+      </style>
+    </div>
   );
 }
