@@ -27,7 +27,7 @@ export default function LandingPage() {
               to="/register"
               className="bg-transparent border border-white text-white font-semibold px-8 py-4 rounded-xl transform hover:scale-105 hover:bg-white hover:text-blue-600 transition"
             >
-              Register
+              Sign Up
             </Link>
           </div>
         </div>

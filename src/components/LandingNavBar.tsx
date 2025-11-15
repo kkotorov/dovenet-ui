@@ -44,7 +44,7 @@ export default function LandingNavbar() {
 
       {/* Right side: Login/Signup + Language */}
       <div className="flex items-center gap-6">
-        <Link to="/login" className="text-gray-700 hover:text-indigo-600 font-medium">
+        <Link to="/login" className="px-4 py-2 bg-white text-indigo-600 font-semibold rounded-lg shadow hover:bg-indigo-50 transition">
           Login
         </Link>
 
@@ -54,7 +54,6 @@ export default function LandingNavbar() {
         >
           Sign Up
         </Link>
-
         {/* Language Icon */}
         <div className="relative" ref={dropdownRef}>
           <button
