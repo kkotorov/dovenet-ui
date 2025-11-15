@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import i18n from "../i18n";
 import { useState, useRef, useEffect } from "react";
 
@@ -29,14 +29,14 @@ export default function TopBar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear auth token
-    navigate("/login"); // Redirect to login
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   const hideTopBar = location.pathname === "/";
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       {!hideTopBar && (
         <div className="
           w-full px-6 py-4 bg-white/70 backdrop-blur-lg shadow-sm
@@ -90,10 +90,6 @@ export default function TopBar() {
           </div>
         </div>
       )}
-
-      <div className="flex-grow">
-        <Outlet />
-      </div>
-    </div>
+    </>
   );
 }

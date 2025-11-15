@@ -1,267 +1,244 @@
-import { useState, useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  MenuItem,
-  Collapse,
-  Paper,
-} from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import i18n from 'i18next';
-import api from '../api/api'; 
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { UserIcon, MailIcon, LockIcon, ChevronLeft } from "lucide-react";
+import api from "../api/api";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function UserSettingsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState<{
-    username: string;
-    email: string;
-    emailVerified?: boolean;
-  }>({
-    username: '',
-    email: '',
-    emailVerified: true,
+  const [user, setUser] = useState<{ username: string; email: string; emailVerified: boolean }>({
+    username: "",
+    email: "",
+    emailVerified: false,
   });
 
-  const [language, setLanguage] = useState(localStorage.getItem('lang') || 'en');
+  const [tab, setTab] = useState<"profile" | "security" | "preferences">("profile");
 
-  // Email change state
-  const [showEmailChange, setShowEmailChange] = useState(false);
-  const [newEmail, setNewEmail] = useState('');
-  const [confirmEmail, setConfirmEmail] = useState('');
-  const [currentPasswordForEmail, setCurrentPasswordForEmail] = useState('');
-
-  // Password change state
-  const [showPasswordChange, setShowPasswordChange] = useState(false);
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // Email/password change state
+  const [newEmail, setNewEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [currentPasswordForEmail, setCurrentPasswordForEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
-    const checkUser = async () => {
+    const fetchUser = async () => {
       try {
-        const res = await api.get('/users/me');
+        const res = await api.get("/users/me");
         setUser(res.data);
       } catch {
-        navigate('/login');
+        navigate("/login");
       }
     };
-    checkUser();
+    fetchUser();
   }, [navigate]);
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lang = e.target.value;
-    setLanguage(lang);
-    localStorage.setItem('lang', lang);
-    i18n.changeLanguage(lang);
+  const handleSendVerificationEmail = async () => {
+    try {
+      const res = await api.get("/users/trigger-verify");
+      toast.success(res.data?.message || t("verificationEmailSent"));
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || t("settingsFailed"));
+    }
   };
 
   const handleEmailUpdate = async () => {
-    if (newEmail !== confirmEmail) {
-      alert(t('emailsDoNotMatch'));
-      return;
-    }
-
-    if (!currentPasswordForEmail) {
-      alert(t('enterCurrentPassword'));
-      return;
-    }
+    if (newEmail !== confirmEmail) return toast.error(t("emailsDoNotMatch"));
+    if (!currentPasswordForEmail) return toast.error(t("enterCurrentPassword"));
 
     try {
-      await api.patch('/users/me/change-email', {
-        newEmail,
-        password: currentPasswordForEmail,
-      });
-
-      alert(t('emailUpdated'));
+      await api.patch("/users/me/change-email", { newEmail, password: currentPasswordForEmail });
+      toast.success(t("emailUpdated"));
       setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false }));
-      setShowEmailChange(false);
-      setNewEmail('');
-      setConfirmEmail('');
-      setCurrentPasswordForEmail('');
+      setNewEmail("");
+      setConfirmEmail("");
+      setCurrentPasswordForEmail("");
     } catch (err: any) {
-      console.error(err);
-      alert(err.response?.data?.message || t('settingsFailed'));
+      toast.error(err.response?.data?.message || t("settingsFailed"));
     }
   };
 
   const handlePasswordUpdate = async () => {
-    if (newPassword !== confirmPassword) {
-      alert(t('passwordsDoNotMatch'));
-      return;
-    }
-
-    if (!oldPassword) {
-      alert(t('enterCurrentPassword'));
-      return;
-    }
+    if (newPassword !== confirmPassword) return toast.error(t("passwordsDoNotMatch"));
+    if (!oldPassword) return toast.error(t("enterCurrentPassword"));
 
     try {
-      await api.patch('/users/me/change-password', {
-        oldPassword,
-        newPassword,
-      });
-
-      alert(t('passwordUpdated'));
-      setShowPasswordChange(false);
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+      await api.patch("/users/me/change-password", { oldPassword, newPassword });
+      toast.success(t("passwordUpdated"));
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (err: any) {
-      console.error(err);
-      alert(err.response?.data?.message || t('settingsFailed'));
-    }
-  };
-
-  const handleSendVerificationEmail = async () => {
-    try {
-      const res = await api.get('/users/trigger-verify');
-      alert(res.data?.message || t('verificationEmailSent'));
-    } catch (err: any) {
-      console.error(err);
-      alert(err.response?.data?.message || t('settingsFailed'));
+      toast.error(err.response?.data?.message || t("settingsFailed"));
     }
   };
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        {t('userSettings')}
-      </Typography>
+    <div className="min-h-screen bg-gray-50 p-6 flex flex-col items-center">
+      <Toaster position="top-right" />
 
-      <Paper sx={{ p: 3, mt: 3, maxWidth: 500 }}>
-        {/* Username */}
-        <TextField
-          fullWidth
-          label={t('username')}
-          value={user.username}
-          disabled
-          sx={{ mb: 3 }}
-        />
+      {/* Back button */}
+      <button
+        onClick={() => navigate("/dashboard")}
+        className="flex items-center gap-2 mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+      >
+        <ChevronLeft className="w-4 h-4" /> {t("backToDashboard")}
+      </button>
 
-        {/* Email section */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1">
-            {t('email')}: {user.email}{' '}
-            {!user.emailVerified && (
-              <Typography component="span" color="error">
-                ({t('notVerified')})
-              </Typography>
-            )}
-          </Typography>
+      {/* Profile Card */}
+      <div className="bg-white rounded-2xl shadow-md w-full max-w-3xl p-6 flex items-center justify-between mb-6 animate-fadeInUp">
+        <div className="flex items-center gap-4">
+          <UserIcon className="w-8 h-8 text-indigo-600" />
+          <div>
+            <p className="font-semibold text-lg">{user.username}</p>
+            <p className="text-gray-500 text-sm">{user.email}</p>
+          </div>
+        </div>
 
-          {!user.emailVerified && (
-            <Button
-              sx={{ mt: 1, ml: 1 }}
-              variant="contained"
-              color="secondary"
-              onClick={handleSendVerificationEmail}
-            >
-              {t('verifyEmail')}
-            </Button>
-          )}
-
-          <Button
-            sx={{ mt: 1, ml: 1 }}
-            variant="outlined"
-            onClick={() => setShowEmailChange(!showEmailChange)}
-          >
-            {showEmailChange ? t('cancel') : t('changeEmail')}
-          </Button>
-
-          <Collapse in={showEmailChange} sx={{ mt: 2 }}>
-            <TextField
-              fullWidth
-              label={t('newEmail')}
-              value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              label={t('confirmEmail')}
-              value={confirmEmail}
-              onChange={(e) => setConfirmEmail(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              label={t('currentPassword')}
-              type="password"
-              value={currentPasswordForEmail}
-              onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <Button variant="contained" onClick={handleEmailUpdate}>
-              {t('saveEmail')}
-            </Button>
-          </Collapse>
-        </Box>
-
-        {/* Password section */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1">{t('changePassword')}</Typography>
-          <Button
-            sx={{ mt: 1 }}
-            variant="outlined"
-            onClick={() => setShowPasswordChange(!showPasswordChange)}
-          >
-            {showPasswordChange ? t('cancel') : t('changePassword')}
-          </Button>
-
-          <Collapse in={showPasswordChange} sx={{ mt: 2 }}>
-            <TextField
-              fullWidth
-              label={t('currentPassword')}
-              type="password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              label={t('newPassword')}
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              label={t('confirmPassword')}
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <Button variant="contained" onClick={handlePasswordUpdate}>
-              {t('savePassword')}
-            </Button>
-          </Collapse>
-        </Box>
-
-        {/* Language selector */}
-        <TextField
-          select
-          fullWidth
-          label={t('language')}
-          value={language}
-          onChange={handleLanguageChange}
-          sx={{ mb: 3 }}
+        {/* Verified badge */}
+        <button
+          onClick={!user.emailVerified ? handleSendVerificationEmail : undefined}
+          className={`px-3 py-1 rounded-full text-xs font-semibold transition 
+            ${user.emailVerified ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"}`}
         >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="bg">Български</MenuItem>
-        </TextField>
+          {user.emailVerified ? t("verified") : t("notVerified")}
+        </button>
+      </div>
 
-        <Button variant="outlined" onClick={() => navigate('/dashboard')}>
-          {t('back')}
-        </Button>
-      </Paper>
-    </Container>
+      {/* Tabs */}
+      <div className="w-full max-w-3xl mb-6 flex border-b border-gray-200">
+        {["profile", "security", "preferences"].map((tb) => (
+          <button
+            key={tb}
+            onClick={() => setTab(tb as typeof tab)}
+            className={`px-4 py-2 -mb-px font-medium transition ${
+              tab === tb ? "border-b-2 border-indigo-600 text-indigo-600" : "text-gray-500 hover:text-indigo-600"
+            }`}
+          >
+            {t(tb)}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      <div className="w-full max-w-3xl space-y-6">
+        {tab === "profile" && (
+          <div className="grid gap-4">
+            {/* Change Email */}
+            <div className="bg-white p-6 rounded-2xl shadow-md animate-fadeInUp">
+              <div className="flex items-center gap-2 mb-2">
+                <MailIcon className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-semibold">{t("changeEmail")}</h3>
+              </div>
+              <div className="flex flex-col md:flex-row gap-3">
+                <input
+                  type="email"
+                  placeholder={t("newEmail")}
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="email"
+                  placeholder={t("confirmEmail")}
+                  value={confirmEmail}
+                  onChange={(e) => setConfirmEmail(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="password"
+                  placeholder={t("currentPassword")}
+                  value={currentPasswordForEmail}
+                  onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <button
+                  onClick={handleEmailUpdate}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                >
+                  {t("saveEmail")}
+                </button>
+              </div>
+            </div>
+
+            {/* Change Password */}
+            <div className="bg-white p-6 rounded-2xl shadow-md animate-fadeInUp">
+              <div className="flex items-center gap-2 mb-2">
+                <LockIcon className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-semibold">{t("changePassword")}</h3>
+              </div>
+              <div className="flex flex-col md:flex-row gap-3">
+                <input
+                  type="password"
+                  placeholder={t("currentPassword")}
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="password"
+                  placeholder={t("newPassword")}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="password"
+                  placeholder={t("confirmPassword")}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <button
+                  onClick={handlePasswordUpdate}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                >
+                  {t("savePassword")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === "security" && (
+          <div className="bg-white p-6 rounded-2xl shadow-md animate-fadeInUp">
+            <p className="text-gray-600">{t("securitySettingsComingSoon")}</p>
+          </div>
+        )}
+
+        {tab === "preferences" && (
+          <div className="bg-white p-6 rounded-2xl shadow-md animate-fadeInUp">
+            <label className="block mb-2 font-semibold">{t("language")}</label>
+            <select
+              value={localStorage.getItem("lang") || "en"}
+              onChange={(e) => {
+                localStorage.setItem("lang", e.target.value);
+                window.location.reload();
+              }}
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+            >
+              <option value="en">English</option>
+              <option value="bg">Български</option>
+            </select>
+          </div>
+        )
+      }
+      </div>
+
+      {/* Smooth fade-in animation */}
+      <style>{`
+        .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease forwards;
+        }
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
   );
 }

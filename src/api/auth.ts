@@ -1,12 +1,12 @@
 import api from './api';
 
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  verified: boolean;
-  token: string;
-}
+  export interface User {
+    id: string;
+    username: string;
+    email: string;
+    verified: boolean;
+    token: string;
+  }
 
 // Register user
 export const registerUser = (username: string, email: string, password: string) => {
