@@ -1,19 +1,8 @@
-import type { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { getCurrentUser } from '../api/auth';
 
-interface ProtectedRouteProps {
-  children: ReactNode;
-}
-
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute() {
   const user = getCurrentUser();
-
-  if (!user) {
-    // Not logged in → go to login
-    return <Navigate to="/login" replace />;
-  }
-
-  // Logged in → allow access
-  return <>{children}</>;
+  if (!user) return <Navigate to="/login" replace />;
+  return <Outlet />; // render nested routes
 }

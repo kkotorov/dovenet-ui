@@ -15,27 +15,30 @@ import LandingPage from '../pages/LandingPage';
 export default function AppRouter() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Public pages wrapped in PublicLayout */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-        </Route>
+    <Routes>
+      {/* Public pages */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+      </Route>
 
-        {/* Protected routes with DashboardLayout */}
-        <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+      {/* Protected routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pigeons" element={<PigeonsPage />} />
           <Route path="/settings" element={<UserSettingsPage />} />
         </Route>
+      </Route>
 
-        {/* Catch-all → redirect to login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+
     </BrowserRouter>
   );
 }
