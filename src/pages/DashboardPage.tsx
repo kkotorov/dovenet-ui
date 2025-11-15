@@ -47,117 +47,91 @@ export default function DashboardPage() {
 
       {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
         {/* Pigeons */}
-        <div
+        <Card
+          title={t("pigeons")}
+          text={t("manageYourPigeons")}
+          color="indigo"
           onClick={() => navigate("/pigeons")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-indigo-600 mb-2">
-              {t("pigeons")}
-            </h2>
-            <p className="text-gray-500">{t("manageYourPigeons")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/pigeons");
-            }}
-            className="mt-4 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
-          >
-            {t("managePigeons")}
-          </button>
-        </div>
+          buttonText={t("managePigeons")}
+        />
 
         {/* Subscriptions */}
-        <div
+        <Card
+          title={t("subscriptions")}
+          text={t("manageSubscriptionsText")}
+          color="purple"
           onClick={() => navigate("/subscriptions")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-purple-600 mb-2">
-              {t("subscriptions")}
-            </h2>
-            <p className="text-gray-500">{t("manageSubscriptionsText")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/subscriptions");
-            }}
-            className="mt-4 w-full py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition"
-          >
-            {t("manageSubscriptions")}
-          </button>
-        </div>
+          buttonText={t("manageSubscriptions")}
+        />
 
         {/* Competitions */}
-        <div
+        <Card
+          title={t("competitions")}
+          text={t("manageCompetitionsText")}
+          color="green"
           onClick={() => navigate("/competitions")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-green-600 mb-2">
-              {t("competitions")}
-            </h2>
-            <p className="text-gray-500">{t("manageCompetitionsText")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/competitions");
-            }}
-            className="mt-4 w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
-          >
-            {t("manageCompetitions")}
-          </button>
-        </div>
+          buttonText={t("manageCompetitions")}
+        />
 
         {/* Lofts */}
-        <div
+        <Card
+          title={t("lofts")}
+          text={t("manageLoftsText")}
+          color="yellow"
           onClick={() => navigate("/lofts")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-yellow-600 mb-2">
-              {t("lofts")}
-            </h2>
-            <p className="text-gray-500">{t("manageLoftsText")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/lofts");
-            }}
-            className="mt-4 w-full py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition"
-          >
-            {t("manageLofts")}
-          </button>
-        </div>
+          buttonText={t("manageLofts")}
+        />
 
-        {/* Profile / Settings */}
-        <div
+        {/* Profile */}
+        <Card
+          title={t("profile")}
+          text={t("manageProfileText")}
+          color="pink"
           onClick={() => navigate("/settings")}
-          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
-        >
-          <div>
-            <h2 className="text-lg font-semibold text-pink-600 mb-2">
-              {t("profile")}
-            </h2>
-            <p className="text-gray-500">{t("manageProfileText")}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate("/settings");
-            }}
-            className="mt-4 w-full py-2 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 transition"
-          >
-            {t("openSettings")}
-          </button>
-        </div>
+          buttonText={t("openSettings")}
+        />
       </div>
+    </div>
+  );
+}
+
+// Reusable Card Component
+interface CardProps {
+  title: string;
+  text: string;
+  color: string; // Tailwind color prefix
+  onClick: () => void;
+  buttonText: string;
+}
+
+function Card({ title, text, color, onClick, buttonText }: CardProps) {
+  const colorMap: Record<string, string> = {
+    indigo: "bg-indigo-600 hover:bg-indigo-700",
+    purple: "bg-purple-600 hover:bg-purple-700",
+    green: "bg-green-600 hover:bg-green-700",
+    yellow: "bg-yellow-600 hover:bg-yellow-700",
+    pink: "bg-pink-600 hover:bg-pink-700",
+  };
+
+  return (
+    <div
+      onClick={onClick}
+      className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+    >
+      <div>
+        <h2 className={`text-lg font-semibold mb-2 text-${color}-600`}>{title}</h2>
+        <p className="text-gray-500">{text}</p>
+      </div>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
+        }}
+        className={`mt-4 w-full py-2 text-white font-semibold rounded-lg ${colorMap[color]} transition`}
+      >
+        {buttonText}
+      </button>
     </div>
   );
 }
