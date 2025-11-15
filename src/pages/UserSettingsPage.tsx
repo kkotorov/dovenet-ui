@@ -15,8 +15,6 @@ export default function UserSettingsPage() {
     emailVerified: false,
   });
 
-  const [tab, setTab] = useState<"profile" | "preferences">("profile");
-
   const [showEmailEdit, setShowEmailEdit] = useState(false);
   const [showPasswordEdit, setShowPasswordEdit] = useState(false);
 
@@ -91,13 +89,13 @@ export default function UserSettingsPage() {
         {/* Back button aligned with card right edge */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="absolute -top-14 right-0 flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 hover:-translate-y-0.5 transition transform"
+          className="absolute -top-16 right-0 flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 hover:-translate-y-0.5 transition transform"
         >
           <ChevronLeft className="w-4 h-4" /> {t("backToDashboard")}
         </button>
 
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-md w-full p-6 flex items-center justify-between mb-4 animate-fadeInUp">
+        <div className="bg-white rounded-2xl shadow-md w-full p-6 flex items-center justify-between mb-6 animate-fadeInUp">
           <div className="flex items-center gap-4">
             <UserIcon className="w-8 h-8 text-indigo-600" />
             <div>
@@ -116,133 +114,96 @@ export default function UserSettingsPage() {
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="w-full mb-6 flex border-b border-gray-200">
-          {["profile", "preferences"].map((tb) => (
-            <button
-              key={tb}
-              onClick={() => setTab(tb as typeof tab)}
-              className={`px-4 py-2 -mb-px font-medium transition ${
-                tab === tb ? "border-b-2 border-indigo-600 text-indigo-600" : "text-gray-500 hover:text-indigo-600"
-              }`}
-            >
-              {t(tb)}
-            </button>
-          ))}
-        </div>
+        {/* Profile heading */}
+        <h2 className="w-full max-w-3xl text-lg font-semibold mb-4">{t("profile")}</h2>
 
-        {/* Tab content */}
-        <div className="w-full space-y-6 mt-4">
-          {tab === "profile" && (
-            <div className="grid gap-4">
-              {/* Change Email Card */}
-              <div
-                className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
-                onClick={() => setShowEmailEdit(!showEmailEdit)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <MailIcon className="w-5 h-5 text-indigo-600" />
-                    <h3 className="font-semibold">{t("changeEmail")}</h3>
-                  </div>
-                </div>
-
-                {showEmailEdit && (
-                  <div className="flex flex-col md:flex-row gap-3 mt-2">
-                    <input
-                      type="email"
-                      placeholder={t("newEmail")}
-                      value={newEmail}
-                      onChange={(e) => setNewEmail(e.target.value)}
-                      className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <input
-                      type="email"
-                      placeholder={t("confirmEmail")}
-                      value={confirmEmail}
-                      onChange={(e) => setConfirmEmail(e.target.value)}
-                      className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <input
-                      type="password"
-                      placeholder={t("currentPassword")}
-                      value={currentPasswordForEmail}
-                      onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
-                      className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <button
-                      onClick={handleEmailUpdate}
-                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                    >
-                      {t("saveEmail")}
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Change Password Card */}
-              <div
-                className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
-                onClick={() => setShowPasswordEdit(!showPasswordEdit)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <LockIcon className="w-5 h-5 text-indigo-600" />
-                    <h3 className="font-semibold">{t("changePassword")}</h3>
-                  </div>
-                </div>
-
-                {showPasswordEdit && (
-                  <div className="flex flex-col md:flex-row gap-3 mt-2">
-                    <input
-                      type="password"
-                      placeholder={t("currentPassword")}
-                      value={oldPassword}
-                      onChange={(e) => setOldPassword(e.target.value)}
-                      className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <input
-                      type="password"
-                      placeholder={t("newPassword")}
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <input
-                      type="password"
-                      placeholder={t("confirmPassword")}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                    <button
-                      onClick={handlePasswordUpdate}
-                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                    >
-                      {t("savePassword")}
-                    </button>
-                  </div>
-                )}
-              </div>
+        {/* Change Email & Password Cards */}
+        <div className="w-full max-w-3xl grid gap-4">
+          {/* Change Email Card */}
+          <div
+            className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
+            onClick={() => setShowEmailEdit(!showEmailEdit)}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <MailIcon className="w-5 h-5 text-indigo-600" />
+              <h3 className="font-semibold">{t("changeEmail")}</h3>
             </div>
-          )}
 
-          {tab === "preferences" && (
-            <div className="bg-white p-6 rounded-2xl shadow-md animate-fadeInUp">
-              <label className="block mb-2 font-semibold">{t("language")}</label>
-              <select
-                value={localStorage.getItem("lang") || "en"}
-                onChange={(e) => {
-                  localStorage.setItem("lang", e.target.value);
-                  window.location.reload();
-                }}
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-              >
-                <option value="en">English</option>
-                <option value="bg">Български</option>
-              </select>
+            {showEmailEdit && (
+              <div className="flex flex-col md:flex-row gap-3 mt-2">
+                <input
+                  type="email"
+                  placeholder={t("newEmail")}
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="email"
+                  placeholder={t("confirmEmail")}
+                  value={confirmEmail}
+                  onChange={(e) => setConfirmEmail(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="password"
+                  placeholder={t("currentPassword")}
+                  value={currentPasswordForEmail}
+                  onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <button
+                  onClick={handleEmailUpdate}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                >
+                  {t("saveEmail")}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Change Password Card */}
+          <div
+            className="bg-white p-6 rounded-2xl shadow-md cursor-pointer hover:shadow-lg transition animate-fadeInUp"
+            onClick={() => setShowPasswordEdit(!showPasswordEdit)}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <LockIcon className="w-5 h-5 text-indigo-600" />
+              <h3 className="font-semibold">{t("changePassword")}</h3>
             </div>
-          )}
+
+            {showPasswordEdit && (
+              <div className="flex flex-col md:flex-row gap-3 mt-2">
+                <input
+                  type="password"
+                  placeholder={t("currentPassword")}
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="password"
+                  placeholder={t("newPassword")}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <input
+                  type="password"
+                  placeholder={t("confirmPassword")}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+                <button
+                  onClick={handlePasswordUpdate}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                >
+                  {t("savePassword")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -258,4 +219,3 @@ export default function UserSettingsPage() {
     </div>
   );
 }
-
