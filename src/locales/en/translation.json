@@ -77,7 +77,8 @@
     "resetButton": "Reset Password",
     "resetting": "Resetting...",
     "successMessage": "Password has been reset successfully!",
-    "errorMessage": "Password reset failed"
+    "errorMessage": "Password reset failed",
+    "backToLogin": "Back to Login"
   },
   "verifyEmailPage": {
     "title": "Email Verification",
