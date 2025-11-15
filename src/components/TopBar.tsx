@@ -12,9 +12,15 @@ export default function TopBar() {
   const [langOpen, setLangOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const portalRef = useRef<HTMLDivElement | null>(null);
-  const [menuPos, setMenuPos] = useState<{ left: number; top: number } | null>(null);
+  const [menuPos, setMenuPos] = useState<{ left: number; top: number } | null>(
+    null
+  );
 
-  // hide topbar on landing (same behavior you had)
+  // Decide what to show based on login status
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
+
+  // hide topbar on landing
   const hideTopBar = location.pathname === "/";
 
   // compute & set portal position when opening
@@ -26,23 +32,21 @@ export default function TopBar() {
 
     const rect = btn.getBoundingClientRect();
     const scrollY = window.scrollY || window.pageYOffset;
-    // place the menu under the button, left aligned to button's right edge minus width later if needed
-    const left = rect.right - 112; // 112 = approximate menu width (w-28 -> 7rem -> 112px)
-    const top = rect.bottom + scrollY + 8; // 8px gap
 
-    setMenuPos({ left: Math.max(left, 8), top }); // keep some left padding
+    const left = rect.right - 112; // menu width 112px
+    const top = rect.bottom + scrollY + 8;
+
+    setMenuPos({ left: Math.max(left, 8), top });
   }, [langOpen]);
 
-  // handle outside clicks (works with portal)
+  // handle outside clicks
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       const target = e.target as Node;
       const btn = btnRef.current;
       const portalEl = portalRef.current;
-      // if click is inside button OR inside portal -> ignore
       if (btn && btn.contains(target)) return;
       if (portalEl && portalEl.contains(target)) return;
-      // otherwise close
       setLangOpen(false);
     };
 
@@ -82,15 +86,32 @@ export default function TopBar() {
 
         {/* Right side buttons */}
         <div className="flex items-center gap-6">
-          {/* Logout */}
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
-          >
-            {t("logout")}
-          </button>
+          {/* Auth section */}
+          {!isLoggedIn ? (
+            <>
+              <button
+                onClick={() => navigate("/login")}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
+              >
+                {t("login")}
+              </button>
+              <button
+                onClick={() => navigate("/signup")}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg shadow hover:bg-gray-300 transition font-semibold"
+              >
+                {t("signup")}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
+            >
+              {t("logout")}
+            </button>
+          )}
 
-          {/* Language selector (button) */}
+          {/* Language selector */}
           <div className="relative">
             <button
               ref={btnRef}
@@ -105,11 +126,10 @@ export default function TopBar() {
         </div>
       </div>
 
-      {/* Portal-rendered dropdown so it floats above everything and isn't clipped */}
+      {/* Portal dropdown */}
       {langOpen && menuPos &&
         createPortal(
           <div
-            // attach to ref so outside-click handler above can detect portal clicks
             ref={(el) => {
               portalRef.current = el;
             }}
@@ -118,7 +138,7 @@ export default function TopBar() {
               position: "absolute",
               left: `${menuPos.left}px`,
               top: `${menuPos.top}px`,
-              zIndex: 2147483647, // extremely high to be safe
+              zIndex: 2147483647,
               boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
             }}
           >

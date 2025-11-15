@@ -8,38 +8,34 @@ import UserSettingsPage from '../pages/UserSettingsPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import VerifyEmailPage from '../pages/VerifyEmailPage';
-
 import ProtectedRoute from '../components/ProtectedRoute';
-import DashboardLayout from '../components/DashboardLayout';
-import PublicLayout from '../components/PublicLayout';
 import LandingPage from '../pages/LandingPage';
+import TopBar from '../components/TopBar';
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
+      {/* TopBar is global */}
+      <TopBar />
+
       <Routes>
-
         {/* PUBLIC pages */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-        </Route>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-        {/* PROTECTED section */}
+        {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/pigeons" element={<PigeonsPage />} />
-            <Route path="/settings" element={<UserSettingsPage />} />
-          </Route>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/pigeons" element={<PigeonsPage />} />
+          <Route path="/settings" element={<UserSettingsPage />} />
         </Route>
 
         {/* FALLBACK */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
