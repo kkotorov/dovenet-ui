@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import PigeonForm from "./PigeonForm";
 import ParentModal from "./ParentModal";
 import api from "../api/api";
+import { Edit2, Trash2, FileText, Users } from "lucide-react";
 
 export interface Pigeon {
   id?: number;
@@ -206,28 +207,54 @@ export default function PigeonsPage() {
                 {p.status ? t(`pigeonsPage.${p.status}`) : ""}
               </td>
               <td className="px-4 py-3">{p.birthDate || ""}</td>
-              <td className="px-4 py-3 flex justify-center gap-1 flex-wrap">
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
-                  className="px-2 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition"
-                  title={t("pigeonsPage.editPigeon")}
-                >✏️</button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); deletePigeon(p.id!); }}
-                  className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                  title={t("pigeonsPage.deletePigeon")}
-                >🗑️</button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); downloadPedigreePdf(p.id!); }}
-                  className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                  title={t("pigeonsPage.downloadPedigree")}
-                >📄</button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); fetchParents(p.id!, p); }}
-                  className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                  title={t("pigeonsPage.getParents")}
-                >👨‍👩‍👧</button>
-              </td>
+
+<td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
+  {/* Edit */}
+  <button
+    onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
+    className="relative group p-2 text-yellow-700 rounded-md transition"
+  >
+    <Edit2 className="w-4 h-4" />
+    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      {t("pigeonsPage.edit")}
+    </span>
+  </button>
+
+  {/* Delete */}
+  <button
+    onClick={(e) => { e.stopPropagation(); deletePigeon(p.id!); }}
+    className="relative group p-2 text-red-700 rounded-md transition"
+  >
+    <Trash2 className="w-4 h-4" />
+    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      {t("pigeonsPage.delete")}
+    </span>
+  </button>
+
+  {/* Download */}
+  <button
+    onClick={(e) => { e.stopPropagation(); downloadPedigreePdf(p.id!); }}
+    className="relative group p-2 text-blue-700 rounded-md transition"
+  >
+    <FileText className="w-4 h-4" />
+    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      {t("pigeonsPage.download")}
+    </span>
+  </button>
+
+  {/* Parents */}
+  <button
+    onClick={(e) => { e.stopPropagation(); fetchParents(p.id!, p); }}
+    className="relative group p-2 text-green-700 rounded-md transition"
+  >
+    <Users className="w-4 h-4" />
+    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      {t("pigeonsPage.parents")}
+    </span>
+  </button>
+</td>
+
+
             </tr>
           ))}
         </tbody>
