@@ -185,8 +185,13 @@
     "deleteFailed": "Неуспешно изтриване на гълъб",
     "downloadFailed": "Неуспешно сваляне на родословие",
     "fetchParentsFailed": "Неуспешно извличане на родители",
-    "backToDashboard": "Обратно към таблото"
-  },
+    "backToDashboard": "Обратно към таблото",
+    "noParentInfo": "Няма информация за родители",
+    "active": "Активен",
+    "retired": "Пенсиониран",
+    "lost": "Изгубен",
+    "gifted": "Дарен"
+  }, 
   "pigeonForm": {
     "createPigeon": "Създай гълъб",
     "updatePigeon": "Редактирай гълъб",
@@ -207,7 +212,13 @@
     "motherRingNumber": "Номер на майка",
     "cancel": "Откажи",
     "create": "Създай",
-    "update": "Обнови"
+    "update": "Обнови",
+    "active": "Активен",
+    "retired": "Пенсиониран",
+    "lost": "Изгубен",
+    "gifted": "Дарен",
+    "father": "Баща",
+    "mother": "Майка"
   },
   "parentModal": {
     "title": "Информация за родителите",

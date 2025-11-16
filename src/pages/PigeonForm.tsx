@@ -91,10 +91,15 @@ const [pigeon, setPigeon] = useState<Pigeon>({
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
           >
             <option value="">{t("pigeonForm.selectStatus")}</option>
-            <option value="alive">{t("pigeonForm.alive")}</option>
+            <option value="active">{t("pigeonForm.active")}</option>
+            <option value="retired">{t("pigeonForm.retired")}</option>
+            <option value="lost">{t("pigeonForm.lost")}</option>
             <option value="deceased">{t("pigeonForm.deceased")}</option>
             <option value="sold">{t("pigeonForm.sold")}</option>
+            <option value="gifted">{t("pigeonForm.gifted")}</option>
+            <option value="injured">{t("pigeonForm.injured")}</option>
           </select>
+
 
           <input
             type="date"

@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { Pigeon } from "../types/index";
 
-
 interface ParentModalProps {
   open: boolean;
   onClose: () => void;
@@ -10,9 +9,16 @@ interface ParentModalProps {
   pigeon?: Partial<Pigeon> | null;
 }
 
-
 export default function ParentModal({ open, onClose, parents, loading, pigeon }: ParentModalProps) {
   const { t } = useTranslation();
+
+  const genderSymbol = (gender?: string) => {
+    if (!gender) return { symbol: "", color: "inherit" };
+    const lower = gender.toLowerCase();
+    if (lower === "male") return { symbol: "♂", color: "text-blue-600" };
+    if (lower === "female") return { symbol: "♀", color: "text-pink-600" };
+    return { symbol: "", color: "inherit" };
+  };
 
   if (!open) return null;
 
@@ -27,38 +33,40 @@ export default function ParentModal({ open, onClose, parents, loading, pigeon }:
           <>
             {parents.length > 0 ? (
               <div className="space-y-4">
-                {parents.map((parent) => (
-                  <div key={parent.id} className="border rounded-lg p-3 bg-gray-50">
-                    <div>
-                      <strong>
-                        {parent.gender?.toLowerCase() === "male"
-                          ? t("parentModal.father")
-                          : t("parentModal.mother")}
-                        :
-                      </strong>
+                {parents.map((parent) => {
+                  const gender = genderSymbol(parent.gender);
+                  return (
+                    <div key={parent.id} className="border rounded-lg p-3 bg-gray-50">
+                      <div>
+                        <strong>
+                          {parent.gender?.toLowerCase() === "male"
+                            ? t("parentModal.father")
+                            : t("parentModal.mother")}
+                          :
+                        </strong>
+                      </div>
+                      <div>{t("parentModal.name")}: {parent.name}</div>
+                      <div>{t("parentModal.ringNumber")}: {parent.ringNumber}</div>
+                      <div>{t("parentModal.color")}: {parent.color}</div>
+                      <div className={`font-bold ${gender.color}`}>{gender.symbol}</div>
                     </div>
-                    <div>{t("parentModal.name")}: {parent.name}</div>
-                    <div>{t("parentModal.ringNumber")}: {parent.ringNumber}</div>
-                    <div>{t("parentModal.color")}: {parent.color}</div>
-                    <div>{t("parentModal.gender")}: {parent.gender}</div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="space-y-2">
-                <div>{pigeon?.fatherRingNumber && (
-                <div>
+                {pigeon?.fatherRingNumber && (
+                  <div>
                     <strong>{t("parentModal.father")}:</strong> {pigeon.fatherRingNumber}
                     <span className="text-red-500 ml-1">({t("parentModal.notInDb")})</span>
-                </div>
-                )}</div>
-
-                <div>{pigeon?.motherRingNumber && (
-                <div>
+                  </div>
+                )}
+                {pigeon?.motherRingNumber && (
+                  <div>
                     <strong>{t("parentModal.mother")}:</strong> {pigeon.motherRingNumber}
                     <span className="text-red-500 ml-1">({t("parentModal.notInDb")})</span>
-                </div>
-                )}</div>
+                  </div>
+                )}
                 {!pigeon?.fatherRingNumber && !pigeon?.motherRingNumber && (
                   <div className="text-gray-600">{t("parentModal.noInfo")}</div>
                 )}

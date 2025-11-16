@@ -185,7 +185,12 @@
     "deleteFailed": "Failed to delete pigeon",
     "downloadFailed": "Failed to download pedigree",
     "fetchParentsFailed": "Failed to fetch parents",
-    "backToDashboard": "Back to Dashboard"
+    "backToDashboard": "Back to Dashboard",
+    "noParentInfo": "No parent information",
+    "active": "Active",
+    "retired": "Retired",
+    "lost": "Lost",
+    "gifted": "Gifted"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
@@ -207,7 +212,13 @@
     "motherRingNumber": "Mother Ring Number",
     "cancel": "Cancel",
     "create": "Create",
-    "update": "Update"
+    "update": "Update",
+    "active": "Active",
+    "retired": "Retired",
+    "lost": "Lost",
+    "gifted": "Gifted",
+    "father": "Father",
+    "mother": "Mother"
   },
   "parentModal": {
     "title": "Parents Information",
