@@ -11,6 +11,7 @@ import VerifyEmailPage from '../pages/VerifyEmailPage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import LandingPage from '../pages/LandingPage';
 import TopBar from '../components/TopBar';
+import SubscriptionsPage from '../pages/SubscriptionsPage';
 
 export default function AppRouter() {
   return (
@@ -32,6 +33,7 @@ export default function AppRouter() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pigeons" element={<PigeonsPage />} />
           <Route path="/settings" element={<UserSettingsPage />} />
+          <Route path="/subscriptions" element={<SubscriptionsPage />}/>
         </Route>
 
         {/* FALLBACK */}

@@ -187,5 +187,29 @@
     "cancel": "Cancel",
     "create": "Create",
     "update": "Update"
+  },
+  "subscriptionPage": {
+    "title": "Choose Your Plan",
+    "subtitle": "Select the plan that best fits your pigeon management needs. You can upgrade anytime.",
+    "backToDashboard": "Back to Dashboard",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "month": "month",
+    "freePlan": "Free Plan",
+    "freePlanLimit14Days": "Limited to 14 days usage",
+    "standardPlan": "Standard Plan",
+    "premiumPlan": "Premium Plan",
+    "choosePlan": "Choose Plan",
+    "planFeatures": {
+      "unlimitedPigeons": "Unlimited pigeons",
+      "singleLoft": "1 loft",
+      "multipleLofts": "Unlimited lofts",
+      "addCompetitionInfo": "Add competition info",
+      "pedigreeDownloads1": "1 pedigree download",
+      "pedigreeDownloads50": "50 pedigree downloads/month",
+      "pedigreeDownloadsUnlimited": "Unlimited pedigree downloads",
+      "analysis": "Competition stats & analysis"
+    },
+    "yearlyDiscountInfo": "Switch to yearly for up to 45% discount!"
   }
 }

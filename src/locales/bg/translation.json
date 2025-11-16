@@ -187,5 +187,29 @@
     "cancel": "Откажи",
     "create": "Създай",
     "update": "Обнови"
+  },
+  "subscriptionPage": {
+    "title": "Изберете Вашия План",
+    "subtitle": "Изберете план, който най-добре отговаря на нуждите ви за управление на гълъби. Можете да надградите по всяко време.",
+    "backToDashboard": "Назад към таблото",
+    "monthly": "Месечно",
+    "yearly": "Годишно",
+    "month": "месец",
+    "freePlan": "Безплатен План",
+    "freePlanLimit14Days": "Ограничен до 14 дни използване",
+    "standardPlan": "Стандартен План",
+    "premiumPlan": "Премиум План",
+    "choosePlan": "Изберете План",
+    "planFeatures": {
+      "unlimitedPigeons": "Неограничени гълъби",
+      "singleLoft": "1 кошара",
+      "multipleLofts": "Неограничени кошари",
+      "addCompetitionInfo": "Добавяне на информация за състезания",
+      "pedigreeDownloads1": "1 теглене на родословие",
+      "pedigreeDownloads50": "50 тегления на родословие/месец",
+      "pedigreeDownloadsUnlimited": "Неограничени тегления на родословие",
+      "analysis": "Статистика и анализ на състезанията"
+    },
+    "yearlyDiscountInfo": "Превключете на годишно за до 45% отстъпка!"
   }
 }
