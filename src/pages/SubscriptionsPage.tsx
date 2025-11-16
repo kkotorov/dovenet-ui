@@ -11,9 +11,9 @@ export default function SubscriptionPage() {
   const plans = [
     {
       id: "free",
-      title: t("subscriptionPage.freePlan"),
-      price: "€0",
-      yearlyPrice: "€0",
+      title: t("subscriptionPage.freeTrial"), // <-- changed key to indicate 14-day trial
+      price: "", // no monthly price
+      yearlyPrice: "", // no yearly price
       highlight: false,
       trial: t("subscriptionPage.freePlanLimit14Days"),
       features: [
@@ -99,10 +99,12 @@ export default function SubscriptionPage() {
             >
               <h2 className="text-xl font-semibold mb-2">{plan.title}</h2>
 
-              <p className="text-3xl font-bold text-indigo-600">
-                {displayPrice}
-                {billing === "monthly" ? <span className="text-sm text-gray-600">/{t("subscriptionPage.month")}</span> : null}
-              </p>
+              {displayPrice && (
+                <p className="text-3xl font-bold text-indigo-600">
+                  {displayPrice}
+                  {billing === "monthly" ? <span className="text-sm text-gray-600">/{t("subscriptionPage.month")}</span> : null}
+                </p>
+              )}
 
               {plan.trial && (
                 <p className="text-sm text-red-600 font-semibold mb-2">{plan.trial}</p>
