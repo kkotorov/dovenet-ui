@@ -158,6 +158,160 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* Breeding */}
+        <div
+          onClick={() => navigate("/breeding")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-orange-600 mb-2">
+              {t("dashboardPage.breeding")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageBreedingText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/breeding");
+            }}
+            className="mt-4 w-full py-2 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition"
+          >
+            {t("dashboardPage.manageBreeding")}
+          </button>
+        </div>
+
+        {/* Pedigrees */}
+        <div
+          onClick={() => navigate("/pedigrees")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-teal-600 mb-2">
+              {t("dashboardPage.pedigrees")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.managePedigreesText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/pedigrees");
+            }}
+            className="mt-4 w-full py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition"
+          >
+            {t("dashboardPage.managePedigrees")}
+          </button>
+        </div>
+
+        {/* Statistics / Analytics */}
+        <div
+          onClick={() => navigate("/statistics")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-blue-600 mb-2">
+              {t("dashboardPage.statistics")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageStatisticsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/statistics");
+            }}
+            className="mt-4 w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+          >
+            {t("dashboardPage.viewStatistics")}
+          </button>
+        </div>
+
+        {/* Notifications */}
+        <div
+          onClick={() => navigate("/notifications")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-red-600 mb-2">
+              {t("dashboardPage.notifications")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageNotificationsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/notifications");
+            }}
+            className="mt-4 w-full py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
+          >
+            {t("dashboardPage.viewNotifications")}
+          </button>
+        </div>
+
+        {/* Inventory / Supplies */}
+        <div
+          onClick={() => navigate("/inventory")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              {t("dashboardPage.inventory")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageInventoryText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/inventory");
+            }}
+            className="mt-4 w-full py-2 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-900 transition"
+          >
+            {t("dashboardPage.manageInventory")}
+          </button>
+        </div>
+
+        {/* Reports / Exports */}
+        <div
+          onClick={() => navigate("/reports")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-indigo-500 mb-2">
+              {t("dashboardPage.reports")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageReportsText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/reports");
+            }}
+            className="mt-4 w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition"
+          >
+            {t("dashboardPage.viewReports")}
+          </button>
+        </div>
+
+        {/* Marketplace / Sales */}
+        <div
+          onClick={() => navigate("/marketplace")}
+          className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-lime-600 mb-2">
+              {t("dashboardPage.marketplace")}
+            </h2>
+            <p className="text-gray-500">{t("dashboardPage.manageMarketplaceText")}</p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/marketplace");
+            }}
+            className="mt-4 w-full py-2 bg-lime-600 text-white font-semibold rounded-lg hover:bg-lime-700 transition"
+          >
+            {t("dashboardPage.visitMarketplace")}
+          </button>
+        </div>
+
       </div>
     </div>
   );
