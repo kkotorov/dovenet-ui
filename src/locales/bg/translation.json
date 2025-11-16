@@ -147,7 +147,17 @@
     "settingsFailed": "Актуализацията на настройките не бе успешна",
     "notVerified": "Трябва да потвърдите имейл адреса си",
     "verified": "Потвърдено",
-    "verificationEmailSent": "Проверете имейла си за потвърждение на новия адрес"
+    "verificationEmailSent": "Проверете имейла си за потвърждение на новия адрес",
+    "subscriptions":"Абонаменти",
+    "currentPlan": "Текущ план",
+    "planName": "Име на плана",
+    "renewsOn": "Подновява се на",
+    "choosePlan": "Изберете / Сменете план",
+    "goToPlans": "Виж плановете",
+    "billingHistory": "История на плащанията",
+    "viewHistory": "Виж историята",
+    "cancelSubscription": "Откажи активния абонамент",
+    "proceedCancel": "Продължи към отказ"
   },
   "topBar": {
     "login": "Вход",

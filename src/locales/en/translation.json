@@ -147,7 +147,17 @@
     "settingsFailed": "Failed to update settings",
     "notVerified": "You need to verify your email address",
     "verified": "Verified",
-    "verificationEmailSent": "Check your e-mail to verify the new address"
+    "verificationEmailSent": "Check your e-mail to verify the new address",
+    "subscriptions":"Subscriptions",
+    "currentPlan": "Current Plan",
+    "planName": "Plan Name",
+    "renewsOn": "Renews On",
+    "choosePlan": "Choose / Select a Plan",
+    "goToPlans": "Go to Plans",
+    "billingHistory": "Billing History",
+    "viewHistory": "View History",
+    "cancelSubscription": "Cancel Active Subscription",
+    "proceedCancel": "Proceed to Cancel"
   },
   "topBar": {
     "login": "Sign in",
