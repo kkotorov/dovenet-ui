@@ -209,6 +209,19 @@
     "create": "Create",
     "update": "Update"
   },
+  "parentModal": {
+    "title": "Parents Information",
+    "loading": "Loading",
+    "father": "Father",
+    "mother": "Mother",
+    "name": "Name",
+    "ringNumber": "Ring Number",
+    "color": "Color",
+    "gender": "Gender",
+    "noInfo": "No parent information available",
+    "notInDb": "Not in database",
+    "cancel": "Cancel"
+  },
   "subscriptionPage": {
     "title": "Choose Your Plan",
     "subtitle": "Manage your pigeons and competitions with the plan that fits you best.",

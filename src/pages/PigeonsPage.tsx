@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PigeonForm from "./PigeonForm";
+import ParentModal from "./ParentModal";
 import api from "../api/api";
 
 export interface Pigeon {
@@ -17,15 +18,18 @@ export interface Pigeon {
   owner?: { id: number };
 }
 
-
 export default function PigeonsPage() {
   const { t } = useTranslation();
   const [pigeons, setPigeons] = useState<Pigeon[]>([]);
   const [openForm, setOpenForm] = useState(false);
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
-  const [highlightedParentIds, setHighlightedParentIds] = useState<number[]>([]);
   const [sortField, setSortField] = useState<keyof Pigeon>("ringNumber");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const [showParentsModal, setShowParentsModal] = useState(false);
+  const [selectedPigeon, setSelectedPigeon] = useState<Pigeon | null>(null);
+  const [parents, setParents] = useState<Pigeon[]>([]);
+  const [loadingParents, setLoadingParents] = useState(false);
 
   const navigate = useNavigate();
 
@@ -81,16 +85,20 @@ export default function PigeonsPage() {
     }
   };
 
-  const fetchParents = async (id: number) => {
+  const fetchParents = async (id: number, pigeon: Pigeon) => {
+    setSelectedPigeon(pigeon);
+    setShowParentsModal(true);
+    setLoadingParents(true);
+
     try {
       const res = await api.get<Pigeon[]>(`/pigeons/${id}/parents`);
-      const parentIds = res.data.map((p) => p.id!);
-      setHighlightedParentIds(parentIds);
-      setTimeout(() => setHighlightedParentIds([]), 5000);
+      setParents(res.data);
     } catch (err) {
       console.error(t("pigeonsPage.fetchParentsFailed"), err);
-      alert(t("pigeonsPage.fetchParentsFailed"));
+      setParents([]);
     }
+
+    setLoadingParents(false);
   };
 
   const handleEdit = (pigeon: Pigeon) => {
@@ -186,13 +194,7 @@ export default function PigeonsPage() {
 
           <tbody className="divide-y divide-gray-100">
             {sortedPigeons.map((p) => (
-              <tr
-                key={p.id}
-                className={`cursor-pointer hover:bg-gray-50 ${
-                  highlightedParentIds.includes(p.id!) ? "bg-green-100" : ""
-                }`}
-                onClick={() => handleEdit(p)}
-              >
+              <tr key={p.id} className="cursor-pointer hover:bg-gray-50">
                 <td className="px-4 py-3">{p.id}</td>
                 <td className="px-4 py-3">{p.ringNumber}</td>
                 <td className="px-4 py-3">{p.name}</td>
@@ -204,45 +206,25 @@ export default function PigeonsPage() {
                 <td className="px-4 py-3">{p.birthDate}</td>
                 <td className="px-4 py-3 flex justify-center gap-1 flex-wrap">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEdit(p);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
                     className="px-2 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition"
                     title={t("pigeonsPage.editPigeon")}
-                  >
-                    ✏️
-                  </button>
+                  >✏️</button>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deletePigeon(p.id!);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); deletePigeon(p.id!); }}
                     className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
                     title={t("pigeonsPage.deletePigeon")}
-                  >
-                    🗑️
-                  </button>
+                  >🗑️</button>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      downloadPedigreePdf(p.id!);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); downloadPedigreePdf(p.id!); }}
                     className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                     title={t("pigeonsPage.downloadPedigree")}
-                  >
-                    📄
-                  </button>
+                  >📄</button>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fetchParents(p.id!);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); fetchParents(p.id!, p); }}
                     className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
                     title={t("pigeonsPage.getParents")}
-                  >
-                    👨‍👩‍👧
-                  </button>
+                  >👨‍👩‍👧</button>
                 </td>
               </tr>
             ))}
@@ -250,21 +232,27 @@ export default function PigeonsPage() {
         </table>
       </div>
 
+      {/* Pigeon Form */}
       {openForm && (
         <PigeonForm
           open={openForm}
           onClose={() => setOpenForm(false)}
           onSubmit={(pigeon: Pigeon) => {
-            if (editingPigeon?.id) {
-              updatePigeon(pigeon);
-            } else {
-              createPigeon(pigeon);
-            }
+            if (editingPigeon?.id) updatePigeon(pigeon);
+            else createPigeon(pigeon);
           }}
           initialData={editingPigeon || undefined}
         />
       )}
+
+      {/* Parent Modal */}
+      <ParentModal
+        open={showParentsModal}
+        onClose={() => setShowParentsModal(false)}
+        parents={parents}
+        loading={loadingParents}
+        pigeon={selectedPigeon} // no need to force extra fields
+      />
     </div>
   );
 }
-
