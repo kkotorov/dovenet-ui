@@ -1,7 +1,7 @@
 {
   "appName": "DoveNet",
   "landingPage": {
-    "heroTitle": "Welcome to <highlight>{{appName}}</highlight>",
+    "heroTitle": "Добре дошли в <highlight>{{appName}}</highlight>",
     "heroSubtitle": "Вашата перфектна система за управление на гълъби. Следете, управлявайте и наблюдавайте гълъбите си лесно.",
     "goToDashboard": "Отиди към таблото",
     "flyingPigeon": "Летящ гълъб",
@@ -208,8 +208,8 @@
     "deceased": "Починал",
     "sold": "Продаден",
     "birthDate": "Дата на раждане",
-    "fatherRingNumber": "Номер на баща",
-    "motherRingNumber": "Номер на майка",
+    "fatherRingNumber": "Номер пръстен на бащата",
+    "motherRingNumber": "Номер пръстен на майката",
     "cancel": "Откажи",
     "create": "Създай",
     "update": "Обнови",
@@ -218,7 +218,8 @@
     "lost": "Изгубен",
     "gifted": "Дарен",
     "father": "Баща",
-    "mother": "Майка"
+    "mother": "Майка",
+    "injured": "ранен"
   },
   "parentModal": {
     "title": "Информация за родителите",

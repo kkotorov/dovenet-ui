@@ -5,28 +5,28 @@ import type { Pigeon } from '../types/index';
 interface PigeonFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
-  initialData?: any;
+  onSubmit: (data: Pigeon) => void;
+  initialData?: Partial<Pigeon>;
 }
 
 export default function PigeonForm({ open, onClose, onSubmit, initialData }: PigeonFormProps) {
   const { t } = useTranslation();
 
-const [pigeon, setPigeon] = useState<Pigeon>({
-  id: undefined,
-  ringNumber: "",
-  name: "",
-  color: "",
-  gender: "",
-  status: "",
-  birthDate: "",
-  fatherRingNumber: "",
-  motherRingNumber: "",
-  owner: undefined,
-});
+  const [pigeon, setPigeon] = useState<Pigeon>({
+    id: undefined,
+    ringNumber: "",
+    name: "",
+    color: "",
+    gender: "",
+    status: "",
+    birthDate: "",
+    fatherRingNumber: "",
+    motherRingNumber: "",
+    owner: undefined,
+  });
 
   useEffect(() => {
-    if (initialData) setPigeon(initialData);
+    if (initialData) setPigeon((prev) => ({ ...prev, ...initialData }));
   }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -39,89 +39,149 @@ const [pigeon, setPigeon] = useState<Pigeon>({
     onClose();
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Only allow dates with 4-digit year
+    if (value && /^\d{0,4}-?\d{0,2}-?\d{0,2}$/.test(value)) {
+      setPigeon(prev => ({ ...prev, birthDate: value }));
+    } else if (!value) {
+      setPigeon(prev => ({ ...prev, birthDate: "" }));
+    }
+  };
+
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 animate-fadeInUp">
+   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 animate-fadeInUp">
         <h2 className="text-2xl font-bold mb-4">
           {initialData ? t("pigeonForm.updatePigeon") : t("pigeonForm.createPigeon")}
         </h2>
 
-        <div className="space-y-4">
-          <input
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            placeholder={t("pigeonForm.ringNumber")}
-            name="ringNumber"
-            value={pigeon.ringNumber}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            placeholder={t("pigeonForm.name")}
-            name="name"
-            value={pigeon.name}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            placeholder={t("pigeonForm.color")}
-            name="color"
-            value={pigeon.color}
-            onChange={handleChange}
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Ring Number (required) */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.ringNumber")} <span className="text-red-500">*</span>
+            </label>
+            <input
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("pigeonForm.ringNumber")}
+              name="ringNumber"
+              value={pigeon.ringNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          {/* Gender Dropdown */}
-          <select
-            name="gender"
-            value={pigeon.gender}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="">{t("pigeonForm.selectGender")}</option>
-            <option value="male">{t("pigeonForm.male")}</option>
-            <option value="female">{t("pigeonForm.female")}</option>
-          </select>
+          {/* Name */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.name")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("pigeonForm.name")}
+              name="name"
+              value={pigeon.name}
+              onChange={handleChange}
+            />
+          </div>
 
-          {/* Status Dropdown */}
-          <select
-            name="status"
-            value={pigeon.status}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="">{t("pigeonForm.selectStatus")}</option>
-            <option value="active">{t("pigeonForm.active")}</option>
-            <option value="retired">{t("pigeonForm.retired")}</option>
-            <option value="lost">{t("pigeonForm.lost")}</option>
-            <option value="deceased">{t("pigeonForm.deceased")}</option>
-            <option value="sold">{t("pigeonForm.sold")}</option>
-            <option value="gifted">{t("pigeonForm.gifted")}</option>
-            <option value="injured">{t("pigeonForm.injured")}</option>
-          </select>
+          {/* Color */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.color")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("pigeonForm.color")}
+              name="color"
+              value={pigeon.color}
+              onChange={handleChange}
+            />
+          </div>
 
+          {/* Gender */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.gender")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <select
+              name="gender"
+              value={pigeon.gender}
+              onChange={handleChange}
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">{t("pigeonForm.selectGender")}</option>
+              <option value="male">{t("pigeonForm.male")}</option>
+              <option value="female">{t("pigeonForm.female")}</option>
+            </select>
+          </div>
 
-          <input
-            type="date"
-            name="birthDate"
-            value={pigeon.birthDate}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            placeholder={t("pigeonForm.fatherRingNumber")}
-            name="fatherRingNumber"
-            value={pigeon.fatherRingNumber}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            placeholder={t("pigeonForm.motherRingNumber")}
-            name="motherRingNumber"
-            value={pigeon.motherRingNumber}
-            onChange={handleChange}
-          />
+          {/* Status */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.status")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <select
+              name="status"
+              value={pigeon.status}
+              onChange={handleChange}
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">{t("pigeonForm.selectStatus")}</option>
+              <option value="active">{t("pigeonForm.active")}</option>
+              <option value="retired">{t("pigeonForm.retired")}</option>
+              <option value="lost">{t("pigeonForm.lost")}</option>
+              <option value="deceased">{t("pigeonForm.deceased")}</option>
+              <option value="sold">{t("pigeonForm.sold")}</option>
+              <option value="gifted">{t("pigeonForm.gifted")}</option>
+              <option value="injured">{t("pigeonForm.injured")}</option>
+            </select>
+          </div>
+
+          {/* Birth Date */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.birthDate")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              type="date"
+              name="birthDate"
+              value={pigeon.birthDate}
+              onChange={handleDateChange}
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Father Ring */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.fatherRingNumber")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              name="fatherRingNumber"
+              value={pigeon.fatherRingNumber}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Mother Ring */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.motherRingNumber")} <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              name="motherRingNumber"
+              value={pigeon.motherRingNumber}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         {/* Actions */}
@@ -134,23 +194,27 @@ const [pigeon, setPigeon] = useState<Pigeon>({
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            disabled={!pigeon.ringNumber.trim()}
+            className={`px-4 py-2 rounded-lg text-white transition ${
+              !pigeon.ringNumber.trim()
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
           >
             {initialData ? t("pigeonForm.update") : t("pigeonForm.create")}
           </button>
         </div>
-      </div>
 
-      {/* Tailwind animation */}
-      <style>
-        {`
-        @keyframes fadeInUp {
-          0% { opacity: 0; transform: translateY(20px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeInUp { animation: fadeInUp 0.4s ease-out; }
-        `}
-      </style>
+        <style>
+          {`
+          @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fadeInUp { animation: fadeInUp 0.4s ease-out; }
+          `}
+        </style>
+      </div>
     </div>
   );
 }

@@ -218,7 +218,8 @@
     "lost": "Lost",
     "gifted": "Gifted",
     "father": "Father",
-    "mother": "Mother"
+    "mother": "Mother",
+    "injured": "Injured"
   },
   "parentModal": {
     "title": "Parents Information",
