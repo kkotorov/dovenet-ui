@@ -5,9 +5,13 @@ export interface User {
 }
 
 export interface Pigeon {
-  id: string;
+  id?: number;
+  ringNumber: string;
   name: string;
-  age: number;
-  breed: string;
-  ownerId: string;
+  color: string;
+  gender: string;
+  status: string;
+  birthDate: string;
+  fatherRingNumber?: string;
+  motherRingNumber?: string;
 }
