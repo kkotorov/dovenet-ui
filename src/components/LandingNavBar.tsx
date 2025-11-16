@@ -33,7 +33,7 @@ export default function LandingNavbar() {
       <div
         className="text-2xl font-bold text-indigo-600 cursor-pointer"
         onClick={() => navigate("/")}
-      >
+      > 
         {t("appName")}
       </div>
 
