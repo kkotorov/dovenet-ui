@@ -17,7 +17,7 @@ export const createPigeon = async (data: Partial<Pigeon>): Promise<Pigeon> => {
 };
 
 export const updatePigeon = async (id: string, data: Partial<Pigeon>): Promise<Pigeon> => {
-  const res = await api.put(`/pigeons/${id}`, data);
+  const res = await api.patch(`/pigeons/${id}`, data);
   return res.data;
 };
 

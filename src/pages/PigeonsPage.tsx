@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import PigeonForm from "./PigeonForm";
 import api from "../api/api";
 
-interface Pigeon {
+export interface Pigeon {
   id?: number;
   ringNumber: string;
   name: string;
@@ -14,7 +14,9 @@ interface Pigeon {
   birthDate: string;
   fatherRingNumber?: string;
   motherRingNumber?: string;
+  owner?: { id: number };
 }
+
 
 export default function PigeonsPage() {
   const { t } = useTranslation();
@@ -48,7 +50,7 @@ export default function PigeonsPage() {
   const updatePigeon = async (pigeon: Pigeon) => {
     try {
       if (!pigeon.id) throw new Error(t("pigeonsPage.idRequired"));
-      await api.put(`/pigeons/${pigeon.id}`, pigeon);
+      await api.patch(`/pigeons/${pigeon.id}`, pigeon);
       fetchPigeons();
     } catch (err) {
       console.error(t("pigeonsPage.updateFailed"), err);

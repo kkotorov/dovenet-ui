@@ -14,4 +14,5 @@ export interface Pigeon {
   birthDate: string;
   fatherRingNumber?: string;
   motherRingNumber?: string;
+  owner?: { id: number };
 }

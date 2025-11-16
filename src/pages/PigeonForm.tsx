@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import type { Pigeon } from '../types/index';
 
 interface PigeonFormProps {
   open: boolean;
@@ -11,16 +12,18 @@ interface PigeonFormProps {
 export default function PigeonForm({ open, onClose, onSubmit, initialData }: PigeonFormProps) {
   const { t } = useTranslation();
 
-  const [pigeon, setPigeon] = useState({
-    ringNumber: "",
-    name: "",
-    color: "",
-    gender: "",
-    status: "",
-    birthDate: "",
-    fatherRingNumber: "",
-    motherRingNumber: "",
-  });
+const [pigeon, setPigeon] = useState<Pigeon>({
+  id: undefined,
+  ringNumber: "",
+  name: "",
+  color: "",
+  gender: "",
+  status: "",
+  birthDate: "",
+  fatherRingNumber: "",
+  motherRingNumber: "",
+  owner: undefined,
+});
 
   useEffect(() => {
     if (initialData) setPigeon(initialData);
