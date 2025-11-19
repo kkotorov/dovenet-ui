@@ -15,4 +15,5 @@ export interface Pigeon {
   fatherRingNumber?: string;
   motherRingNumber?: string;
   owner?: { id: number };
+  loftId?: {id: number};
 }

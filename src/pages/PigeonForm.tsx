@@ -3,6 +3,12 @@ import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import type { Pigeon } from "../types/index";
 
+interface Loft {
+  id: number;
+  name: string;
+  type: string;
+}
+
 interface PigeonFormProps {
   open: boolean;
   onClose: () => void;
@@ -24,7 +30,10 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     fatherRingNumber: "",
     motherRingNumber: "",
     owner: undefined,
+    loftId: undefined,       // ← NEW
   });
+
+  const [lofts, setLofts] = useState<Loft[]>([]); // ← NEW
 
   const [fatherSuggestions, setFatherSuggestions] = useState<string[]>([]);
   const [motherSuggestions, setMotherSuggestions] = useState<string[]>([]);
@@ -32,13 +41,27 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
   const fatherRef = useRef<HTMLInputElement>(null);
   const motherRef = useRef<HTMLInputElement>(null);
 
+  // Load initial data
   useEffect(() => {
-    if (initialData) setPigeon((prev) => ({ ...prev, ...initialData }));
+    if (initialData) setPigeon(prev => ({ ...prev, ...initialData }));
   }, [initialData]);
+
+  // Load all lofts
+  useEffect(() => {
+    const loadLofts = async () => {
+      try {
+        const res = await api.get("/lofts");
+        setLofts(res.data);
+      } catch {
+        setLofts([]);
+      }
+    };
+    loadLofts();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setPigeon((prev) => ({ ...prev, [name]: value }));
+    setPigeon(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = () => {
@@ -56,7 +79,7 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     }
   };
 
-  // AUTOCOMPLETE API CALL
+  // AUTOCOMPLETE
   const fetchRingSuggestions = async (query: string, type: "father" | "mother") => {
     if (!query || query.length < 2) {
       if (type === "father") setFatherSuggestions([]);
@@ -65,18 +88,15 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     }
 
     try {
-      const res = await api.get("/pigeons/search-rings", {
-        params: { q: query }   // ← FIXED
-      });
+      const res = await api.get("/pigeons/search-rings", { params: { q: query } });
 
-      if (type === "father") setFatherSuggestions(res.data);   // ← array of strings
+      if (type === "father") setFatherSuggestions(res.data);
       else setMotherSuggestions(res.data);
     } catch {
       if (type === "father") setFatherSuggestions([]);
       else setMotherSuggestions([]);
     }
   };
-
 
   const selectRing = (ring: string, type: "father" | "mother") => {
     if (type === "father") {
@@ -182,9 +202,7 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
 
           {/* Birth Date */}
           <div className="flex flex-col">
-            <label className="font-medium text-gray-700">
-              {t("pigeonForm.birthDate")} <span className="text-gray-400">(optional)</span>
-            </label>
+            <label className="font-medium text-gray-700">{t("pigeonForm.birthDate")}</label>
             <input
               type="date"
               name="birthDate"
@@ -194,11 +212,9 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
             />
           </div>
 
-          {/* Father Ring (AUTO-COMPLETE) */}
+          {/* Father Ring AutoComplete */}
           <div className="flex flex-col relative">
-            <label className="font-medium text-gray-700">
-              {t("pigeonForm.fatherRingNumber")} <span className="text-gray-400">(optional)</span>
-            </label>
+            <label className="font-medium text-gray-700">{t("pigeonForm.fatherRingNumber")}</label>
             <input
               ref={fatherRef}
               name="fatherRingNumber"
@@ -227,11 +243,9 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
             )}
           </div>
 
-          {/* Mother Ring (AUTO-COMPLETE) */}
+          {/* Mother Ring AutoComplete */}
           <div className="flex flex-col relative">
-            <label className="font-medium text-gray-700">
-              {t("pigeonForm.motherRingNumber")} <span className="text-gray-400">(optional)</span>
-            </label>
+            <label className="font-medium text-gray-700">{t("pigeonForm.motherRingNumber")}</label>
             <input
               ref={motherRef}
               name="motherRingNumber"
@@ -259,6 +273,30 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
               </ul>
             )}
           </div>
+
+
+          {/* Loft*/}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+            <label className="font-medium text-gray-700">
+              {t("pigeonForm.loft")} <span className="text-gray-400">(optional)</span>
+            </label>
+            </label>
+            <select
+              name="loftId"
+              value={typeof pigeon.loftId === "object" ? pigeon.loftId.id : pigeon.loftId || ""}
+              onChange={handleChange}
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">{t("pigeonForm.selectLoft")}</option>
+              {lofts.map(loft => (
+                <option key={loft.id} value={loft.id}>
+                  {loft.name} ({t(`loftTypes.${loft.type}`) || loft.type})
+                </option>
+              ))}
+            </select>
+          </div>
+
         </div>
 
         {/* Actions */}
