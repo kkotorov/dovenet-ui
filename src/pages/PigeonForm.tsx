@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { Pigeon } from '../types/index';
+import api from "../api/api";
+import type { Pigeon } from "../types/index";
 
 interface PigeonFormProps {
   open: boolean;
@@ -25,6 +26,12 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     owner: undefined,
   });
 
+  const [fatherSuggestions, setFatherSuggestions] = useState<string[]>([]);
+  const [motherSuggestions, setMotherSuggestions] = useState<string[]>([]);
+
+  const fatherRef = useRef<HTMLInputElement>(null);
+  const motherRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (initialData) setPigeon((prev) => ({ ...prev, ...initialData }));
   }, [initialData]);
@@ -42,7 +49,6 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    // Only allow dates with 4-digit year
     if (value && /^\d{0,4}-?\d{0,2}-?\d{0,2}$/.test(value)) {
       setPigeon(prev => ({ ...prev, birthDate: value }));
     } else if (!value) {
@@ -50,18 +56,49 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     }
   };
 
+  // AUTOCOMPLETE API CALL
+  const fetchRingSuggestions = async (query: string, type: "father" | "mother") => {
+    if (!query || query.length < 2) {
+      if (type === "father") setFatherSuggestions([]);
+      else setMotherSuggestions([]);
+      return;
+    }
+
+    try {
+      const res = await api.get("/pigeons/search-rings", {
+        params: { q: query }   // ← FIXED
+      });
+
+      if (type === "father") setFatherSuggestions(res.data);   // ← array of strings
+      else setMotherSuggestions(res.data);
+    } catch {
+      if (type === "father") setFatherSuggestions([]);
+      else setMotherSuggestions([]);
+    }
+  };
+
+
+  const selectRing = (ring: string, type: "father" | "mother") => {
+    if (type === "father") {
+      setPigeon(prev => ({ ...prev, fatherRingNumber: ring }));
+      setFatherSuggestions([]);
+    } else {
+      setPigeon(prev => ({ ...prev, motherRingNumber: ring }));
+      setMotherSuggestions([]);
+    }
+  };
 
   if (!open) return null;
 
   return (
-   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 animate-fadeInUp">
         <h2 className="text-2xl font-bold mb-4">
           {initialData ? t("pigeonForm.updatePigeon") : t("pigeonForm.createPigeon")}
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Ring Number (required) */}
+          {/* Ring Number */}
           <div className="flex flex-col">
             <label className="font-medium text-gray-700">
               {t("pigeonForm.ringNumber")} <span className="text-red-500">*</span>
@@ -157,30 +194,70 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
             />
           </div>
 
-          {/* Father Ring */}
-          <div className="flex flex-col">
+          {/* Father Ring (AUTO-COMPLETE) */}
+          <div className="flex flex-col relative">
             <label className="font-medium text-gray-700">
               {t("pigeonForm.fatherRingNumber")} <span className="text-gray-400">(optional)</span>
             </label>
             <input
-              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              ref={fatherRef}
               name="fatherRingNumber"
               value={pigeon.fatherRingNumber}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                fetchRingSuggestions(e.target.value, "father");
+              }}
+              placeholder={t("pigeonForm.fatherRingNumber")}
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              autoComplete="off"
             />
+
+            {fatherSuggestions.length > 0 && (
+              <ul className="absolute top-full left-0 right-0 bg-white border rounded-lg shadow-lg max-h-40 overflow-y-auto z-50">
+                {fatherSuggestions.map((ring) => (
+                  <li
+                    key={ring}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => selectRing(ring, "father")}
+                  >
+                    {ring}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {/* Mother Ring */}
-          <div className="flex flex-col">
+          {/* Mother Ring (AUTO-COMPLETE) */}
+          <div className="flex flex-col relative">
             <label className="font-medium text-gray-700">
               {t("pigeonForm.motherRingNumber")} <span className="text-gray-400">(optional)</span>
             </label>
             <input
-              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              ref={motherRef}
               name="motherRingNumber"
               value={pigeon.motherRingNumber}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                fetchRingSuggestions(e.target.value, "mother");
+              }}
+              placeholder={t("pigeonForm.motherRingNumber")}
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              autoComplete="off"
             />
+
+            {motherSuggestions.length > 0 && (
+              <ul className="absolute top-full left-0 right-0 bg-white border rounded-lg shadow-lg max-h-40 overflow-y-auto z-50">
+                {motherSuggestions.map((ring) => (
+                  <li
+                    key={ring}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => selectRing(ring, "mother")}
+                  >
+                    {ring}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
 
