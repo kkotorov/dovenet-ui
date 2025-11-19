@@ -12,6 +12,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import LandingPage from '../pages/LandingPage';
 import TopBar from '../components/TopBar';
 import SubscriptionsPage from '../pages/SubscriptionsPage';
+import LoftsPage from '../pages/LoftPage';
 
 export default function AppRouter() {
   return (
@@ -34,6 +35,7 @@ export default function AppRouter() {
           <Route path="/pigeons" element={<PigeonsPage />} />
           <Route path="/settings" element={<UserSettingsPage />} />
           <Route path="/subscriptions" element={<SubscriptionsPage />}/>
+          <Route path="/lofts" element={<LoftsPage />}/>
         </Route>
 
         {/* FALLBACK */}

@@ -272,5 +272,40 @@
       "pedigreeDownloadsUnlimited": "Unlimited pedigree downloads",
       "analysis": "Competition analysis and stats"
     }
+  },
+
+  "loftsPage": {
+    "title": "Lofts",
+    "createLoft": "Create Loft",
+    "backToDashboard":"Back to Dashboard",
+    "editLoft": "Edit Loft",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "cancel": "Cancel",
+    "update": "Update",
+    "loftName": "Loft Name",
+    "loftType": "Loft Type",
+    "deleteConfirm": "Are you sure you want to delete this loft?",
+    "pigeons": "Pigeons",
+    "viewPigeons": "View Pigeons"
+  },
+  "loftTypes": {
+    "racing": "Racing Loft",
+    "breeding": "Breeding Loft",
+    "young": "Young Birds Loft",
+    "show": "Show / Exhibition Loft",
+    "training": "Training Loft",
+    "quarantine": "Quarantine Loft",
+    "general": "General Loft",
+    "parent": "Parent Loft"
+  },
+  "createEditLoftModal": {
+    "titleCreate": "Create Loft",
+    "titleEdit": "Edit Loft",
+    "nameLabel": "Loft Name",
+    "typeLabel": "Loft Type",
+    "saveButton": "Save",
+    "cancelButton": "Cancel"
   }
 }

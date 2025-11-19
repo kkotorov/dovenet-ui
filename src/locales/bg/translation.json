@@ -272,5 +272,39 @@
       "pedigreeDownloadsUnlimited": "Неограничени тегления на родословия",
       "analysis": "Анализ и статистика на състезанията"
     }
+  },
+  "loftsPage": {
+    "title": "Перални",
+    "createLoft": "Създай Перелня",
+    "backToDashboard": "Обратно към Таблото",
+    "editLoft": "Редактирай Перелня",
+    "delete": "Изтрий",
+    "edit": "Редактирай",
+    "create": "Създай",
+    "cancel": "Отказ",
+    "update": "Обнови",
+    "loftName": "Име на Перелня",
+    "loftType": "Тип Перелня",
+    "deleteConfirm": "Сигурни ли сте, че искате да изтриете тази пералня?",
+    "pigeons": "Гълъби",
+    "viewPigeons": "Преглед Гълъби"
+  },
+  "loftTypes": {
+    "racing": "Състезателна Перелня",
+    "breeding": "Развъдна Перелня",
+    "young": "Младички Гълъби",
+    "show": "Шоу / Изложбена Перелня",
+    "training": "Тренировъчна Перелня",
+    "quarantine": "Карантинна Перелня",
+    "general": "Обща Перелня",
+    "parent": "Родителска Перелня"
+  },
+  "createEditLoftModal": {
+    "titleCreate": "Създай Перелня",
+    "titleEdit": "Редактирай Перелня",
+    "nameLabel": "Име на Перелня",
+    "typeLabel": "Тип Перелня",
+    "saveButton": "Запази",
+    "cancelButton": "Отказ"
   }
 }

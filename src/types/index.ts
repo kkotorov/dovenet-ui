@@ -17,3 +17,12 @@ export interface Pigeon {
   owner?: { id: number };
   loftId?: {id: number};
 }
+
+export type LoftType = "racing" | "training" | "breeding" | "parent" | "young" | "show" | "quarantine" | "general";
+
+export interface Loft {
+  id: number;
+  name: string;
+  type: LoftType;
+  pigeons?: number[];
+}
