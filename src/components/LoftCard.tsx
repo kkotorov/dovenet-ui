@@ -102,3 +102,6 @@ export default function LoftCard({ loft, onView, onEdit, onDelete }: LoftCardPro
     </div>
   );
 }
+
+
+
