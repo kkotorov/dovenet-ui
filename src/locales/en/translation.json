@@ -318,7 +318,7 @@
     "gpsLatitude": "GPS Latitude",
     "gpsLongitude": "GPS Longitude",  
     "create": "Create",
-    "update":"Update",
-    "cancel": "Cancel"
+    "saveButton":"Update",
+    "cancelButton": "Cancel"
   }
 }

@@ -17,6 +17,7 @@ export default function CreateEditLoftModal({
   initialData,
 }: CreateEditLoftModalProps) {
   const { t } = useTranslation();
+
   const [loft, setLoft] = useState<Partial<Loft>>({
     name: "",
     type: "racing",
@@ -27,13 +28,27 @@ export default function CreateEditLoftModal({
     gpsLongitude: undefined,
   });
 
+  // Reset loft state whenever modal opens
   useEffect(() => {
-    if (initialData) setLoft(initialData);
-  }, [initialData]);
+    if (open) {
+      setLoft({
+        name: initialData?.name || "",
+        type: (initialData?.type as LoftType) || "racing",
+        address: initialData?.address || "",
+        capacity: initialData?.capacity,
+        loftSize: initialData?.loftSize,
+        gpsLatitude: initialData?.gpsLatitude,
+        gpsLongitude: initialData?.gpsLongitude,
+      });
+    }
+  }, [open, initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setLoft((prev) => ({ ...prev, [name]: value }));
+    setLoft((prev) => ({
+      ...prev,
+      [name]: e.target.type === "number" ? (value ? Number(value) : undefined) : value,
+    }));
   };
 
   const handleSubmit = () => {
@@ -48,7 +63,7 @@ export default function CreateEditLoftModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeInUp">
         <h2 className="text-2xl font-bold mb-4">
-          {initialData ? t("createEditLoftModal.editLoft") : t("createEditLoftModal.createLoft")}
+          {initialData ? t("createEditLoftModal.titleEdit") : t("createEditLoftModal.titleCreate")}
         </h2>
 
         <div className="flex flex-col gap-4">
@@ -93,7 +108,7 @@ export default function CreateEditLoftModal({
               className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
               placeholder={t("createEditLoftModal.capacity")}
               name="capacity"
-              value={loft.capacity || ""}
+              value={loft.capacity ?? ""}
               onChange={handleChange}
             />
           </div>
@@ -106,7 +121,7 @@ export default function CreateEditLoftModal({
               className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
               placeholder={t("createEditLoftModal.loftSize")}
               name="loftSize"
-              value={loft.loftSize || ""}
+              value={loft.loftSize ?? ""}
               onChange={handleChange}
             />
           </div>
@@ -120,7 +135,7 @@ export default function CreateEditLoftModal({
               className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
               placeholder={t("createEditLoftModal.gpsLatitude")}
               name="gpsLatitude"
-              value={loft.gpsLatitude || ""}
+              value={loft.gpsLatitude ?? ""}
               onChange={handleChange}
             />
           </div>
@@ -134,7 +149,7 @@ export default function CreateEditLoftModal({
               className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
               placeholder={t("createEditLoftModal.gpsLongitude")}
               name="gpsLongitude"
-              value={loft.gpsLongitude || ""}
+              value={loft.gpsLongitude ?? ""}
               onChange={handleChange}
             />
           </div>
@@ -146,13 +161,13 @@ export default function CreateEditLoftModal({
             onClick={onClose}
             className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
           >
-            {t("createEditLoftModal.cancel")}
+            {t("createEditLoftModal.cancelButton")}
           </button>
           <button
             onClick={handleSubmit}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
           >
-            {initialData ? t("createEditLoftModal.update") : t("createEditLoftModal.create")}
+            {initialData ? t("createEditLoftModal.saveButton") : t("createEditLoftModal.create")}
           </button>
         </div>
       </div>
