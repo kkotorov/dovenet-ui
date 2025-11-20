@@ -15,7 +15,7 @@ export interface Pigeon {
   fatherRingNumber?: string;
   motherRingNumber?: string;
   owner?: { id: number };
-  loftId?: {id: number};
+  loftId?: number;
 }
 
 export type LoftType = "racing" | "training" | "breeding" | "parent" | "young" | "show" | "quarantine" | "general";

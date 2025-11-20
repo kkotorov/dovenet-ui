@@ -282,19 +282,25 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
               {t("pigeonForm.loft")} <span className="text-gray-400">(optional)</span>
             </label>
             </label>
-            <select
-              name="loftId"
-              value={typeof pigeon.loftId === "object" ? pigeon.loftId.id : pigeon.loftId || ""}
-              onChange={handleChange}
-              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">{t("pigeonForm.selectLoft")}</option>
-              {lofts.map(loft => (
-                <option key={loft.id} value={loft.id}>
-                  {loft.name} ({t(`loftTypes.${loft.type}`) || loft.type})
-                </option>
-              ))}
-            </select>
+<select
+  name="loftId"
+  value={pigeon.loftId || ""}
+  onChange={(e) =>
+    setPigeon(prev => ({
+      ...prev,
+      loftId: e.target.value ? Number(e.target.value) : undefined
+    }))
+  }
+  className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+>
+  <option value="">{t("pigeonForm.selectLoft")}</option>
+  {lofts.map(loft => (
+    <option key={loft.id} value={loft.id}>
+      {loft.name} ({t(`loftTypes.${loft.type}`) || loft.type})
+    </option>
+  ))}
+</select>
+
           </div>
 
         </div>
