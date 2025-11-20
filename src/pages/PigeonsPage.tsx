@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PigeonForm from "./PigeonForm";
 import ParentModal from "./ParentModal";
@@ -14,6 +14,7 @@ export interface Pigeon {
   gender: string;
   status: string;
   birthDate: string;
+  loftId?: number;
   fatherRingNumber?: string;
   motherRingNumber?: string;
   owner?: { id: number };
@@ -21,6 +22,11 @@ export interface Pigeon {
 
 export default function PigeonsPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { loftId } = useParams<{ loftId: string }>();
+  const location = useLocation();
+  const loftName = location.state?.loftName || "";
+
   const [pigeons, setPigeons] = useState<Pigeon[]>([]);
   const [openForm, setOpenForm] = useState(false);
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
@@ -32,19 +38,25 @@ export default function PigeonsPage() {
   const [parents, setParents] = useState<Pigeon[]>([]);
   const [loadingParents, setLoadingParents] = useState(false);
 
-  const navigate = useNavigate();
-
+  // Fetch pigeons either for a loft or all
   const fetchPigeons = async () => {
     try {
-      const res = await api.get<Pigeon[]>("/pigeons");
+      const url = loftId ? `/pigeons/loft/${loftId}` : "/pigeons";
+      const res = await api.get<Pigeon[]>(url);
       setPigeons(res.data);
     } catch (err) {
       console.error(t("pigeonsPage.fetchFailed"), err);
+      setPigeons([]);
     }
   };
 
+  useEffect(() => {
+    fetchPigeons();
+  }, [loftId]);
+
   const createPigeon = async (pigeon: Pigeon) => {
     try {
+      if (loftId) pigeon.loftId = Number(loftId);
       await api.post("/pigeons", pigeon);
       fetchPigeons();
     } catch (err) {
@@ -132,23 +144,21 @@ export default function PigeonsPage() {
     return 0;
   });
 
-  useEffect(() => {
-    fetchPigeons();
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
-      {/* Header */}
+      {/* Header + breadcrumbs */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-          {t("pigeonsPage.managePigeons")} 🕊️
+          {loftName
+            ? `${t("pigeonsPage.managePigeons")} 🕊️ (${loftName})`
+            : t("pigeonsPage.managePigeons")}
         </h1>
         <div className="flex gap-3">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate(loftId ? "/lofts" : "/dashboard")}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
           >
-            ← {t("pigeonsPage.backToDashboard")}
+            ← {t("pigeonsPage.back")}
           </button>
           <button
             onClick={() => {
@@ -162,7 +172,7 @@ export default function PigeonsPage() {
         </div>
       </div>
 
-      {/* Table wrapper */}
+      {/* Table */}
       <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
@@ -193,76 +203,64 @@ export default function PigeonsPage() {
             </tr>
           </thead>
 
-        <tbody className="divide-y divide-gray-100">
-          {sortedPigeons.map((p) => (
-            <tr key={p.id} className="cursor-pointer hover:bg-gray-50">
-              <td className="px-4 py-3">{p.id ?? ""}</td>
-              <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
-              <td className="px-4 py-3">{p.name || ""}</td>
-              <td className="px-4 py-3">{p.color || ""}</td>
-              <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
-                {genderSymbol(p.gender).symbol}
-              </td>
-              <td className="px-4 py-3">
-                {p.status ? t(`pigeonsPage.${p.status}`) : ""}
-              </td>
-              <td className="px-4 py-3">{p.birthDate || ""}</td>
-
-<td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
-  {/* Edit */}
-  <button
-    onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
-    className="relative group p-2 text-yellow-700 rounded-md transition"
-  >
-    <Edit2 className="w-4 h-4" />
-    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      {t("pigeonsPage.edit")}
-    </span>
-  </button>
-
-  {/* Delete */}
-  <button
-    onClick={(e) => { e.stopPropagation(); deletePigeon(p.id!); }}
-    className="relative group p-2 text-red-700 rounded-md transition"
-  >
-    <Trash2 className="w-4 h-4" />
-    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      {t("pigeonsPage.delete")}
-    </span>
-  </button>
-
-  {/* Download */}
-  <button
-    onClick={(e) => { e.stopPropagation(); downloadPedigreePdf(p.id!); }}
-    className="relative group p-2 text-blue-700 rounded-md transition"
-  >
-    <FileText className="w-4 h-4" />
-    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      {t("pigeonsPage.download")}
-    </span>
-  </button>
-
-  {/* Parents */}
-  <button
-    onClick={(e) => { e.stopPropagation(); fetchParents(p.id!, p); }}
-    className="relative group p-2 text-green-700 rounded-md transition"
-  >
-    <Users className="w-4 h-4" />
-    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      {t("pigeonsPage.parents")}
-    </span>
-  </button>
-</td>
-
-
-            </tr>
-          ))}
-        </tbody>
-
+          <tbody className="divide-y divide-gray-100">
+            {sortedPigeons.map((p) => (
+              <tr key={p.id} className="cursor-pointer hover:bg-gray-50">
+                <td className="px-4 py-3">{p.id ?? ""}</td>
+                <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
+                <td className="px-4 py-3">{p.name || ""}</td>
+                <td className="px-4 py-3">{p.color || ""}</td>
+                <td
+                  className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}
+                >
+                  {genderSymbol(p.gender).symbol}
+                </td>
+                <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
+                <td className="px-4 py-3">{p.birthDate || ""}</td>
+                <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
+                    className="relative group p-2 text-yellow-700 rounded-md transition"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {t("pigeonsPage.edit")}
+                    </span>
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deletePigeon(p.id!); }}
+                    className="relative group p-2 text-red-700 rounded-md transition"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {t("pigeonsPage.delete")}
+                    </span>
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); downloadPedigreePdf(p.id!); }}
+                    className="relative group p-2 text-blue-700 rounded-md transition"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {t("pigeonsPage.download")}
+                    </span>
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); fetchParents(p.id!, p); }}
+                    className="relative group p-2 text-green-700 rounded-md transition"
+                  >
+                    <Users className="w-4 h-4" />
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {t("pigeonsPage.parents")}
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
 
-      {/* Pigeon Form */}
       {openForm && (
         <PigeonForm
           open={openForm}
@@ -275,13 +273,12 @@ export default function PigeonsPage() {
         />
       )}
 
-      {/* Parent Modal */}
       <ParentModal
         open={showParentsModal}
         onClose={() => setShowParentsModal(false)}
         parents={parents}
         loading={loadingParents}
-        pigeon={selectedPigeon} // no need to force extra fields
+        pigeon={selectedPigeon}
       />
     </div>
   );

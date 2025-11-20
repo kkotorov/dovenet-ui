@@ -36,6 +36,7 @@ export default function AppRouter() {
           <Route path="/settings" element={<UserSettingsPage />} />
           <Route path="/subscriptions" element={<SubscriptionsPage />}/>
           <Route path="/lofts" element={<LoftsPage />}/>
+          <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
         </Route>
 
         {/* FALLBACK */}
