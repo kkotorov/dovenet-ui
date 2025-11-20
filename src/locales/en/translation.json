@@ -288,6 +288,7 @@
     "loftType": "Loft Type",
     "capacity": "Capacity",
     "loftSize": "Size",
+    "gps":"GPS Coordinates: ",
     "deleteConfirm": "Are you sure you want to delete this loft?",
     "pigeons": "Pigeons",
     "viewPigeons": "View Pigeons"
