@@ -20,6 +20,11 @@ export default function CreateEditLoftModal({
   const [loft, setLoft] = useState<Partial<Loft>>({
     name: "",
     type: "racing",
+    address: "",
+    capacity: undefined,
+    loftSize: undefined,
+    gpsLatitude: undefined,
+    gpsLongitude: undefined,
   });
 
   useEffect(() => {
@@ -43,16 +48,16 @@ export default function CreateEditLoftModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeInUp">
         <h2 className="text-2xl font-bold mb-4">
-          {initialData ? t("loftsPage.editLoft") : t("loftsPage.createLoft")}
+          {initialData ? t("createEditLoftModal.editLoft") : t("createEditLoftModal.createLoft")}
         </h2>
 
         <div className="flex flex-col gap-4">
           {/* Name */}
           <div className="flex flex-col">
-            <label className="font-medium text-gray-700">{t("loftsPage.loftName")}</label>
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.loftName")}</label>
             <input
               className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-              placeholder={t("loftsPage.loftName")}
+              placeholder={t("createEditLoftModal.loftName")}
               name="name"
               value={loft.name || ""}
               onChange={handleChange}
@@ -61,10 +66,76 @@ export default function CreateEditLoftModal({
 
           {/* Type */}
           <div className="flex flex-col">
-            <label className="font-medium text-gray-700">{t("loftsPage.loftType")}</label>
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.loftType")}</label>
             <LoftTypeSelect
-              value={(loft.type as LoftType) || "racing"} // cast ensures type safety
+              value={(loft.type as LoftType) || "racing"}
               onChange={(val: LoftType) => setLoft((prev) => ({ ...prev, type: val }))}
+            />
+          </div>
+
+          {/* Address */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.address")}</label>
+            <input
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("createEditLoftModal.address")}
+              name="address"
+              value={loft.address || ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Capacity */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.capacity")}</label>
+            <input
+              type="number"
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("createEditLoftModal.capacity")}
+              name="capacity"
+              value={loft.capacity || ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Loft Size */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.loftSize")}</label>
+            <input
+              type="number"
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("createEditLoftModal.loftSize")}
+              name="loftSize"
+              value={loft.loftSize || ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* GPS Latitude */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.gpsLatitude")}</label>
+            <input
+              type="number"
+              step="any"
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("createEditLoftModal.gpsLatitude")}
+              name="gpsLatitude"
+              value={loft.gpsLatitude || ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* GPS Longitude */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">{t("createEditLoftModal.gpsLongitude")}</label>
+            <input
+              type="number"
+              step="any"
+              className="mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder={t("createEditLoftModal.gpsLongitude")}
+              name="gpsLongitude"
+              value={loft.gpsLongitude || ""}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -75,13 +146,13 @@ export default function CreateEditLoftModal({
             onClick={onClose}
             className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
           >
-            {t("loftsPage.cancel")}
+            {t("createEditLoftModal.cancel")}
           </button>
           <button
             onClick={handleSubmit}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
           >
-            {initialData ? t("loftsPage.update") : t("loftsPage.create")}
+            {initialData ? t("createEditLoftModal.update") : t("createEditLoftModal.create")}
           </button>
         </div>
       </div>

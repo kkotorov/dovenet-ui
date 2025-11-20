@@ -23,6 +23,13 @@ export type LoftType = "racing" | "training" | "breeding" | "parent" | "young" |
 export interface Loft {
   id: number;
   name: string;
-  type: LoftType;
-  pigeons?: number[];
+  type: string;
+  description?: string;
+  address?: string;
+  capacity?: number;
+  loftSize?: number;
+  gpsLatitude?: number;
+  gpsLongitude?: number;
+  pigeonCount: number;
+  owner?: { id: number; username: string };
 }

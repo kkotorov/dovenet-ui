@@ -286,6 +286,8 @@
     "update": "Update",
     "loftName": "Loft Name",
     "loftType": "Loft Type",
+    "capacity": "Capacity",
+    "loftSize": "Size",
     "deleteConfirm": "Are you sure you want to delete this loft?",
     "pigeons": "Pigeons",
     "viewPigeons": "View Pigeons"
@@ -301,11 +303,21 @@
     "parent": "Parent Loft"
   },
   "createEditLoftModal": {
+    "editLoft":"Edit Loft",
+    "createLoft":"Create Loft",
+    "loftType":"Loft Type",
+    "loftName":"Loft Name",
     "titleCreate": "Create Loft",
     "titleEdit": "Edit Loft",
     "nameLabel": "Loft Name",
     "typeLabel": "Loft Type",
-    "saveButton": "Save",
-    "cancelButton": "Cancel"
+    "address": "Address",
+    "capacity": "Capacity",
+    "loftSize": "Loft Size (m²)",
+    "gpsLatitude": "GPS Latitude",
+    "gpsLongitude": "GPS Longitude",  
+    "create": "Create",
+    "update":"Update",
+    "cancel": "Cancel"
   }
 }

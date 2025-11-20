@@ -1,6 +1,6 @@
 import type { Loft } from "../types/index";
 import { useTranslation } from "react-i18next";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, MapPin } from "lucide-react";
 
 interface LoftCardProps {
   loft: Loft;
@@ -11,6 +11,12 @@ interface LoftCardProps {
 
 export default function LoftCard({ loft, onView, onEdit, onDelete }: LoftCardProps) {
   const { t } = useTranslation();
+
+  const openMaps = (lat?: number, lng?: number) => {
+    if (!lat || !lng) return;
+    const url = `https://www.google.com/maps?q=${lat},${lng}`;
+    window.open(url, "_blank");
+  };
 
   return (
     <div
@@ -47,15 +53,50 @@ export default function LoftCard({ loft, onView, onEdit, onDelete }: LoftCardPro
       </div>
 
       {/* Card Body */}
-      <div className="p-6 flex flex-col gap-3">
-        <h2 className="text-xl font-bold text-gray-800">{loft.name}</h2>
+      <div className="p-6 flex flex-col gap-2">
+        {/* Name & Address */}
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-bold text-gray-800">{loft.name}</h2>
+          {loft.address && (
+            <div className="flex items-center gap-1 text-gray-500 text-sm">
+              <span>{loft.address}</span>
+              {loft.gpsLatitude && loft.gpsLongitude && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); openMaps(loft.gpsLatitude, loft.gpsLongitude); }}
+                  className="text-indigo-600 hover:text-indigo-800 transition"
+                  title={t("loftsPage.openMap")}
+                >
+                  <MapPin className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Loft Type */}
         <span className="text-sm text-gray-500">{t(`loftTypes.${loft.type}`)}</span>
 
-        {/* Pigeon Count Badge */}
-        <div className="mt-2 inline-flex items-center gap-2">
+        {/* Badges: Pigeon count + Capacity */}
+        <div className="flex flex-wrap gap-2 mt-2">
           <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full">
-            {loft.pigeons?.length || 0} {t("loftsPage.pigeons")}
+            {loft.pigeonCount} {t("loftsPage.pigeons")}
           </span>
+          {loft.capacity && (
+            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+              {t("loftsPage.capacity")}: {loft.capacity}
+            </span>
+          )}
+        </div>
+
+        {/* Loft size & GPS coordinates */}
+        <div className="flex flex-wrap items-center gap-4 mt-2 text-gray-600 text-sm">
+          {loft.loftSize && <span>{t("loftsPage.loftSize")}: {loft.loftSize} m²</span>}
+          {loft.gpsLatitude && loft.gpsLongitude && (
+            <span className="text-gray-400 text-xs">
+              {t("loftsPage.gps")}: {loft.gpsLatitude.toFixed(6)}, {loft.gpsLongitude.toFixed(6)}
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -285,6 +285,8 @@
     "update": "Обнови",
     "loftName": "Име на Перелня",
     "loftType": "Тип Перелня",
+    "capacity": "Капацитет",
+    "loftSize": "Размер на Гълъбника (м²)",
     "deleteConfirm": "Сигурни ли сте, че искате да изтриете тази пералня?",
     "pigeons": "Гълъби",
     "viewPigeons": "Преглед Гълъби"
@@ -300,11 +302,22 @@
     "parent": "Родителска Перелня"
   },
   "createEditLoftModal": {
-    "titleCreate": "Създай Перелня",
-    "titleEdit": "Редактирай Перелня",
-    "nameLabel": "Име на Перелня",
-    "typeLabel": "Тип Перелня",
-    "saveButton": "Запази",
-    "cancelButton": "Отказ"
+    "editLoft":"Редактирай Перелня",
+    "createLoft":"Създай Перелня",
+    "loftType": "Тип Гълъбник",
+    "loftName": "Име на Гълъбник",
+    "titleCreate": "Създаване на Гълъбник",
+    "titleEdit": "Редактиране на Гълъбник",
+    "nameLabel": "Име на Гълъбник",
+    "typeLabel": "Тип Гълъбник",
+    "address": "Адрес",
+    "capacity": "Капацитет",
+    "loftSize": "Размер на Гълъбника (м²)",
+    "gpsLatitude": "ГПС Ширина",
+    "gpsLongitude": "ГПС Дължина",  
+    "create": "Създай",
+    "update":"Редактирай гълъб",
+    "cancel": "Откажи"
   }
+
 }
