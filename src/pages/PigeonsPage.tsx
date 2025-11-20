@@ -32,13 +32,13 @@ export default function PigeonsPage() {
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [sortField, setSortField] = useState<keyof Pigeon>("ringNumber");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [showParentsModal, setShowParentsModal] = useState(false);
   const [selectedPigeon, setSelectedPigeon] = useState<Pigeon | null>(null);
   const [parents, setParents] = useState<Pigeon[]>([]);
   const [loadingParents, setLoadingParents] = useState(false);
 
-  // Fetch pigeons either for a loft or all
   const fetchPigeons = async () => {
     try {
       const url = loftId ? `/pigeons/loft/${loftId}` : "/pigeons";
@@ -136,7 +136,17 @@ export default function PigeonsPage() {
     }
   };
 
-  const sortedPigeons = [...pigeons].sort((a, b) => {
+  // Filter pigeons by search term
+  const filteredPigeons = pigeons.filter((p) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      p.ringNumber.toLowerCase().includes(term) ||
+      (p.name?.toLowerCase().includes(term) ?? false) ||
+      (p.color?.toLowerCase().includes(term) ?? false)
+    );
+  });
+
+  const sortedPigeons = [...filteredPigeons].sort((a, b) => {
     const aVal = a[sortField] || "";
     const bVal = b[sortField] || "";
     if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
@@ -170,6 +180,17 @@ export default function PigeonsPage() {
             + {t("pigeonsPage.createPigeon")}
           </button>
         </div>
+      </div>
+
+      {/* Search input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder={t("pigeonsPage.searchPlaceholder")}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/3 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        />
       </div>
 
       {/* Table */}
