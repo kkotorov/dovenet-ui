@@ -13,6 +13,8 @@ import LandingPage from '../pages/LandingPage';
 import TopBar from '../components/TopBar';
 import SubscriptionsPage from '../pages/SubscriptionsPage';
 import LoftsPage from '../pages/LoftPage';
+import CompetitionPage from '../pages/CompetitionPage';
+import CompetitionDetailsPage from '../pages/CompetitionDetailsPage';
 
 export default function AppRouter() {
   return (
@@ -37,6 +39,8 @@ export default function AppRouter() {
           <Route path="/subscriptions" element={<SubscriptionsPage />}/>
           <Route path="/lofts" element={<LoftsPage />}/>
           <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
+          <Route path="/competitions" element={<CompetitionPage />}/>
+          <Route path="/competitions/:id" element={<CompetitionDetailsPage />}/>
         </Route>
 
         {/* FALLBACK */}

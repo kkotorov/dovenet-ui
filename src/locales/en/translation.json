@@ -274,7 +274,6 @@
       "analysis": "Competition analysis and stats"
     }
   },
-
   "loftsPage": {
     "title": "Lofts",
     "createLoft": "Create Loft",
@@ -321,5 +320,40 @@
     "create": "Create",
     "saveButton":"Update",
     "cancelButton": "Cancel"
+  },
+  "competitionFormModal": {
+    "createCompetition": "Create Competition",
+    "editCompetition": "Edit Competition",
+    "name": "Name",
+    "date": "Date",
+    "startLatitude": "Start Latitude",
+    "startLongitude": "Start Longitude",
+    "distance": "Distance (km)",
+    "weather": "Weather",
+    "temperature": "Temperature (°C)",
+    "windSpeed": "Wind Speed (km/h)",
+    "windDirection": "Wind Direction",
+    "rain": "Rain",
+    "conditionsNotes": "Weather Notes",
+    "notes": "Notes",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "locationAndDistance": "Location & Distance"
+  },
+  "competitionsPage": {
+    "title": "Competitions",
+    "searchPlaceholder": "Search competitions...",
+    "createCompetition": "Create Competition",
+    "deleteConfirm": "Are you sure you want to delete this competition?",
+    "viewDetails": "View Details",
+    "locationAndDistance": "Location & Distance",
+    "weather": "Weather",
+    "notes": "Notes",
+    "back":"Back"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No"
   }
 }

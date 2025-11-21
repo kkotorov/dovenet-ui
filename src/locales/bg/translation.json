@@ -319,6 +319,40 @@
     "create": "Създай",
     "update":"Редактирай гълъб",
     "cancel": "Откажи"
+  },
+  "competitionFormModal": {
+    "createCompetition": "Създай състезание",
+    "editCompetition": "Редактирай състезание",
+    "name": "Име",
+    "date": "Дата",
+    "startLatitude": "Начална ширина",
+    "startLongitude": "Начална дължина",
+    "distance": "Разстояние (км)",
+    "weather": "Времето",
+    "temperature": "Температура (°C)",
+    "windSpeed": "Скорост на вятъра (км/ч)",
+    "windDirection": "Посока на вятъра",
+    "rain": "Дъжд",
+    "conditionsNotes": "Бележки за времето",
+    "notes": "Бележки",
+    "cancel": "Отказ",
+    "save": "Запази",
+    "create": "Създай",
+    "locationAndDistance": "Локация и разстояние"
+  },
+  "competitionsPage": {
+    "title": "Състезания",
+    "searchPlaceholder": "Търси състезания...",
+    "createCompetition": "Създай състезание",
+    "deleteConfirm": "Сигурни ли сте, че искате да изтриете това състезание?",
+    "viewDetails": "Виж детайли",
+    "locationAndDistance": "Локация и разстояние",
+    "weather": "Времето",
+    "notes": "Бележки",
+    "back":"Обратно към таблото"
+  },
+  "common": {
+    "yes": "Да",
+    "no": "Не"
   }
-
 }
