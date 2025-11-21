@@ -195,12 +195,13 @@
     "deleteFailed": "Failed to delete pigeon",
     "downloadFailed": "Failed to download pedigree",
     "fetchParentsFailed": "Failed to fetch parents",
-    "back": "Back to Dashboard",
+    "back": "Back",
     "noParentInfo": "No parent information",
     "active": "Active",
     "retired": "Retired",
     "lost": "Lost",
-    "gifted": "Gifted"
+    "gifted": "Gifted",
+    "searchPlaceholder":"Search for a pigeon"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
@@ -277,7 +278,7 @@
   "loftsPage": {
     "title": "Lofts",
     "createLoft": "Create Loft",
-    "backToDashboard":"Back to Dashboard",
+    "backToDashboard":"Back",
     "editLoft": "Edit Loft",
     "delete": "Delete",
     "edit": "Edit",
