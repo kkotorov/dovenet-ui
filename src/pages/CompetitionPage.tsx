@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
-import { Edit2, Trash2, MapPin, Cloud, Wind, Droplet,ArrowLeft } from "lucide-react";
+import { Edit2, Trash2, MapPin, Cloud, Wind, Droplet } from "lucide-react";
 import CompetitionFormModal from "../components/CompetitionFormModal";
 import PageHeader from "../components/PageHeader";
 
