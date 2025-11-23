@@ -28,9 +28,6 @@ export default function CompetitionEntryForm({
   const [flightTime, setFlightTime] = useState(initialData?.flightTimeHours ?? "");
   const [notes, setNotes] = useState(initialData?.notes ?? "");
 
-
-
-  console.log('hi');
 useEffect(() => {
   if (open) {
     if (initialData) {
