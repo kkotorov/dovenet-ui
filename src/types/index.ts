@@ -33,3 +33,21 @@ export interface Loft {
   pigeonCount: number;
   owner?: { id: number; username: string };
 }
+
+export interface Competition {
+  id: number;
+  name: string;
+  date?: string;
+  location?: string;
+}
+
+export interface CompetitionEntry {
+  id?: number;
+  competition: Competition;
+  pigeon: Pigeon;
+  place?: number;
+  score?: number;
+  actualDistanceKm?: number;
+  flightTimeHours?: number;
+  notes?: string;
+}

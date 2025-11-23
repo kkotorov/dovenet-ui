@@ -40,7 +40,7 @@ export default function AppRouter() {
           <Route path="/lofts" element={<LoftsPage />}/>
           <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
           <Route path="/competitions" element={<CompetitionPage />}/>
-          <Route path="/competitions/:id" element={<CompetitionDetailsPage />}/>
+          <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
         </Route>
 
         {/* FALLBACK */}

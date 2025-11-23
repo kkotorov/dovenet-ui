@@ -354,5 +354,26 @@
   "common": {
     "yes": "Да",
     "no": "Не"
+  },
+  "competitionDetailsPage": {
+    "title": "Детайли за състезанието",
+    "searchPlaceholder": "Търсене по пръстен или име...",
+    "back": "Назад",
+    "addPigeon": "Добави гълъб"
+  },
+  "competitionEntryForm": {
+    "pigeon": "Гълъб",
+    "place": "Място",
+    "score": "Точки",
+    "distance": "Дистанция (км)",
+    "flightTime": "Време на полет (часове)",
+    "notes": "Бележки",
+    "actions": "Действия",
+
+    "deleteConfirm": "Сигурни ли сте, че искате да изтриете този запис?",
+    "update": "Актуализирай запис",
+    "create": "Създай запис",
+    "selectPigeon": "Изберете гълъб",
+    "cancel": "Отказ"
   }
 }
