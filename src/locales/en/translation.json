@@ -348,14 +348,23 @@
     "title": "Competitions",
     "searchPlaceholder": "Search competitions...",
     "createCompetition": "Create Competition",
-    "deleteConfirm": "Are you sure you want to delete this competition?",
+    "deleteTitle": "Delete Competition",
+    "deleteConfirmText": "Are you sure you want to delete this competition?",
+    "deleted": "Competition deleted successfully",
+    "deleteFailed": "Failed to delete competition",
+    "updated": "Competition updated successfully",
+    "created": "Competition created successfully",
+    "saveFailed": "Failed to save competition",
+    "fetchError": "Failed to fetch competitions",
     "viewDetails": "View Details",
     "locationAndDistance": "Location & Distance",
     "weather": "Weather",
     "notes": "Notes",
-    "back":"Back"
+    "back": "Back"
   },
   "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
     "yes": "Yes",
     "no": "No"
   },
