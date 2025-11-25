@@ -363,7 +363,16 @@
     "title": "Competition Details",
     "searchPlaceholder": "Search by ring number or name...",
     "back": "Back",
-    "addPigeon": "Add Pigeon"
+    "addPigeon": "Add Pigeon",
+    "fetchEntriesError": "Failed to load competition entries.",
+    "fetchPigeonsError": "Failed to load your pigeons.",
+    "fetchCompetitionError": "Failed to load competition.",
+    "saveFailed": "Failed to save entry.",
+    "entryCreated": "Entry created successfully.",
+    "entryUpdated": "Entry updated successfully.",
+    "entryDeleted": "Entry deleted successfully.",
+    "deleteFailed": "Failed to delete entry.",
+    "noEntriesFound": "No entries found."
   },
   "competitionEntryForm": {
     "pigeon": "Pigeon",
@@ -373,7 +382,6 @@
     "flightTime": "Flight Time (hours)",
     "notes": "Notes",
     "actions": "Actions",
-
     "deleteConfirm": "Are you sure you want to delete this entry?",
     "update": "Update Entry",
     "create": "Create Entry",

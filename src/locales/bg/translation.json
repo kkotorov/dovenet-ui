@@ -361,7 +361,16 @@
     "title": "Детайли за състезанието",
     "searchPlaceholder": "Търсене по пръстен или име...",
     "back": "Назад",
-    "addPigeon": "Добави гълъб"
+    "addPigeon": "Добави гълъб",
+    "fetchEntriesError": "Неуспешно зареждане на записите за състезанието.",
+    "fetchPigeonsError": "Неуспешно зареждане на вашите гълъби.",
+    "fetchCompetitionError": "Неуспешно зареждане на състезанието.",
+    "saveFailed": "Неуспешно запазване на записа.",
+    "entryCreated": "Записът е създаден успешно.",
+    "entryUpdated": "Записът е обновен успешно.",
+    "entryDeleted": "Записът е изтрит успешно.",
+    "deleteFailed": "Неуспешно изтриване на записа.",
+    "noEntriesFound": "Не са намерени записи."
   },
   "competitionEntryForm": {
     "pigeon": "Гълъб",
