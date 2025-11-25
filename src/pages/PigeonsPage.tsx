@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import toast, { Toaster } from "react-hot-toast";
 import PigeonForm from "./PigeonForm";
 import ParentModal from "./ParentModal";
 import BulkUpdateModal from "../components/BulkUpdateModal";
@@ -49,8 +50,13 @@ export default function PigeonsPage() {
   const [parents, setParents] = useState<Pigeon[]>([]);
   const [loadingParents, setLoadingParents] = useState(false);
 
-  // New: merged bulk modal
   const [showBulkModal, setShowBulkModal] = useState(false);
+
+  // Confirm delete modal
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [pigeonToDelete, setPigeonToDelete] = useState<Pigeon | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [bulkDelete, setBulkDelete] = useState(false);
 
   /** Fetch pigeons **/
   const fetchPigeons = async () => {
@@ -61,6 +67,7 @@ export default function PigeonsPage() {
       setSelectedPigeons([]);
     } catch (err) {
       console.error(t("pigeonsPage.fetchFailed"), err);
+      toast.error(t("pigeonsPage.fetchFailed"));
       setPigeons([]);
     }
   };
@@ -72,6 +79,7 @@ export default function PigeonsPage() {
       setLofts(res.data);
     } catch (err) {
       console.error("Failed to fetch lofts", err);
+      toast.error(t("loftsPage.fetchFailed"));
       setLofts([]);
     }
   };
@@ -86,9 +94,11 @@ export default function PigeonsPage() {
     try {
       if (loftId) pigeon.loftId = Number(loftId);
       await api.post("/pigeons", pigeon);
+      toast.success(t("pigeonsPage.createSuccess"));
       fetchPigeons();
     } catch (err) {
       console.error(t("pigeonsPage.createFailed"), err);
+      toast.error(t("pigeonsPage.createFailed"));
     }
   };
 
@@ -96,25 +106,45 @@ export default function PigeonsPage() {
     try {
       if (!pigeon.id) throw new Error(t("pigeonsPage.idRequired"));
       await api.patch(`/pigeons/${pigeon.id}`, pigeon);
+      toast.success(t("pigeonsPage.updateSuccess"));
       fetchPigeons();
     } catch (err) {
       console.error(t("pigeonsPage.updateFailed"), err);
+      toast.error(t("pigeonsPage.updateFailed"));
     }
   };
 
-  const deletePigeon = async (id: number) => {
+  const handleDelete = async () => {
+    setDeleteLoading(true);
     try {
-      await api.delete(`/pigeons/${id}`);
+      if (bulkDelete) {
+        await Promise.all(selectedPigeons.map((id) => api.delete(`/pigeons/${id}`)));
+        toast.success(t("pigeonsPage.bulkDeleteSuccess"));
+        setSelectedPigeons([]);
+      } else if (pigeonToDelete?.id) {
+        await api.delete(`/pigeons/${pigeonToDelete.id}`);
+        toast.success(t("pigeonsPage.deleteSuccess"));
+      }
       fetchPigeons();
     } catch (err) {
       console.error(t("pigeonsPage.deleteFailed"), err);
+      toast.error(t("pigeonsPage.deleteFailed"));
+    } finally {
+      setDeleteLoading(false);
+      setDeleteModalOpen(false);
+      setPigeonToDelete(null);
+      setBulkDelete(false);
     }
   };
 
-  const deleteSelectedPigeons = async () => {
-    if (selectedPigeons.length === 0) return;
-    await Promise.all(selectedPigeons.map((id) => deletePigeon(id)));
-    setSelectedPigeons([]);
+  const confirmDelete = (pigeon?: Pigeon) => {
+    if (pigeon) {
+      setPigeonToDelete(pigeon);
+      setBulkDelete(false);
+    } else {
+      setBulkDelete(true);
+    }
+    setDeleteModalOpen(true);
   };
 
   /** Pedigree PDF **/
@@ -128,8 +158,10 @@ export default function PigeonsPage() {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      toast.success(t("pigeonsPage.downloadSuccess"));
     } catch (err) {
       console.error(t("pigeonsPage.downloadFailed"), err);
+      toast.error(t("pigeonsPage.downloadFailed"));
     }
   };
 
@@ -143,6 +175,7 @@ export default function PigeonsPage() {
       setParents(res.data);
     } catch (err) {
       console.error(t("pigeonsPage.fetchParentsFailed"), err);
+      toast.error(t("pigeonsPage.fetchParentsFailed"));
       setParents([]);
     }
     setLoadingParents(false);
@@ -205,6 +238,8 @@ export default function PigeonsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+      <Toaster position="top-right" />
+
       <PageHeader
         title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
         right={
@@ -251,105 +286,103 @@ export default function PigeonsPage() {
           </button>
 
           <button
-            onClick={deleteSelectedPigeons}
+            onClick={() => confirmDelete()}
             className="p-2 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
             title={t("pigeonsPage.deleteSelected")}
           >
             <Trash2 className="w-4 h-4" />
           </button>
-
         </div>
       )}
 
       {/* Table */}
       <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
-  <table className="min-w-full divide-y divide-gray-200">
-    <thead className="bg-gray-100">
-      <tr>
-        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-          <input
-            type="checkbox"
-            checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
-            onChange={toggleSelectAll}
-          />
-        </th>
-        {[
-          ["ringNumber", t("pigeonsPage.ringNumber")],
-          ["name", t("pigeonsPage.name")],
-          ["color", t("pigeonsPage.color")],
-          ["gender", t("pigeonsPage.gender")],
-          ["status", t("pigeonsPage.status")],
-          ["birthDate", t("pigeonsPage.birthDate")],
-          ["loftId", t("pigeonsPage.loft")],
-        ].map(([field, label]) => (
-          <th
-            key={field}
-            className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none whitespace-nowrap"
-            onClick={() => handleSort(field as keyof Pigeon)}
-          >
-            <div className="flex items-center gap-1">
-              {label}
-              {sortField === field && (sortOrder === "asc" ? "↑" : "↓")}
-            </div>
-          </th>
-        ))}
-        <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-          {t("pigeonsPage.actions")}
-        </th>
-      </tr>
-    </thead>
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
+                  onChange={toggleSelectAll}
+                />
+              </th>
+              {[
+                ["ringNumber", t("pigeonsPage.ringNumber")],
+                ["name", t("pigeonsPage.name")],
+                ["color", t("pigeonsPage.color")],
+                ["gender", t("pigeonsPage.gender")],
+                ["status", t("pigeonsPage.status")],
+                ["birthDate", t("pigeonsPage.birthDate")],
+                ["loftId", t("pigeonsPage.loft")],
+              ].map(([field, label]) => (
+                <th
+                  key={field}
+                  className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none whitespace-nowrap"
+                  onClick={() => handleSort(field as keyof Pigeon)}
+                >
+                  <div className="flex items-center gap-1">
+                    {label}
+                    {sortField === field && (sortOrder === "asc" ? "↑" : "↓")}
+                  </div>
+                </th>
+              ))}
+              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+                {t("pigeonsPage.actions")}
+              </th>
+            </tr>
+          </thead>
 
-    <tbody className="divide-y divide-gray-100">
-      {sortedPigeons.map((p) => (
-        <tr key={p.id} className="hover:bg-gray-50">
-          <td className="px-4 py-3">
-            <input
-              type="checkbox"
-              checked={selectedPigeons.includes(p.id!)}
-              onChange={() => toggleSelect(p.id)}
-            />
-          </td>
-          <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
-          <td className="px-4 py-3">{p.name || ""}</td>
-          <td className="px-4 py-3">{p.color || ""}</td>
-          <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
-            {genderSymbol(p.gender).symbol}
-          </td>
-          <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
-          <td className="px-4 py-3">{p.birthDate || ""}</td>
-          <td className="px-4 py-3">{lofts.find((l) => l.id === p.loftId)?.name || "-"}</td>
-          <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
-            <button
-              onClick={() => handleEdit(p)}
-              className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
-            >
-              <Edit2 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => deletePigeon(p.id!)}
-              className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => downloadPedigreePdf(p.id!)}
-              className="p-2 text-blue-700 rounded-md hover:bg-blue-100 transition"
-            >
-              <FileText className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => fetchParents(p.id!, p)}
-              className="p-2 text-green-700 rounded-md hover:bg-green-100 transition"
-            >
-              <Users className="w-4 h-4" />
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+          <tbody className="divide-y divide-gray-100">
+            {sortedPigeons.map((p) => (
+              <tr key={p.id} className="hover:bg-gray-50">
+                <td className="px-4 py-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedPigeons.includes(p.id!)}
+                    onChange={() => toggleSelect(p.id)}
+                  />
+                </td>
+                <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
+                <td className="px-4 py-3">{p.name || ""}</td>
+                <td className="px-4 py-3">{p.color || ""}</td>
+                <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
+                  {genderSymbol(p.gender).symbol}
+                </td>
+                <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
+                <td className="px-4 py-3">{p.birthDate || ""}</td>
+                <td className="px-4 py-3">{lofts.find((l) => l.id === p.loftId)?.name || "-"}</td>
+                <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => handleEdit(p)}
+                    className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => confirmDelete(p)}
+                    className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => downloadPedigreePdf(p.id!)}
+                    className="p-2 text-blue-700 rounded-md hover:bg-blue-100 transition"
+                  >
+                    <FileText className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => fetchParents(p.id!, p)}
+                    className="p-2 text-green-700 rounded-md hover:bg-green-100 transition"
+                  >
+                    <Users className="w-4 h-4" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Pigeon Form */}
       {openForm && (
@@ -386,6 +419,36 @@ export default function PigeonsPage() {
           setSelectedPigeons([]);
         }}
       />
+
+      {/* Confirm Delete Modal */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              {bulkDelete ? t("pigeonsPage.deleteSelectedTitle") : t("pigeonsPage.deleteTitle")}
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              {bulkDelete ? t("pigeonsPage.deleteSelectedConfirm") : t("pigeonsPage.deleteConfirm")}
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setDeleteModalOpen(false)}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                disabled={deleteLoading}
+              >
+                {t("common.cancel")}
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                disabled={deleteLoading}
+              >
+                {t("common.delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

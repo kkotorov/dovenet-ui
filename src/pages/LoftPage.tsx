@@ -5,6 +5,7 @@ import api from "../api/api";
 import LoftCard from "../components/LoftCard";
 import CreateEditLoftModal from "../components/CreateEditLoftModal";
 import type { Loft } from "../types";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function LoftsPage() {
   const { t } = useTranslation();
@@ -13,12 +14,18 @@ export default function LoftsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoft, setEditingLoft] = useState<Loft | undefined>(undefined);
 
+  // Custom delete modal state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [loftToDelete, setLoftToDelete] = useState<Loft | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   const fetchLofts = async () => {
     try {
       const res = await api.get("/lofts");
       setLofts(res.data);
-    } catch {
+    } catch (err) {
       setLofts([]);
+      toast.error(t("loftsPage.fetchFailed"));
     }
   };
 
@@ -36,20 +43,26 @@ export default function LoftsPage() {
     setModalOpen(true);
   };
 
-  const handleDelete = async (loftId: number) => {
-    if (!confirm(t("loftsPage.deleteConfirm"))) return;
-    try {
-      await api.delete(`/lofts/${loftId}`);
-      setLofts((prev) => prev.filter((l) => l.id !== loftId));
-    } catch (err) {
-      console.error(err);
-    }
+  const handleDeleteClick = (loft: Loft) => {
+    setLoftToDelete(loft);
+    setDeleteModalOpen(true);
   };
 
-  // **Navigate to filtered pigeons page**
-  const handleViewPigeons = (loft: Loft) => {
-    // navigate to the pigeons page and pass the loft ID & name
-    navigate(`/lofts/${loft.id}/pigeons`, { state: { loftId: loft.id, loftName: loft.name } });
+  const handleDelete = async () => {
+    if (!loftToDelete) return;
+    setDeleteLoading(true);
+    try {
+      await api.delete(`/lofts/${loftToDelete.id}`);
+      setLofts((prev) => prev.filter((l) => l.id !== loftToDelete.id));
+      toast.success(t("loftsPage.deleteSuccess"));
+      setDeleteModalOpen(false);
+      setLoftToDelete(null);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("loftsPage.deleteFailed"));
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
   const handleSubmit = async (loft: Partial<Loft>) => {
@@ -59,21 +72,29 @@ export default function LoftsPage() {
         setLofts((prev) =>
           prev.map((l) => (l.id === editingLoft.id ? res.data : l))
         );
+        toast.success(t("loftsPage.updateSuccess"));
       } else {
         const res = await api.post("/lofts", loft);
         setLofts((prev) => [...prev, res.data]);
+        toast.success(t("loftsPage.createSuccess"));
       }
+      setModalOpen(false);
     } catch (err) {
       console.error(err);
+      toast.error(editingLoft ? t("loftsPage.updateFailed") : t("loftsPage.createFailed"));
     }
+  };
+
+  const handleViewPigeons = (loft: Loft) => {
+    navigate(`/lofts/${loft.id}/pigeons`, { state: { loftId: loft.id, loftName: loft.name } });
   };
 
   return (
     <div className="p-6">
+      <Toaster position="top-right" />
+
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
-          {t("loftsPage.title")}
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-800">{t("loftsPage.title")}</h1>
         <div className="flex gap-3">
           <button
             onClick={() => navigate("/dashboard")}
@@ -97,7 +118,7 @@ export default function LoftsPage() {
             loft={loft}
             onView={() => handleViewPigeons(loft)}
             onEdit={handleEdit}
-            onDelete={handleDelete}
+            onDelete={() => handleDeleteClick(loft)}
           />
         ))}
       </div>
@@ -108,6 +129,36 @@ export default function LoftsPage() {
         onSubmit={handleSubmit}
         initialData={editingLoft}
       />
+
+      {/* Inline Custom Delete Modal */}
+      {deleteModalOpen && loftToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              {t("loftsPage.deleteTitle")}
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              {t("loftsPage.deleteConfirm")}
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setDeleteModalOpen(false)}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                disabled={deleteLoading}
+              >
+                {t("common.cancel")}
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                disabled={deleteLoading}
+              >
+                {t("common.delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
