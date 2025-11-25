@@ -34,8 +34,6 @@ export default function BulkUpdateModal({ open, onClose, onSubmit, lofts }: Bulk
   const [fatherSuggestions, setFatherSuggestions] = useState<string[]>([]);
   const [motherSuggestions, setMotherSuggestions] = useState<string[]>([]);
 
-  const fatherRef = useRef<HTMLInputElement>(null);
-  const motherRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) {
