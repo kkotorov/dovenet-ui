@@ -52,11 +52,13 @@ export default function PigeonsPage() {
 
   const [showBulkModal, setShowBulkModal] = useState(false);
 
-  // Confirm delete modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pigeonToDelete, setPigeonToDelete] = useState<Pigeon | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [bulkDelete, setBulkDelete] = useState(false);
+
+  // For shift-click selection
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
 
   /** Fetch pigeons **/
   const fetchPigeons = async () => {
@@ -65,6 +67,7 @@ export default function PigeonsPage() {
       const res = await api.get<Pigeon[]>(url);
       setPigeons(res.data);
       setSelectedPigeons([]);
+      setLastSelectedIndex(null);
     } catch (err) {
       console.error(t("pigeonsPage.fetchFailed"), err);
       toast.error(t("pigeonsPage.fetchFailed"));
@@ -223,12 +226,27 @@ export default function PigeonsPage() {
     return 0;
   });
 
-  /** Row selection **/
-  const toggleSelect = (id?: number) => {
+  /** Row selection with shift-click **/
+  const toggleSelect = (id?: number, index?: number, event?: React.MouseEvent) => {
     if (!id) return;
+
+    // Shift-click
+    if (event?.shiftKey && lastSelectedIndex !== null && index !== undefined) {
+      const start = Math.min(lastSelectedIndex, index);
+      const end = Math.max(lastSelectedIndex, index);
+      const rangeIds = sortedPigeons.slice(start, end + 1).map(p => p.id!).filter(Boolean);
+      const newSelected = Array.from(new Set([...selectedPigeons, ...rangeIds]));
+      setSelectedPigeons(newSelected);
+      return;
+    }
+
+    // Normal toggle
     setSelectedPigeons((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
+
+    // Update last selected
+    if (index !== undefined) setLastSelectedIndex(index);
   };
 
   const toggleSelectAll = () => {
@@ -334,13 +352,19 @@ export default function PigeonsPage() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {sortedPigeons.map((p) => (
-              <tr key={p.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3">
+            {sortedPigeons.map((p, index) => (
+              <tr
+                key={p.id}
+                className={`hover:bg-gray-50 cursor-pointer ${
+                  selectedPigeons.includes(p.id!) ? "bg-blue-50" : ""
+                }`}
+                onClick={(e) => toggleSelect(p.id, index, e)}
+              >
+                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
                     checked={selectedPigeons.includes(p.id!)}
-                    onChange={() => toggleSelect(p.id)}
+                    onChange={(e) => toggleSelect(p.id, index, e)}
                   />
                 </td>
                 <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
@@ -352,7 +376,10 @@ export default function PigeonsPage() {
                 <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
                 <td className="px-4 py-3">{p.birthDate || ""}</td>
                 <td className="px-4 py-3">{lofts.find((l) => l.id === p.loftId)?.name || "-"}</td>
-                <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
+                <td
+                  className="px-4 py-3 flex justify-center gap-2 flex-wrap"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button
                     onClick={() => handleEdit(p)}
                     className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
@@ -384,6 +411,7 @@ export default function PigeonsPage() {
         </table>
       </div>
 
+
       {/* Pigeon Form */}
       {openForm && (
         <PigeonForm
@@ -406,7 +434,7 @@ export default function PigeonsPage() {
         pigeon={selectedPigeon}
       />
 
-      {/* NEW: merged Bulk Modal */}
+      {/* Bulk Modal */}
       <BulkUpdateModal
         open={showBulkModal}
         lofts={lofts}
@@ -420,7 +448,7 @@ export default function PigeonsPage() {
         }}
       />
 
-      {/* Confirm Delete Modal */}
+      {/* Confirm Delete */}
       {deleteModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
@@ -428,7 +456,9 @@ export default function PigeonsPage() {
               {bulkDelete ? t("pigeonsPage.deleteSelectedTitle") : t("pigeonsPage.deleteTitle")}
             </h2>
             <p className="text-sm text-gray-600 mb-6">
-              {bulkDelete ? t("pigeonsPage.deleteSelectedConfirm") : t("pigeonsPage.deleteConfirm")}
+              {bulkDelete
+                ? t("pigeonsPage.deleteSelectedConfirm")
+                : t("pigeonsPage.deleteConfirm")}
             </p>
             <div className="flex justify-center gap-4">
               <button
