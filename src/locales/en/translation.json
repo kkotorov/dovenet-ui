@@ -172,12 +172,13 @@
     "updatePigeon": "Update Pigeon",
     "id": "ID",
     "ringNumber": "Ring Number",
-    "name": "Name",
+    "name": "Name", 
     "color": "Color",
     "gender": "Gender",
     "male": "Male",
     "female": "Female",
     "status": "Status",
+    "unknown":"",
     "alive": "Alive",
     "deceased": "Deceased",
     "sold": "Sold",
@@ -201,7 +202,8 @@
     "retired": "Retired",
     "lost": "Lost",
     "gifted": "Gifted",
-    "searchPlaceholder":"Search for a pigeon"
+    "searchPlaceholder":"Search for a pigeon",
+    "bulkUpdate": "Edit selected rows"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
@@ -376,5 +378,26 @@
     "create": "Create Entry",
     "selectPigeon": "Select a pigeon",
     "cancel": "Cancel"
+  },
+  "bulkUpdateModal": {
+    "bulkUpdate": "Bulk Update",
+    "gender": "Gender",
+    "selectOption": "Select Option",
+    "male": "Male",
+    "female": "Female",
+    "status": "Status",
+    "active": "Active",
+    "retired": "Retired",
+    "lost": "Lost",
+    "deceased": "Deceased",
+    "sold": "Sold",
+    "gifted": "Gifted",
+    "injured": "Injured",
+    "moveToLoft": "Move to Loft",
+    "fatherRingNumber": "Father Ring Number",
+    "motherRingNumber": "Mother Ring Number",
+    "birthDate": "Birth Date",
+    "cancel": "Cancel",
+    "update": "Update"
   }
 }

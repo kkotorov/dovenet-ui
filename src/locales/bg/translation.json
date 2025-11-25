@@ -200,7 +200,8 @@
     "active": "Активен",
     "retired": "Пенсиониран",
     "lost": "Изгубен",
-    "gifted": "Дарен"
+    "gifted": "Дарен",
+    "bulkUpdate": "Oбновяване на избраните редове"
   }, 
   "pigeonForm": {
     "createPigeon": "Създай гълъб",
@@ -375,5 +376,26 @@
     "create": "Създай запис",
     "selectPigeon": "Изберете гълъб",
     "cancel": "Отказ"
-  }
+  },
+  "bulkUpdateModal": {
+      "bulkUpdate": "Масово обновяване",
+      "gender": "Пол",
+      "selectOption": "Изберете опция",
+      "male": "Мъжки",
+      "female": "Женски",
+      "status": "Статус",
+      "active": "Активен",
+      "retired": "Пенсиониран",
+      "lost": "Изгубен",
+      "deceased": "Починал",
+      "sold": "Продаден",
+      "gifted": "Подарен",
+      "injured": "Наранен",
+      "moveToLoft": "Преместване в кошера",
+      "fatherRingNumber": "Пръстен на бащата",
+      "motherRingNumber": "Пръстен на майката",
+      "birthDate": "Дата на раждане",
+      "cancel": "Отказ",
+      "update": "Обновяване"
+    }
 }

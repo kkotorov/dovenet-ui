@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PigeonForm from "./PigeonForm";
 import ParentModal from "./ParentModal";
+import BulkUpdateModal from "../components/BulkUpdateModal";
 import api from "../api/api";
 import { Edit2, Trash2, FileText, Users } from "lucide-react";
 import PageHeader from "../components/PageHeader";
@@ -21,6 +22,11 @@ export interface Pigeon {
   owner?: { id: number };
 }
 
+export interface Loft {
+  id: number;
+  name: string;
+}
+
 export default function PigeonsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -29,6 +35,9 @@ export default function PigeonsPage() {
   const loftName = location.state?.loftName || "";
 
   const [pigeons, setPigeons] = useState<Pigeon[]>([]);
+  const [selectedPigeons, setSelectedPigeons] = useState<number[]>([]);
+  const [lofts, setLofts] = useState<Loft[]>([]);
+
   const [openForm, setOpenForm] = useState(false);
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [sortField, setSortField] = useState<keyof Pigeon>("ringNumber");
@@ -40,21 +49,39 @@ export default function PigeonsPage() {
   const [parents, setParents] = useState<Pigeon[]>([]);
   const [loadingParents, setLoadingParents] = useState(false);
 
+  // New: merged bulk modal
+  const [showBulkModal, setShowBulkModal] = useState(false);
+
+  /** Fetch pigeons **/
   const fetchPigeons = async () => {
     try {
       const url = loftId ? `/pigeons/loft/${loftId}` : "/pigeons";
       const res = await api.get<Pigeon[]>(url);
       setPigeons(res.data);
+      setSelectedPigeons([]);
     } catch (err) {
       console.error(t("pigeonsPage.fetchFailed"), err);
       setPigeons([]);
     }
   };
 
+  /** Fetch lofts **/
+  const fetchLofts = async () => {
+    try {
+      const res = await api.get<Loft[]>("/lofts");
+      setLofts(res.data);
+    } catch (err) {
+      console.error("Failed to fetch lofts", err);
+      setLofts([]);
+    }
+  };
+
   useEffect(() => {
     fetchPigeons();
+    fetchLofts();
   }, [loftId]);
 
+  /** CRUD **/
   const createPigeon = async (pigeon: Pigeon) => {
     try {
       if (loftId) pigeon.loftId = Number(loftId);
@@ -84,6 +111,13 @@ export default function PigeonsPage() {
     }
   };
 
+  const deleteSelectedPigeons = async () => {
+    if (selectedPigeons.length === 0) return;
+    await Promise.all(selectedPigeons.map((id) => deletePigeon(id)));
+    setSelectedPigeons([]);
+  };
+
+  /** Pedigree PDF **/
   const downloadPedigreePdf = async (id: number) => {
     try {
       const res = await api.get(`/pigeons/${id}/pedigree/pdf`, { responseType: "blob" });
@@ -99,11 +133,11 @@ export default function PigeonsPage() {
     }
   };
 
+  /** Parents modal **/
   const fetchParents = async (id: number, pigeon: Pigeon) => {
     setSelectedPigeon(pigeon);
     setShowParentsModal(true);
     setLoadingParents(true);
-
     try {
       const res = await api.get<Pigeon[]>(`/pigeons/${id}/parents`);
       setParents(res.data);
@@ -111,15 +145,16 @@ export default function PigeonsPage() {
       console.error(t("pigeonsPage.fetchParentsFailed"), err);
       setParents([]);
     }
-
     setLoadingParents(false);
   };
 
+  /** Editing **/
   const handleEdit = (pigeon: Pigeon) => {
     setEditingPigeon(pigeon);
     setOpenForm(true);
   };
 
+  /** Gender display **/
   const genderSymbol = (gender: string) => {
     if (!gender) return { symbol: "", color: "inherit" };
     const lower = gender.toLowerCase();
@@ -128,15 +163,16 @@ export default function PigeonsPage() {
     return { symbol: "", color: "inherit" };
   };
 
+  /** Sorting **/
   const handleSort = (field: keyof Pigeon) => {
-    if (sortField === field) {
-      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
+    if (sortField === field) setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    else {
       setSortField(field);
       setSortOrder("asc");
     }
   };
 
+  /** Filtering & sorting **/
   const filteredPigeons = pigeons.filter((p) => {
     const term = searchTerm.toLowerCase();
     return (
@@ -154,49 +190,76 @@ export default function PigeonsPage() {
     return 0;
   });
 
+  /** Row selection **/
+  const toggleSelect = (id?: number) => {
+    if (!id) return;
+    setSelectedPigeons((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedPigeons.length === pigeons.length) setSelectedPigeons([]);
+    else setSelectedPigeons(pigeons.map((p) => p.id!).filter(Boolean));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+      <PageHeader
+        title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
+        right={
+          <input
+            type="text"
+            placeholder={t("pigeonsPage.searchPlaceholder")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        }
+        actions={
+          <>
+            <button
+              onClick={() => navigate(loftId ? "/lofts" : "/dashboard")}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+            >
+              ← {t("pigeonsPage.back")}
+            </button>
 
-<PageHeader
-  title={
-    loftName
-      ? `${t("pigeonsPage.managePigeons")} in ${loftName}`
-      : t("pigeonsPage.managePigeons")
-  }
-  right={
-    <input
-      type="text"
-      placeholder={t("pigeonsPage.searchPlaceholder")}
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="px-3 py-2 w-64 rounded-lg border border-gray-300 
-                 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-    />
-  }
-  actions={
-    <>
-      <button
-        onClick={() => navigate(loftId ? "/lofts" : "/dashboard")}
-        className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-      >
-        ← {t("pigeonsPage.back")}
-      </button>
+            <button
+              onClick={() => {
+                setEditingPigeon(null);
+                setOpenForm(true);
+              }}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              + {t("pigeonsPage.createPigeon")}
+            </button>
+          </>
+        }
+      />
 
-      <button
-        onClick={() => {
-          setEditingPigeon(null);
-          setOpenForm(true);
-        }}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-      >
-        + {t("pigeonsPage.createPigeon")}
-      </button>
-    </>
-  }
-/>
+      {/* Bulk actions toolbar */}
+      {selectedPigeons.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 bg-white p-3 rounded-lg shadow">
+          <span className="font-semibold">{selectedPigeons.length}</span>
 
+          <button
+            onClick={() => setShowBulkModal(true)}
+            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            {t("pigeonsPage.bulkUpdate")}
+          </button>
 
+          <button
+            onClick={deleteSelectedPigeons}
+            className="p-2 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+            title={t("pigeonsPage.deleteSelected")}
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
 
+        </div>
+      )}
 
       {/* Table */}
       <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
@@ -204,7 +267,11 @@ export default function PigeonsPage() {
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                #
+                <input
+                  type="checkbox"
+                  checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
+                  onChange={toggleSelectAll}
+                />
               </th>
               {[
                 ["ringNumber", t("pigeonsPage.ringNumber")],
@@ -232,57 +299,36 @@ export default function PigeonsPage() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {sortedPigeons.map((p, index) => (
-              <tr key={p.id} className="cursor-pointer hover:bg-gray-50">
-                
-                {/* ROW NUMBER */}
-                <td className="px-4 py-3 font-semibold">{index + 1}</td>
-
+            {sortedPigeons.map((p) => (
+              <tr key={p.id} className="hover:bg-gray-50">
+                <td className="px-4 py-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedPigeons.includes(p.id!)}
+                    onChange={() => toggleSelect(p.id)}
+                  />
+                </td>
                 <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
                 <td className="px-4 py-3">{p.name || ""}</td>
                 <td className="px-4 py-3">{p.color || ""}</td>
                 <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
                   {genderSymbol(p.gender).symbol}
                 </td>
-                <td className="px-4 py-3">
-                  {p.status ? t(`pigeonsPage.${p.status}`) : ""}
-                </td>
+                <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
                 <td className="px-4 py-3">{p.birthDate || ""}</td>
-
-                <td className="px-4 py-3 flex justify-center gap-3 flex-wrap">
-
-                  {/* Edit */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
-                    className="relative group p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
-                  >
+                <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
+                  <button onClick={() => handleEdit(p)} className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition">
                     <Edit2 className="w-4 h-4" />
                   </button>
-
-                  {/* Delete */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); deletePigeon(p.id!); }}
-                    className="relative group p-2 text-red-700 rounded-md hover:bg-red-100 transition"
-                  >
+                  <button onClick={() => deletePigeon(p.id!)} className="p-2 text-red-700 rounded-md hover:bg-red-100 transition">
                     <Trash2 className="w-4 h-4" />
                   </button>
-
-                  {/* PDF */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); downloadPedigreePdf(p.id!); }}
-                    className="relative group p-2 text-blue-700 rounded-md hover:bg-blue-100 transition"
-                  >
+                  <button onClick={() => downloadPedigreePdf(p.id!)} className="p-2 text-blue-700 rounded-md hover:bg-blue-100 transition">
                     <FileText className="w-4 h-4" />
                   </button>
-
-                  {/* Parents */}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); fetchParents(p.id!, p); }}
-                    className="relative group p-2 text-green-700 rounded-md hover:bg-green-100 transition"
-                  >
+                  <button onClick={() => fetchParents(p.id!, p)} className="p-2 text-green-700 rounded-md hover:bg-green-100 transition">
                     <Users className="w-4 h-4" />
                   </button>
-
                 </td>
               </tr>
             ))}
@@ -290,6 +336,7 @@ export default function PigeonsPage() {
         </table>
       </div>
 
+      {/* Pigeon Form */}
       {openForm && (
         <PigeonForm
           open={openForm}
@@ -302,12 +349,27 @@ export default function PigeonsPage() {
         />
       )}
 
+      {/* Parents Modal */}
       <ParentModal
         open={showParentsModal}
         onClose={() => setShowParentsModal(false)}
         parents={parents}
         loading={loadingParents}
         pigeon={selectedPigeon}
+      />
+
+      {/* NEW: merged Bulk Modal */}
+      <BulkUpdateModal
+        open={showBulkModal}
+        lofts={lofts}
+        onClose={() => setShowBulkModal(false)}
+        onSubmit={async (data) => {
+          await Promise.all(
+            selectedPigeons.map((id) => api.patch(`/pigeons/${id}`, data))
+          );
+          fetchPigeons();
+          setSelectedPigeons([]);
+        }}
       />
     </div>
   );
