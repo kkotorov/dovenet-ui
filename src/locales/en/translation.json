@@ -203,7 +203,8 @@
     "lost": "Lost",
     "gifted": "Gifted",
     "searchPlaceholder":"Search for a pigeon",
-    "bulkUpdate": "Edit selected rows"
+    "bulkUpdate": "Edit selected rows",
+    "loft": "Currently in Loft"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",

@@ -263,78 +263,93 @@ export default function PigeonsPage() {
 
       {/* Table */}
       <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
-                  onChange={toggleSelectAll}
-                />
-              </th>
-              {[
-                ["ringNumber", t("pigeonsPage.ringNumber")],
-                ["name", t("pigeonsPage.name")],
-                ["color", t("pigeonsPage.color")],
-                ["gender", t("pigeonsPage.gender")],
-                ["status", t("pigeonsPage.status")],
-                ["birthDate", t("pigeonsPage.birthDate")]
-              ].map(([field, label]) => (
-                <th
-                  key={field}
-                  className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none whitespace-nowrap"
-                  onClick={() => handleSort(field as keyof Pigeon)}
-                >
-                  <div className="flex items-center gap-1">
-                    {label}
-                    {sortField === field && (sortOrder === "asc" ? "↑" : "↓")}
-                  </div>
-                </th>
-              ))}
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                {t("pigeonsPage.actions")}
-              </th>
-            </tr>
-          </thead>
+  <table className="min-w-full divide-y divide-gray-200">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+          <input
+            type="checkbox"
+            checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
+            onChange={toggleSelectAll}
+          />
+        </th>
+        {[
+          ["ringNumber", t("pigeonsPage.ringNumber")],
+          ["name", t("pigeonsPage.name")],
+          ["color", t("pigeonsPage.color")],
+          ["gender", t("pigeonsPage.gender")],
+          ["status", t("pigeonsPage.status")],
+          ["birthDate", t("pigeonsPage.birthDate")],
+          ["loftId", t("pigeonsPage.loft")],
+        ].map(([field, label]) => (
+          <th
+            key={field}
+            className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none whitespace-nowrap"
+            onClick={() => handleSort(field as keyof Pigeon)}
+          >
+            <div className="flex items-center gap-1">
+              {label}
+              {sortField === field && (sortOrder === "asc" ? "↑" : "↓")}
+            </div>
+          </th>
+        ))}
+        <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+          {t("pigeonsPage.actions")}
+        </th>
+      </tr>
+    </thead>
 
-          <tbody className="divide-y divide-gray-100">
-            {sortedPigeons.map((p) => (
-              <tr key={p.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3">
-                  <input
-                    type="checkbox"
-                    checked={selectedPigeons.includes(p.id!)}
-                    onChange={() => toggleSelect(p.id)}
-                  />
-                </td>
-                <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
-                <td className="px-4 py-3">{p.name || ""}</td>
-                <td className="px-4 py-3">{p.color || ""}</td>
-                <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
-                  {genderSymbol(p.gender).symbol}
-                </td>
-                <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
-                <td className="px-4 py-3">{p.birthDate || ""}</td>
-                <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
-                  <button onClick={() => handleEdit(p)} className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition">
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => deletePigeon(p.id!)} className="p-2 text-red-700 rounded-md hover:bg-red-100 transition">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => downloadPedigreePdf(p.id!)} className="p-2 text-blue-700 rounded-md hover:bg-blue-100 transition">
-                    <FileText className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => fetchParents(p.id!, p)} className="p-2 text-green-700 rounded-md hover:bg-green-100 transition">
-                    <Users className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <tbody className="divide-y divide-gray-100">
+      {sortedPigeons.map((p) => (
+        <tr key={p.id} className="hover:bg-gray-50">
+          <td className="px-4 py-3">
+            <input
+              type="checkbox"
+              checked={selectedPigeons.includes(p.id!)}
+              onChange={() => toggleSelect(p.id)}
+            />
+          </td>
+          <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
+          <td className="px-4 py-3">{p.name || ""}</td>
+          <td className="px-4 py-3">{p.color || ""}</td>
+          <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
+            {genderSymbol(p.gender).symbol}
+          </td>
+          <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
+          <td className="px-4 py-3">{p.birthDate || ""}</td>
+          <td className="px-4 py-3">{lofts.find((l) => l.id === p.loftId)?.name || "-"}</td>
+          <td className="px-4 py-3 flex justify-center gap-2 flex-wrap">
+            <button
+              onClick={() => handleEdit(p)}
+              className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => deletePigeon(p.id!)}
+              className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => downloadPedigreePdf(p.id!)}
+              className="p-2 text-blue-700 rounded-md hover:bg-blue-100 transition"
+            >
+              <FileText className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => fetchParents(p.id!, p)}
+              className="p-2 text-green-700 rounded-md hover:bg-green-100 transition"
+            >
+              <Users className="w-4 h-4" />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
       {/* Pigeon Form */}
       {openForm && (
