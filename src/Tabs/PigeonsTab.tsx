@@ -16,7 +16,7 @@ interface PigeonsTabProps {
   onNavigateBack?: () => void;
 }
 
-export function PigeonsTab({ loftId, loftName, onNavigateBack }: PigeonsTabProps) {
+export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
   const navigate = useNavigate(); // ← add this
     
   const { t } = useTranslation();

@@ -15,7 +15,7 @@ import { useSearchParams } from "react-router-dom";
 
 interface TabItem {
   title: string;
-  icon: React.ReactNode;
+  icon: React.ReactNode;  
   key: string;
   content: React.ReactNode;
 }
@@ -84,7 +84,7 @@ export default function DashboardPage() {
 
 
 
-    
+
     {
       key: "subscriptions",
       title: t("dashboardPage.subscriptions"),
