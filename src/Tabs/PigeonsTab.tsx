@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
-import PigeonForm from "./PigeonForm";
-import ParentModal from "./ParentModal";
+import PigeonForm from "../pages/PigeonForm";
+import ParentModal from "../pages/ParentModal";
 import BulkUpdateModal from "../components/BulkUpdateModal";
 import api from "../api/api";
-import { Edit2, Trash2, FileText, Users, Eye} from "lucide-react";
+import { Edit2, Trash2, FileText, Users, Eye } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import type { Pigeon, Loft } from "../types";
+import { useNavigate } from "react-router-dom";
 
-export default function PigeonsPage() {
+interface PigeonsTabProps {
+  loftId?: number;
+  loftName?: string;
+  onNavigateBack?: () => void;
+}
+
+export function PigeonsTab({ loftId, loftName, onNavigateBack }: PigeonsTabProps) {
+  const navigate = useNavigate(); // ← add this
+    
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { loftId } = useParams<{ loftId: string }>();
-  const location = useLocation();
-  const loftName = location.state?.loftName || "";
 
   const [pigeons, setPigeons] = useState<Pigeon[]>([]);
   const [selectedPigeons, setSelectedPigeons] = useState<number[]>([]);
@@ -39,7 +43,6 @@ export default function PigeonsPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [bulkDelete, setBulkDelete] = useState(false);
 
-  // For shift-click selection
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
 
   /** Fetch pigeons **/
@@ -77,7 +80,7 @@ export default function PigeonsPage() {
   /** CRUD **/
   const createPigeon = async (pigeon: Pigeon) => {
     try {
-      if (loftId) pigeon.loftId = Number(loftId);
+      if (loftId) pigeon.loftId = loftId;
       await api.post("/pigeons", pigeon);
       toast.success(t("pigeonsPage.createSuccess"));
       fetchPigeons();
@@ -214,14 +217,8 @@ export default function PigeonsPage() {
     event?: React.MouseEvent<any> | React.ChangeEvent<any>
   ) => {
     if (!id) return;
+    const isShift = (event as React.MouseEvent)?.shiftKey ?? false;
 
-    // Normalize event so we can always read shiftKey if it exists
-    const isShift =
-      (event as React.MouseEvent)?.shiftKey !== undefined
-        ? (event as React.MouseEvent).shiftKey
-        : false;
-
-    // SHIFT-CLICK RANGE SELECTION
     if (isShift && lastSelectedIndex !== null && index !== undefined) {
       const start = Math.min(lastSelectedIndex, index);
       const end = Math.max(lastSelectedIndex, index);
@@ -237,7 +234,6 @@ export default function PigeonsPage() {
       return;
     }
 
-    // NORMAL TOGGLE
     setSelectedPigeons((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
@@ -267,13 +263,6 @@ export default function PigeonsPage() {
         }
         actions={
           <>
-            <button
-              onClick={() => navigate(-1)} 
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-            >
-              ← {t("pigeonsPage.back")}
-            </button>
-
             <button
               onClick={() => {
                 setEditingPigeon(null);
@@ -513,3 +502,4 @@ export default function PigeonsPage() {
     </div>
   );
 }
+

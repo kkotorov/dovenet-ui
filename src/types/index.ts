@@ -35,10 +35,18 @@ export interface Loft {
 }
 
 export interface Competition {
-  id: number;
+  id?: number;
   name: string;
-  date?: string;
-  location?: string;
+  date: string;
+  startLatitude?: number | null;
+  startLongitude?: number | null;
+  distanceKm?: number | null;
+  notes?: string;
+  temperatureC?: number | null;
+  windSpeedKmH?: number | null;
+  windDirection?: string;
+  rain?: boolean | null;
+  conditionsNotes?: string;
 }
 
 export interface CompetitionEntry {

@@ -204,7 +204,7 @@ export default function PigeonPage() {
             <h2 className="text-xl font-semibold mb-2">{t("pigeonPage.notFound")}</h2>
             <p className="text-sm text-gray-600 mb-4">{t("pigeonPage.notFoundDesc")}</p>
             <button
-              onClick={() => navigate("/pigeons")}
+              onClick={() => navigate(-1)}
               className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
             >
               {t("pigeonPage.backToList")}
@@ -223,7 +223,7 @@ export default function PigeonPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate("/pigeons")}
+              onClick={() => navigate(-1)}
               className="flex items-center gap-2 px-3 py-2 bg-white/80 border border-gray-200 text-gray-800 rounded-lg hover:shadow transition"
             >
               <ArrowLeft className="w-4 h-4" /> <span className="text-sm">{t("pigeonPage.back")}</span>
