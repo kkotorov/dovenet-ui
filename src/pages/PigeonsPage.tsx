@@ -8,25 +8,7 @@ import BulkUpdateModal from "../components/BulkUpdateModal";
 import api from "../api/api";
 import { Edit2, Trash2, FileText, Users } from "lucide-react";
 import PageHeader from "../components/PageHeader";
-
-export interface Pigeon {
-  id?: number;
-  ringNumber: string;
-  name: string;
-  color: string;
-  gender: string;
-  status: string;
-  birthDate: string;
-  loftId?: number;
-  fatherRingNumber?: string;
-  motherRingNumber?: string;
-  owner?: { id: number };
-}
-
-export interface Loft {
-  id: number;
-  name: string;
-}
+import type { Pigeon, Loft } from "../types";
 
 export default function PigeonsPage() {
   const { t } = useTranslation();
