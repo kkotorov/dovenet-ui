@@ -4,6 +4,7 @@ import { Toaster, toast } from "react-hot-toast";
 import api from "../api/api";
 import { FileText, Users, ArrowLeft } from "lucide-react";
 import PigeonForm from "./PigeonForm";
+import type { CompetitionEntry } from "../types";
 
 export interface Pigeon {
   id?: number;
@@ -17,13 +18,6 @@ export interface Pigeon {
   fatherRingNumber?: string;
   motherRingNumber?: string;
   owner?: { id: number };
-}
-
-export interface CompetitionEntry {
-  id: number;
-  competitionName: string;
-  position: number;
-  date: string;
 }
 
 export default function PigeonPage() {
@@ -336,14 +330,21 @@ export default function PigeonPage() {
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-100">
-                  {competitions.map((comp) => (
-                    <tr key={comp.id} className="hover:bg-blue-50 transition">
-                      <td className="px-4 py-3 text-sm text-gray-800">{comp.competitionName}</td>
-                      <td className="px-4 py-3 text-sm text-gray-800">{comp.position}</td>
-                      <td className="px-4 py-3 text-sm text-gray-800">{comp.date}</td>
+                {competitions.map((entry) => (
+                    <tr key={entry.id} className="hover:bg-blue-50 transition">
+                    <td className="px-4 py-3 text-sm text-gray-800">
+                        {entry.competition?.name || "-"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-800">
+                        {entry.place ?? "-"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-800">
+                        {entry.competition?.date || "-"}
+                    </td>
                     </tr>
-                  ))}
+                ))}
                 </tbody>
+
               </table>
             </div>
           )}
