@@ -197,6 +197,7 @@
     "updateSuccess": "Pigeon updated successfully",
     "deleteFailed": "Failed to delete pigeon",
     "deleteSuccess": "Pigeon deleted successfully",
+    "bulkUpdateSuccess": "Bulk update successful!",
     "bulkDeleteSuccess": "Selected pigeons deleted successfully",
     "downloadFailed": "Failed to download pedigree",
     "downloadSuccess": "Pedigree downloaded successfully",

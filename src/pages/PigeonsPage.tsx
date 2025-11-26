@@ -342,7 +342,7 @@ export default function PigeonsPage() {
           </button>
         </div>
       )}
-      
+
       {/* Table */}
       <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
         <table className="min-w-full divide-y divide-gray-200">
@@ -473,11 +473,20 @@ export default function PigeonsPage() {
         lofts={lofts}
         onClose={() => setShowBulkModal(false)}
         onSubmit={async (data) => {
-          await Promise.all(
-            selectedPigeons.map((id) => api.patch(`/pigeons/${id}`, data))
-          );
-          fetchPigeons();
-          setSelectedPigeons([]);
+          try {
+            await Promise.all(
+              selectedPigeons.map((id) => api.patch(`/pigeons/${id}`, data))
+            );
+
+            toast.success(t("pigeonsPage.bulkUpdateSuccess"));
+
+            fetchPigeons();
+            setSelectedPigeons([]);
+            setShowBulkModal(false);
+          } catch (err) {
+            console.error(err);
+            toast.error(t("pigeonsPage.updateFailed"));
+          }
         }}
       />
 
