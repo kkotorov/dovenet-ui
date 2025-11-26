@@ -383,7 +383,10 @@
     "locationAndDistance": "Локация и разстояние",
     "weather": "Време",
     "notes": "Бележки",
-    "back": "Назад"
+    "back": "Назад",
+    "sortByDate": "Сортирай по дата",
+    "sortByName": "Сортирай по име",
+    "sortByDistance": "Сортирай по разстояние"
   },
   "common": {
     "cancel": "Отказ",

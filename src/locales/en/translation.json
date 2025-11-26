@@ -385,7 +385,10 @@
     "locationAndDistance": "Location & Distance",
     "weather": "Weather",
     "notes": "Notes",
-    "back": "Back"
+    "back": "Back",
+    "sortByDate": "Sort by Date",
+    "sortByName": "Sort by Name",
+    "sortByDistance": "Sort by Distance"
   },
   "common": {
     "cancel": "Cancel",
