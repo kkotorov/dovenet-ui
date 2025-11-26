@@ -11,7 +11,6 @@ import { PigeonsTab } from "../Tabs/PigeonsTab";
 import { CompetitionsTab } from "../Tabs/CompetitionsTab";
 import { UserSettingsTab } from "../Tabs/UserSettingsTab";
 import { useSearchParams } from "react-router-dom";
-import { LoftsTab } from "../Tabs/Loftstab";
 
 interface TabItem {
   title: string;
