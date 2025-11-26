@@ -383,7 +383,8 @@
     "cancel": "Отказ",
     "delete": "Изтрий",
     "yes": "Да",
-    "no": "Не"
+    "no": "Не",
+    "clear":"Изчисти"
   },
   "competitionDetailsPage": {
     "title": "Детайли за състезанието",

@@ -226,26 +226,40 @@ export default function PigeonsPage() {
     return 0;
   });
 
-  /** Row selection with shift-click **/
-  const toggleSelect = (id?: number, index?: number, event?: React.MouseEvent) => {
+  const toggleSelect = (
+    id?: number,
+    index?: number,
+    event?: React.MouseEvent<any> | React.ChangeEvent<any>
+  ) => {
     if (!id) return;
 
-    // Shift-click
-    if (event?.shiftKey && lastSelectedIndex !== null && index !== undefined) {
+    // Normalize event so we can always read shiftKey if it exists
+    const isShift =
+      (event as React.MouseEvent)?.shiftKey !== undefined
+        ? (event as React.MouseEvent).shiftKey
+        : false;
+
+    // SHIFT-CLICK RANGE SELECTION
+    if (isShift && lastSelectedIndex !== null && index !== undefined) {
       const start = Math.min(lastSelectedIndex, index);
       const end = Math.max(lastSelectedIndex, index);
-      const rangeIds = sortedPigeons.slice(start, end + 1).map(p => p.id!).filter(Boolean);
-      const newSelected = Array.from(new Set([...selectedPigeons, ...rangeIds]));
-      setSelectedPigeons(newSelected);
+
+      const rangeIds = sortedPigeons
+        .slice(start, end + 1)
+        .map((p) => p.id!)
+        .filter(Boolean);
+
+      setSelectedPigeons((prev) =>
+        Array.from(new Set([...prev, ...rangeIds]))
+      );
       return;
     }
 
-    // Normal toggle
+    // NORMAL TOGGLE
     setSelectedPigeons((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
 
-    // Update last selected
     if (index !== undefined) setLastSelectedIndex(index);
   };
 
@@ -293,8 +307,13 @@ export default function PigeonsPage() {
 
       {/* Bulk actions toolbar */}
       {selectedPigeons.length > 0 && (
-        <div className="mb-4 flex flex-wrap items-center gap-3 bg-white p-3 rounded-lg shadow">
-          <span className="font-semibold">{selectedPigeons.length}</span>
+        <div className="
+          fixed bottom-6 left-1/2 -translate-x-1/2 
+          bg-white shadow-xl rounded-xl px-6 py-3 
+          flex items-center gap-4 z-50
+          border border-gray-200
+        ">
+          <span className="font-semibold">{selectedPigeons.length} selected</span>
 
           <button
             onClick={() => setShowBulkModal(true)}
@@ -310,9 +329,20 @@ export default function PigeonsPage() {
           >
             <Trash2 className="w-4 h-4" />
           </button>
+
+          {/* New: Deselect all button */}
+          <button
+            onClick={() => {
+              setSelectedPigeons([]);
+              setLastSelectedIndex(null);
+            }}
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
+          >
+            {t("common.clear")}
+          </button>
         </div>
       )}
-
+      
       {/* Table */}
       <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
         <table className="min-w-full divide-y divide-gray-200">
@@ -324,6 +354,7 @@ export default function PigeonsPage() {
                   checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
                   onChange={toggleSelectAll}
                 />
+                
               </th>
               {[
                 ["ringNumber", t("pigeonsPage.ringNumber")],
@@ -353,13 +384,14 @@ export default function PigeonsPage() {
 
           <tbody className="divide-y divide-gray-100">
             {sortedPigeons.map((p, index) => (
-              <tr
-                key={p.id}
-                className={`hover:bg-gray-50 cursor-pointer ${
-                  selectedPigeons.includes(p.id!) ? "bg-blue-50" : ""
-                }`}
-                onClick={(e) => toggleSelect(p.id, index, e)}
-              >
+            <tr
+              key={p.id}
+              className={`hover:bg-gray-50 cursor-pointer ${
+                selectedPigeons.includes(p.id!) ? "bg-blue-50" : ""
+              }`}
+              onClick={(e) => toggleSelect(p.id, index, e)}
+            >
+
                 <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
@@ -367,6 +399,7 @@ export default function PigeonsPage() {
                     onChange={(e) => toggleSelect(p.id, index, e)}
                   />
                 </td>
+
                 <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
                 <td className="px-4 py-3">{p.name || ""}</td>
                 <td className="px-4 py-3">{p.color || ""}</td>

@@ -385,7 +385,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "clear":"Clear"
   },
   "competitionDetailsPage": {
     "title": "Competition Details",
