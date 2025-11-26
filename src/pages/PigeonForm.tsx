@@ -12,7 +12,7 @@ interface Loft {
 interface PigeonFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: Pigeon) => void;
+  onSubmit: (data: Pigeon) => void; 
   initialData?: Partial<Pigeon>;
 }
 

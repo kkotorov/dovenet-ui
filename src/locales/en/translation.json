@@ -178,7 +178,7 @@
     "male": "Male",
     "female": "Female",
     "status": "Status",
-    "unknown": "",
+    "unknown": "autocreated as parent reference",
     "alive": "Alive",
     "deceased": "Deceased",
     "sold": "Sold",
@@ -215,7 +215,8 @@
     "deleteConfirm": "Are you sure you want to delete this pigeon?",
     "deleteSelectedTitle": "Delete Selected Pigeons",
     "deleteSelectedConfirm": "Are you sure you want to delete all selected pigeons?",
-    "loft": "Currently in Loft"
+    "loft": "Loft",
+    "autocreated":"autocreated as parent reference"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
@@ -246,7 +247,10 @@
     "mother": "Mother",
     "injured": "Injured",
     "selectLoft": "Select Loft",
-    "loft": "Loft"
+    "loft": "Loft",
+    "createParentsTitle": "Create Missing Parents",
+    "createParentsMessage": "The following parent(s) do not exist: {{father}}{{#if mother}}, {{mother}}{{/if}}. Do you want to create them automatically?",
+    "autocreated":"autocreated as parent reference"
   },
   "parentModal": {
     "title": "Parents Information",
