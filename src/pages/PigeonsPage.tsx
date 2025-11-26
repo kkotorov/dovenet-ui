@@ -437,6 +437,15 @@ export default function PigeonsPage() {
                   >
                     <Users className="w-4 h-4" />
                   </button>
+
+                  <button
+                    onClick={() => navigate(`/pigeons/${p.id}`)}
+                    className="p-2 text-indigo-700 rounded-md hover:bg-indigo-100 transition"
+                    title="View Pigeon"
+                  >
+                    👁️
+                  </button>
+
                 </td>
               </tr>
             ))}

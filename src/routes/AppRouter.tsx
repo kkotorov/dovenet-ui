@@ -15,6 +15,7 @@ import SubscriptionsPage from '../pages/SubscriptionsPage';
 import LoftsPage from '../pages/LoftPage';
 import CompetitionPage from '../pages/CompetitionPage';
 import CompetitionDetailsPage from '../pages/CompetitionDetailsPage';
+import PigeonPage from '../pages/PigeonPage';
 
 export default function AppRouter() {
   return (
@@ -41,6 +42,7 @@ export default function AppRouter() {
           <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
           <Route path="/competitions" element={<CompetitionPage />}/>
           <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
+          <Route path="/pigeons/:id" element={<PigeonPage />} />
         </Route>
 
         {/* FALLBACK */}
