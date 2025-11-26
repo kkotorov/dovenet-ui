@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import LoftCard from "../components/LoftCard";
 import CreateEditLoftModal from "../components/CreateEditLoftModal";
+import PageHeader from "../components/PageHeader";
 import type { Loft } from "../types";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -14,10 +15,11 @@ export default function LoftsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoft, setEditingLoft] = useState<Loft | undefined>(undefined);
 
-  // Custom delete modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [loftToDelete, setLoftToDelete] = useState<Loft | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState(""); // <-- search state
 
   const fetchLofts = async () => {
     try {
@@ -81,7 +83,11 @@ export default function LoftsPage() {
       setModalOpen(false);
     } catch (err) {
       console.error(err);
-      toast.error(editingLoft ? t("loftsPage.updateFailed") : t("loftsPage.createFailed"));
+      toast.error(
+        editingLoft
+          ? t("loftsPage.updateFailed")
+          : t("loftsPage.createFailed")
+      );
     }
   };
 
@@ -89,30 +95,46 @@ export default function LoftsPage() {
     navigate(`/lofts/${loft.id}/pigeons`, { state: { loftId: loft.id, loftName: loft.name } });
   };
 
+  // Filtered lofts by search term
+  const filteredLofts = lofts.filter((loft) =>
+    loft.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-6">
       <Toaster position="top-right" />
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">{t("loftsPage.title")}</h1>
-        <div className="flex gap-3">
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-          >
-            ← {t("loftsPage.backToDashboard")}
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-1"
-          >
-            + {t("loftsPage.createLoft")}
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title={t("loftsPage.title")}
+        right={
+          <input
+            type="text"
+            placeholder={t("loftsPage.searchPlaceholder")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+        }
+        actions={
+          <>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+            >
+              ← {t("loftsPage.backToDashboard")}
+            </button>
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-1"
+            >
+              + {t("loftsPage.createLoft")}
+            </button>
+          </>
+        }
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {lofts.map((loft) => (
+        {filteredLofts.map((loft) => (
           <LoftCard
             key={loft.id}
             loft={loft}
@@ -130,7 +152,6 @@ export default function LoftsPage() {
         initialData={editingLoft}
       />
 
-      {/* Inline Custom Delete Modal */}
       {deleteModalOpen && loftToDelete && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">

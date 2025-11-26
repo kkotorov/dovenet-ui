@@ -318,7 +318,8 @@
     "updateSuccess": "Loft updated successfully",
     "updateFailed": "Failed to update loft",
     "pigeons": "Pigeons",
-    "viewPigeons": "View Pigeons"
+    "viewPigeons": "View Pigeons",
+    "searchPlaceholder":"Search for a loft"
   },
   "loftTypes": {
     "racing": "Racing Loft",
