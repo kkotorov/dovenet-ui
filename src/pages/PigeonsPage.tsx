@@ -6,7 +6,7 @@ import PigeonForm from "./PigeonForm";
 import ParentModal from "./ParentModal";
 import BulkUpdateModal from "../components/BulkUpdateModal";
 import api from "../api/api";
-import { Edit2, Trash2, FileText, Users } from "lucide-react";
+import { Edit2, Trash2, FileText, Users, Eye} from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import type { Pigeon, Loft } from "../types";
 
@@ -396,6 +396,13 @@ export default function PigeonsPage() {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
+                    onClick={() => navigate(`/pigeons/${p.id}`)}
+                    className="p-2 text-indigo-700 rounded-md hover:bg-indigo-100 transition flex items-center justify-center"
+                    title={t("pigeonsPage.viewPigeon")}
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button
                     onClick={() => handleEdit(p)}
                     className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
                   >
@@ -419,15 +426,6 @@ export default function PigeonsPage() {
                   >
                     <Users className="w-4 h-4" />
                   </button>
-
-                  <button
-                    onClick={() => navigate(`/pigeons/${p.id}`)}
-                    className="p-2 text-indigo-700 rounded-md hover:bg-indigo-100 transition"
-                    title="View Pigeon"
-                  >
-                    👁️
-                  </button>
-
                 </td>
               </tr>
             ))}
