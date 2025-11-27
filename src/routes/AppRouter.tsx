@@ -4,7 +4,6 @@ import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import PigeonsPage from '../pages/PigeonsPage';
-import UserSettingsPage from '../pages/UserSettingsPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import VerifyEmailPage from '../pages/VerifyEmailPage';
@@ -12,8 +11,6 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import LandingPage from '../pages/LandingPage';
 import TopBar from '../components/TopBar';
 import SubscriptionsPage from '../pages/SubscriptionsPage';
-import LoftsPage from '../pages/LoftPage';
-import CompetitionPage from '../pages/CompetitionPage';
 import CompetitionDetailsPage from '../pages/CompetitionDetailsPage';
 import PigeonPage from '../pages/PigeonPage';
 
@@ -35,12 +32,8 @@ export default function AppRouter() {
         {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/pigeons" element={<PigeonsPage />} />
-          <Route path="/settings" element={<UserSettingsPage />} />
           <Route path="/subscriptions" element={<SubscriptionsPage />}/>
-          <Route path="/lofts" element={<LoftsPage />}/>
           <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
-          <Route path="/competitions" element={<CompetitionPage />}/>
           <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
           <Route path="/pigeons/:id" element={<PigeonPage />} />
         </Route>

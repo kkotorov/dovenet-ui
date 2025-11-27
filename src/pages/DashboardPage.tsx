@@ -12,6 +12,7 @@ import { CompetitionsTab } from "../Tabs/CompetitionsTab";
 import { UserSettingsTab } from "../Tabs/UserSettingsTab";
 import { useSearchParams } from "react-router-dom";
 import { LoftsTab } from "../Tabs/LoftsTab";
+import { SubscriptionsTab } from "../Tabs/SubscriptionsTab";
 
 interface TabItem {
   title: string;
@@ -81,16 +82,16 @@ export default function DashboardPage() {
       icon: <Settings />,
       content: <UserSettingsTab />
     },
-
-
-
-
     {
       key: "subscriptions",
       title: t("dashboardPage.subscriptions"),
       icon: <CreditCard />,
-      content: <div>{t("dashboardPage.manageSubscriptionsText")}</div>,
+      content: <SubscriptionsTab/>,
     },
+
+
+
+
     {
       key: "breeding",
       title: t("dashboardPage.breeding"),

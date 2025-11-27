@@ -266,6 +266,13 @@
     "cancel": "Cancel"
   },
   "subscriptionPage": {
+    "tabs": {
+      "currentPlan": "Current Plan",
+      "changePlan": "Change Plan",
+      "billingHistory": "Billing History",
+      "cancelSubscription": "Cancel Subscription"
+    },
+    "changePlan": "Change Plan",
     "title": "Choose Your Plan",
     "subtitle": "Manage your pigeons and competitions with the plan that fits you best.",
     "monthly": "Monthly",
@@ -273,14 +280,17 @@
     "month": "mo",
     "backToDashboard": "Back to Dashboard",
     "choosePlan": "Choose Plan",
+    "currentPlan": "Current Plan",
+    "activePlan": "Active Plan",
+    "billingCycle": "Billing Cycle",
+    "nextBilling": "Next Billing",
+    "viewInvoices": "View Invoices",
     "yearlyDiscountInfo": "Pay yearly and save up to 45%!",
-    
     "freeTrial": "14-Day Free Trial",
     "freePlanLimit14Days": "Limited to 14 days usage",
     "freePlan": "Free Plan",
     "standardPlan": "Standard Plan",
     "premiumPlan": "Premium Plan",
-
     "planFeatures": {
       "unlimitedPigeons": "Unlimited pigeons in your account",
       "singleLoft": "1 loft only",
@@ -290,7 +300,15 @@
       "pedigreeDownloads50": "50 pedigree downloads per month",
       "pedigreeDownloadsUnlimited": "Unlimited pedigree downloads",
       "analysis": "Competition analysis and stats"
-    }
+    },
+    "noHistory": "No billing history available.",
+    "date": "Date",
+    "amount": "Amount",
+    "status": "Status",
+    "cancelSubscription": "Cancel Active Subscription",
+    "cancelWarning": "Are you sure you want to cancel your subscription? This action cannot be undone.",
+    "proceedCancel": "Proceed to Cancel",
+    "billingHistory":"Billing History"
   },
   "loftsPage": {
     "title": "Lofts",
