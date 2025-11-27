@@ -10,7 +10,6 @@ import VerifyEmailPage from '../pages/VerifyEmailPage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import LandingPage from '../pages/LandingPage';
 import TopBar from '../components/TopBar';
-import SubscriptionsPage from '../pages/SubscriptionsPage';
 import CompetitionDetailsPage from '../pages/CompetitionDetailsPage';
 import PigeonPage from '../pages/PigeonPage';
 
@@ -32,7 +31,6 @@ export default function AppRouter() {
         {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/subscriptions" element={<SubscriptionsPage />}/>
           <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
           <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
           <Route path="/pigeons/:id" element={<PigeonPage />} />

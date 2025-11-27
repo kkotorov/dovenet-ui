@@ -113,7 +113,7 @@ export function LoftsTab() {
         actions={
           <button
             onClick={handleCreate}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-1"
+            className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition flex items-center gap-1"
           >
             + {t("loftsPage.createLoft")}
           </button>

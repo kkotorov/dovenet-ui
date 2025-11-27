@@ -4,7 +4,8 @@
 
 body {
   margin: 0;
-  background-color: #f9f9f9;
-  font-family: 'Roboto', sans-serif;
-  color: #333;
+  background-color: #E5E8EB; /* updated to match new theme default background */
+  font-family: 'Inter', 'Roboto', sans-serif; /* updated font */
+  color: #1A1A1A; /* primary text color from theme */
 }
+

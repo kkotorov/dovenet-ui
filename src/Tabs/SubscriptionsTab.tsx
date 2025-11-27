@@ -85,12 +85,16 @@ export function SubscriptionsTab() {
         onClick={() => setBilling(billing === "monthly" ? "yearly" : "monthly")}
       >
         <div
-          className={`absolute top-0.5 left-0.5 w-1/2 h-9 bg-indigo-600 rounded-full shadow-md transition-all duration-300 ease-in-out
+          className={`absolute top-0.5 left-0.5 w-1/2 h-9 bg-indigo-500 rounded-full shadow-md transition-all duration-300 ease-in-out
             ${billing === "yearly" ? "translate-x-full" : "translate-x-0"}`}
         />
         <div className="relative z-10 w-full flex justify-between px-4 text-sm font-semibold text-gray-700">
-          <span className={`${billing === "monthly" ? "text-white" : ""}`}>{t("subscriptionPage.monthly")}</span>
-          <span className={`${billing === "yearly" ? "text-white" : ""}`}>{t("subscriptionPage.yearly")}</span>
+          <span className={`${billing === "monthly" ? "text-white" : ""}`}>
+            {t("subscriptionPage.monthly")}
+          </span>
+          <span className={`${billing === "yearly" ? "text-white" : ""}`}>
+            {t("subscriptionPage.yearly")}
+          </span>
         </div>
       </div>
     </div>
@@ -108,9 +112,11 @@ export function SubscriptionsTab() {
       >
         <h2 className="text-xl font-semibold mb-2">{plan.title}</h2>
         {displayPrice && (
-          <p className="text-3xl font-bold text-indigo-600 mb-2">
+          <p className="text-3xl font-bold text-indigo-500 mb-2">
             {displayPrice}
-            {billing === "monthly" ? <span className="text-sm text-gray-600">/{t("subscriptionPage.month")}</span> : null}
+            {billing === "monthly" ? (
+              <span className="text-sm text-gray-600">/{t("subscriptionPage.month")}</span>
+            ) : null}
           </p>
         )}
         {plan.trial && <p className="text-sm text-red-600 font-semibold mb-2">{plan.trial}</p>}
@@ -124,7 +130,7 @@ export function SubscriptionsTab() {
         </div>
         <button
           className={`mt-auto py-2 rounded-lg text-white font-medium transition ${
-            isCurrent ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
+            isCurrent ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500 hover:bg-indigo-400"
           }`}
         >
           {isCurrent ? t("subscriptionPage.currentPlan") : t("subscriptionPage.choosePlan")}
@@ -144,8 +150,8 @@ export function SubscriptionsTab() {
             onClick={() => setActiveTab(tab as any)}
             className={`px-4 py-2 rounded-full font-semibold transition ${
               activeTab === tab
-                ? "bg-indigo-600 text-white"
-                : "bg-white text-indigo-600 shadow"
+                ? "bg-indigo-500 text-white"
+                : "bg-white text-indigo-500 shadow"
             }`}
           >
             {t(`subscriptionPage.tabs.${tab}`)}
@@ -167,7 +173,7 @@ export function SubscriptionsTab() {
             {t("subscriptionPage.nextBilling")}: <strong>{nextBillingDate}</strong>
           </p>
           <div className="flex gap-4 mt-4 flex-wrap">
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+            <button className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-400 transition">
               {t("subscriptionPage.changePlan")}
             </button>
             <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
