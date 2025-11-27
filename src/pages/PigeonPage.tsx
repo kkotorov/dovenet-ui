@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import api from "../api/api";
-import { FileText, Users, ArrowLeft } from "lucide-react";
+import {Users, ArrowLeft } from "lucide-react";
 import PigeonForm from "./PigeonForm";
 import type { Pigeon, CompetitionEntry, Loft } from "../types";
 import { useTranslation } from "react-i18next";
+
+import { PedigreeTree } from "../components/PedigreeTree";
+import { useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export default function PigeonPage() {
   const { t } = useTranslation();
@@ -134,6 +139,7 @@ export default function PigeonPage() {
     fetchLofts();
   }, [t]);
 
+  /*
   const downloadPedigreePdf = async () => {
     if (!pigeon?.id) return;
     try {
@@ -150,6 +156,22 @@ export default function PigeonPage() {
       console.error(err);
       toast.error(t("pigeonPage.downloadPdfError"));
     }
+  }; */
+
+  const treeRef = useRef<HTMLDivElement>(null);
+
+  const downloadPedigreePdf = async () => {
+    if (!treeRef.current) return;
+
+    const canvas = await html2canvas(treeRef.current, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("landscape", "pt", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, pdfHeight - 40);
+    pdf.save(`pedigree_${pigeon?.ringNumber}.pdf`);
   };
 
   const genderSymbol = (gender: string) => {
@@ -177,6 +199,22 @@ export default function PigeonPage() {
       toast.error(t("pigeonPage.updateError"));
     }
   };
+
+  useEffect(() => {
+  if (!pigeon) return;
+
+  const loadFullPedigree = async () => {
+    try {
+      const fullTree = await fetchAncestry(pigeon, 3); // 3 generations
+      setPigeon(fullTree); // now pigeon has nested parents/grandparents
+    } catch (err) {
+      console.error("Failed to load full pedigree", err);
+    }
+  };
+
+  loadFullPedigree();
+}, [pigeon]);
+
 
   if (loading) {
     return (
@@ -244,12 +282,13 @@ export default function PigeonPage() {
               {t("pigeonPage.editPigeon")}
             </button>
 
-            <button
-              onClick={downloadPedigreePdf}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm transition"
-            >
-              <FileText className="w-4 h-4" /> <span className="hidden sm:inline">{t("pigeonPage.downloadPedigree")}</span>
-            </button>
+            {/* Download button */}
+              <button
+                onClick={downloadPedigreePdf}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm transition"
+              >
+                Download Pedigree PDF
+              </button>
           </div>
         </div>
 
@@ -411,6 +450,22 @@ export default function PigeonPage() {
                 </tbody>
               </table>
             </div>
+          )}
+        </div>
+
+        {/* Pedigree Tree */}
+        <div
+          ref={treeRef}  // <-- attach ref here
+          className="bg-white shadow-md rounded-2xl p-6 border border-gray-100"
+        >
+          <h2 className="text-lg font-semibold mb-4">Pedigree</h2>
+          {pigeon && (
+            <PedigreeTree
+              pigeon={{
+                ...pigeon,
+              }}
+              generations={2} // adjust generations
+            />
           )}
         </div>
 
