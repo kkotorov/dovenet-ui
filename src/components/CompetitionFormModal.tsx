@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import type { Competition } from "../pages/CompetitionPage";
+import type { Competition } from "../types";
 
 interface Props {
   open: boolean;
