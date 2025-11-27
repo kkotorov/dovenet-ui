@@ -1,7 +1,3 @@
-// Full implementation with lighter sidebar color
-// React + TailwindCSS
-// Replace your DashboardPage.tsx with this file content
-
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
@@ -110,28 +106,25 @@ export default function DashboardPage() {
         </div>
 
         {/* Tabs */}
-<div className="flex flex-col space-y-2 mt-4">
-  {tabs.map(tab => (
-    <button
-      key={tab.key}
-      onClick={() => handleTabChange(tab.key)}
-      className={`
-        flex items-center gap-3 rounded-xl transition backdrop-blur-xl
-        ${collapsed ? "justify-center px-0 py-3 w-full" : "justify-start px-4 py-3"}
-        ${activeTab === tab.key
-          ? "bg-indigo-400 text-white shadow-lg"
-          : "bg-indigo-400/70 text-white hover:bg-indigo-300/70"
-        }
-      `}
-    >
-      <span className="flex-shrink-0">{tab.icon}</span>
-      {!collapsed && <span>{tab.title}</span>}
-    </button>
-  ))}
-</div>
-
-
-
+        <div className="flex flex-col space-y-2 mt-4">
+          {tabs.map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => handleTabChange(tab.key)}
+              className={`
+                flex items-center gap-3 rounded-xl transition backdrop-blur-xl
+                ${collapsed ? "justify-center px-0 py-3 w-full" : "justify-start px-4 py-3"}
+                ${activeTab === tab.key
+                  ? "bg-indigo-400 text-white shadow-lg"
+                  : "bg-indigo-400/70 text-white hover:bg-indigo-300/70"
+                }
+              `}
+            >
+              <span className="flex-shrink-0">{tab.icon}</span>
+              {!collapsed && <span>{tab.title}</span>}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* CONTENT */}
