@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 interface PedigreeTreeProps {
   pigeon: Pigeon;
   generations: number;
+  competitions?: CompetitionEntry[]; // competitions for the top pigeon
   boxWidth?: number;
   boxHeight?: number;
   horizontalSpacing?: number;
@@ -21,10 +22,11 @@ interface TreeNode extends Pigeon {
 export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
   pigeon,
   generations,
-  boxWidth = 200,      // wider rectangle
-  boxHeight = 100,     // taller box
-  horizontalSpacing = 50,
-  verticalSpacing = 30,
+  competitions,
+  boxWidth = 260,
+  boxHeight = 160,
+  horizontalSpacing = 60,
+  verticalSpacing = 40,
 }) => {
   const { t } = useTranslation();
   const [tree, setTree] = useState<TreeNode | null>(null);
@@ -40,14 +42,20 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
       try {
         const res = await api.get<Pigeon[]>(`/pigeons?ringNumber=${encodeURIComponent(rn)}`);
         if (!Array.isArray(res.data) || res.data.length === 0) return undefined;
-        const exact = res.data.find((p) => p.ringNumber && p.ringNumber.trim().toUpperCase() === rn);
+        const exact = res.data.find(
+          (p) => p.ringNumber && p.ringNumber.trim().toUpperCase() === rn
+        );
         return exact || undefined;
       } catch {
         return undefined;
       }
     };
 
-    const buildTree = async (p: Pigeon | undefined, level: number, seen = new Set<string | number>()): Promise<TreeNode | undefined> => {
+    const buildTree = async (
+      p: Pigeon | undefined,
+      level: number,
+      seen = new Set<string | number>()
+    ): Promise<TreeNode | undefined> => {
       if (!p || level <= 0) return p ? ({ ...p } as TreeNode) : undefined;
 
       const key = p.id ?? p.ringNumber;
@@ -59,8 +67,12 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
       const hasFatherObj = (p as any).father && typeof (p as any).father === "object";
       const hasMotherObj = (p as any).mother && typeof (p as any).mother === "object";
 
-      const fatherPromise = (async () => hasFatherObj ? (p as any).father as Pigeon : await fetchParentByRing(p.fatherRingNumber))();
-      const motherPromise = (async () => hasMotherObj ? (p as any).mother as Pigeon : await fetchParentByRing(p.motherRingNumber))();
+      const fatherPromise = (async () =>
+        hasFatherObj ? (p as any).father as Pigeon : await fetchParentByRing(p.fatherRingNumber)
+      )();
+      const motherPromise = (async () =>
+        hasMotherObj ? (p as any).mother as Pigeon : await fetchParentByRing(p.motherRingNumber)
+      )();
 
       const [father, mother] = await Promise.all([fatherPromise, motherPromise]);
 
@@ -80,7 +92,9 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
       }
     })();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [pigeon, generations]);
 
   if (!tree) return <div>Loading pedigree...</div>;
@@ -93,15 +107,39 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     return { symbol: "", color: "#6B7280" };
   };
 
-  const renderTreeLR = (node: TreeNode | undefined) => {
+  const renderCompetitions = (competitions?: CompetitionEntry[]) => {
+    if (!competitions || competitions.length === 0) return null;
+
+    return (
+      <table style={{ fontSize: 10, width: "100%", marginTop: 4, borderCollapse: "collapse" }}>
+        <tbody>
+          {competitions.map((c) => (
+            <tr key={c.id}>
+              <td style={{ padding: 2 }}>{c.competition?.name || "-"}</td>
+              <td style={{ padding: 2 }}>{c.competition?.date || "-"}</td>
+              <td style={{ padding: 2, textAlign: "right" }}>{c.actualDistanceKm ?? "-"}</td>
+              <td style={{ padding: 2, textAlign: "right" }}>{c.place ?? "-"}</td>
+              <td style={{ padding: 2, textAlign: "right" }}>{c.score ?? "-"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
+  const renderTreeLR = (node: TreeNode | undefined, level: number = 0) => {
     if (!node) return <div style={{ width: boxWidth, height: boxHeight }} />;
 
-    const fatherElem = renderTreeLR(node.father);
-    const motherElem = renderTreeLR(node.mother);
+    const fatherElem = renderTreeLR(node.father, level + 1);
+    const motherElem = renderTreeLR(node.mother, level + 1);
 
     const birthDate = node.birthDate ? new Date(node.birthDate) : null;
-    const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : "-";
-    const competitionCount = node.competitions?.length ?? 0;
+    const monthYear = birthDate
+      ? birthDate.toLocaleString("default", { month: "short", year: "numeric" })
+      : "-";
+
+    // Only show competitions for top pigeon (level 0) and its parents (level 1)
+    const competitionsToShow = level <= 1 ? (level === 0 ? competitions : node.competitions) : undefined;
 
     return (
       <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: horizontalSpacing }}>
@@ -115,31 +153,52 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
             backgroundColor: "#F3F4F6",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             alignItems: "center",
             textAlign: "center",
             padding: 8,
             boxSizing: "border-box",
           }}
         >
-          {/* Ring number + gender on single line */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 8, alignItems: "center", fontWeight: 600, fontSize: 14, flexWrap: "nowrap" }}>
+          {/* Ring number + gender */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 8,
+              alignItems: "center",
+              fontWeight: 600,
+              fontSize: 14,
+              flexWrap: "nowrap",
+            }}
+          >
             <span>{node.ringNumber || "-"}</span>
-            <span style={{ color: genderSymbol(node.gender).color }}>{genderSymbol(node.gender).symbol}</span>
+            <span style={{ color: genderSymbol(node.gender).color }}>
+              {genderSymbol(node.gender).symbol}
+            </span>
           </div>
 
           {/* Name */}
-          <div style={{ fontSize: 14, fontWeight: 500, marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              marginTop: 6,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             {node.name || t("pigeonPage.notInDatabase")}
           </div>
 
           {/* Birth month/year */}
           <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{monthYear}</div>
 
-          {/* Competition info */}
-          <div style={{ fontSize: 12, color: "#10B981", marginTop: 2 }}>
-            {competitionCount} {t("pigeonPage.competitions")}
-          </div>
+          {/* Competitions */}
+          {competitionsToShow && (
+            <div style={{ width: "100%", marginTop: 4 }}>{renderCompetitions(competitionsToShow)}</div>
+          )}
         </div>
 
         {/* Parents Stack */}
@@ -155,4 +214,3 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
 
   return <div style={{ display: "flex", justifyContent: "flex-start" }}>{renderTreeLR(tree)}</div>;
 };
-

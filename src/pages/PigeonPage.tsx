@@ -462,12 +462,12 @@ export default function PigeonPage() {
         >
           <h2 className="text-lg font-semibold mb-4">Pedigree</h2>
           {pigeon && (
-            <PedigreeTree
-              pigeon={{
-                ...pigeon,
-              }}
-              generations={3} // adjust generations
-            />
+<PedigreeTree
+  pigeon={{ ...pigeon }}
+  generations={3}
+  competitions={sortedCompetitions} // <- pass it here
+/>
+
           )}
         </div>
 
