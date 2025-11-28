@@ -1,8 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { getCurrentUser } from "../api/auth";
+import { useUser } from "../UserContext";
 
 export default function ProtectedRoute() {
-  const user = getCurrentUser();
+  const { user, loading } = useUser();
+
+  if (loading) return <div>Loading...</div>;
 
   if (!user) {
     return <Navigate to="/login" replace />;

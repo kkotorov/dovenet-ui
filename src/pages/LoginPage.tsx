@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { loginUser } from "../api/auth";
+import { useUser } from "../UserContext"; 
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { refreshUser } = useUser();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +21,7 @@ export default function LoginPage() {
 
     try {
       await loginUser(username, password);
+      await refreshUser();
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || t("loginPage.errorMessage"));
@@ -31,7 +34,6 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         
-        {/* Title */}
         <h1 className="text-3xl font-bold text-indigo-600 text-center mb-2">
           {t("loginPage.title")}
         </h1>
@@ -39,14 +41,12 @@ export default function LoginPage() {
           {t("loginPage.description")}
         </p>
 
-        {/* Error message */}
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
             {error}
           </div>
         )}
 
-        {/* Form */}
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           <input
             type="text"
@@ -56,6 +56,7 @@ export default function LoginPage() {
             required
             className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
+
           <input
             type="password"
             placeholder={t("loginPage.passwordLabel")}
@@ -64,6 +65,7 @@ export default function LoginPage() {
             required
             className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
+
           <button
             type="submit"
             disabled={loading}
@@ -73,7 +75,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Links */}
         <div className="flex flex-col gap-2 mt-4 text-center">
           <button
             onClick={() => navigate("/register")}
@@ -81,6 +82,7 @@ export default function LoginPage() {
           >
             {t("loginPage.registerLink")}
           </button>
+
           <button
             onClick={() => navigate("/forgot-password")}
             className="text-gray-600 hover:underline font-medium"
