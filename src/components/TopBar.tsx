@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import i18n from "../i18n";
 import { createPortal } from "react-dom";
 import api from "../api/api";
-
 import { useUser } from "../UserContext";
 
 export default function TopBar() {
