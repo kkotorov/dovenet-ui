@@ -497,6 +497,8 @@
     "noCompetitions": "No competitions found",
     "competition": "Competition",
     "position": "Position",
-    "date": "Date"
+    "date": "Date",
+    "distance": "Distance (km)",
+    "score": "Score"
   }
 }

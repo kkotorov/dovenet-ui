@@ -393,49 +393,67 @@ export default function PigeonPage() {
           </div>
         </div>
 
-        {/* Competitions */}
-        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
-          <h2 className="text-lg font-semibold mb-4">{t("pigeonPage.competitions")}</h2>
-          {competitions.length === 0 ? (
-            <p className="text-gray-500">{t("pigeonPage.noCompetitions")}</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th
-                      className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                      onClick={() => handleSort("name")}
-                    >
-                      {t("pigeonPage.competition")}
-                    </th>
-                    <th
-                      className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                      onClick={() => handleSort("place")}
-                    >
-                      {t("pigeonPage.position")}
-                    </th>
-                    <th
-                      className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                      onClick={() => handleSort("date")}
-                    >
-                      {t("pigeonPage.date")}
-                    </th>
+       {/* Competitions */}
+      <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
+        <h2 className="text-lg font-semibold mb-4">{t("pigeonPage.competitions")}</h2>
+        {competitions.length === 0 ? (
+          <p className="text-gray-500">{t("pigeonPage.noCompetitions")}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={() => handleSort("name")}
+                  >
+                    {t("pigeonPage.competition")}
+                  </th>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={() => handleSort("date")}
+                  >
+                    {t("pigeonPage.date")}
+                  </th>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={() => handleSort("distance")}
+                  >
+                    {t("pigeonPage.distance")}
+                  </th>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={() => handleSort("place")}
+                  >
+                    {t("pigeonPage.position")}
+                  </th>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={() => handleSort("score")}
+                  >
+                    {t("pigeonPage.score")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {sortedCompetitions.map((c) => (
+                  <tr
+                    key={c.id}
+                    className="hover:bg-gray-50 cursor-pointer"
+                    onClick={() => navigate(`/competitions/${c.competition?.id}`)}
+                  >
+                    <td className="px-4 py-2">{c.competition?.name || "-"}</td>
+                    <td className="px-4 py-2">{c.competition?.date || "-"}</td>
+                    <td className="px-4 py-2">{c.actualDistanceKm ?? "-"}</td>
+                    <td className="px-4 py-2">{c.place ?? "-"}</td>
+                    <td className="px-4 py-2">{c.score ?? "-"}</td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {sortedCompetitions.map((c) => (
-                    <tr key={c.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/competitions/${c.competition?.id}`)}>
-                      <td className="px-4 py-2">{c.competition?.name || "-"}</td>
-                      <td className="px-4 py-2">{c.place ?? "-"}</td>
-                      <td className="px-4 py-2">{c.competition?.date || "-"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
         {/* Pedigree Tree */}
         <div
