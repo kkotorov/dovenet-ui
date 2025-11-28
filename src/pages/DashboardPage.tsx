@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
-import type { User } from "../api/auth";
 import {
   Home, Users, Trophy, Settings, CreditCard, Feather, Layers,
   BarChart2, Bell, Archive, FileText, ShoppingCart,
@@ -14,6 +13,7 @@ import { UserSettingsTab } from "../Tabs/UserSettingsTab";
 import { useSearchParams } from "react-router-dom";
 import { LoftsTab } from "../Tabs/LoftsTab";
 import { SubscriptionsTab } from "../Tabs/SubscriptionsTab";
+import type { AppUser } from "../UserContext";
 
 interface TabItem {
   title: string;
@@ -24,7 +24,7 @@ interface TabItem {
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,7 +100,7 @@ export default function DashboardPage() {
         {/* User Profile */}
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-indigo-400 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-            {user?.username[0].toUpperCase()}
+            {user?.username?.[0]?.toUpperCase() ?? "U"}
           </div>
           {!collapsed && <h1 className="text-lg font-semibold text-white drop-shadow-lg">{t("dashboardPage.welcome", { username: user?.username })}</h1>}
         </div>
