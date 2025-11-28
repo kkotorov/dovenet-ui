@@ -157,7 +157,17 @@
     "billingHistory": "Billing History",
     "viewHistory": "View History",
     "cancelSubscription": "Cancel Active Subscription",
-    "proceedCancel": "Proceed to Cancel"
+    "proceedCancel": "Proceed to Cancel",
+    "profileInfo": "Edit Profile Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phoneNumber": "Phone Number",
+    "address": "Address",
+    "language": "Language",
+    "languageEnglish": "English",
+    "languageBulgarian": "Bulgarian",
+    "saveProfile": "Save Profile",
+    "profileUpdated": "Profile updated"
   },
   "topBar": {
     "login": "Sign in",

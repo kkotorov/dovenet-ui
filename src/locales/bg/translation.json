@@ -157,7 +157,17 @@
     "billingHistory": "История на плащания",
     "viewHistory": "Преглед на историята",
     "cancelSubscription": "Отмяна на активен абонамент",
-    "proceedCancel": "Продължи към отмяна"
+    "proceedCancel": "Продължи към отмяна",
+    "profileInfo": "Профилна информация",
+    "firstName": "Име",
+    "lastName": "Фамилия",
+    "phoneNumber": "Телефонен номер",
+    "address": "Адрес",
+    "language": "Език",
+    "languageEnglish": "Английски",
+    "languageBulgarian": "Български",
+    "saveProfile": "Запази профил",
+    "profileUpdated": "Профилът е обновен"
   },
   "topBar": {
     "login": "Вход",

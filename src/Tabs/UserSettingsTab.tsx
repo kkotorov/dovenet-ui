@@ -1,20 +1,35 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { UserIcon, MailIcon, LockIcon } from "lucide-react";
+import { UserIcon, MailIcon, LockIcon, PhoneIcon, MapPinIcon } from "lucide-react";
 import api from "../api/api";
 import toast, { Toaster } from "react-hot-toast";
 
 export function UserSettingsTab() {
   const { t } = useTranslation();
 
-  const [user, setUser] = useState<{ username: string; email: string; emailVerified: boolean }>({
+  const [user, setUser] = useState<{
+    username: string;
+    email: string;
+    emailVerified: boolean;
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    address?: string;
+    language?: string;
+  }>({
     username: "",
     email: "",
     emailVerified: false,
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+    language: "en",
   });
 
   const [showEmailEdit, setShowEmailEdit] = useState(false);
   const [showPasswordEdit, setShowPasswordEdit] = useState(false);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   const [newEmail, setNewEmail] = useState("");
   const [confirmEmail, setConfirmEmail] = useState("");
@@ -24,12 +39,25 @@ export function UserSettingsTab() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [language, setLanguage] = useState("en");
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await api.get("/users/me");
         setUser(res.data);
-      } catch {}
+        setFirstName(res.data.firstName || "");
+        setLastName(res.data.lastName || "");
+        setPhoneNumber(res.data.phoneNumber || "");
+        setAddress(res.data.address || "");
+        setLanguage(res.data.language || "en");
+      } catch (err) {
+        toast.error(t("userSettingsPage.settingsFailed"));
+      }
     };
     fetchUser();
   }, []);
@@ -70,17 +98,39 @@ export function UserSettingsTab() {
     }
   };
 
+  const handleProfileUpdate = async () => {
+    try {
+      const res = await api.patch("/users/me/update-settings", {
+        firstName,
+        lastName,
+        phoneNumber,
+        address,
+        language,
+      });
+      setUser(res.data);
+      toast.success(t("userSettingsPage.profileUpdated"));
+      setShowProfileEdit(false);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || t("userSettingsPage.settingsFailed"));
+    }
+  };
+
   return (
     <div className="px-6 py-6 max-w-3xl mx-auto">
       <Toaster position="top-right" />
 
       {/* Profile Header */}
-      <div className="bg-indigo-50 flex items-center justify-between p-6 rounded-2xl shadow-md mb-6">
+      <div className="bg-indigo-50 flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl shadow-md mb-6 gap-4">
         <div className="flex items-center gap-4">
           <UserIcon className="w-10 h-10 text-indigo-600" />
           <div>
             <p className="font-bold text-xl">{user.username}</p>
             <p className="text-gray-600">{user.email}</p>
+            {user.phoneNumber && <p className="text-gray-600">{user.phoneNumber}</p>}
+            {user.address && <p className="text-gray-600">{user.address}</p>}
+            {user.firstName && <p className="text-gray-600">{t("userSettingsPage.firstName")}: {user.firstName}</p>}
+            {user.lastName && <p className="text-gray-600">{t("userSettingsPage.lastName")}: {user.lastName}</p>}
+            {user.language && <p className="text-gray-600">{t("userSettingsPage.language")}: {user.language}</p>}
           </div>
         </div>
 
@@ -95,6 +145,69 @@ export function UserSettingsTab() {
 
       {/* Settings Cards */}
       <div className="space-y-6">
+
+        {/* Edit Profile Info */}
+        <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
+          <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowProfileEdit(!showProfileEdit)}>
+            <h3 className="font-semibold text-lg">{t("userSettingsPage.profileInfo")}</h3>
+            <span className="text-indigo-500">{showProfileEdit ? "-" : "+"}</span>
+          </div>
+
+          {showProfileEdit && (
+            <div className="mt-4 grid gap-4 md:grid-cols-2" onClick={e => e.stopPropagation()}>
+              <div className="flex flex-col">
+                <label className="text-gray-500 text-sm">{t("userSettingsPage.firstName")}</label>
+                <input
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
+                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 text-sm">{t("userSettingsPage.lastName")}</label>
+                <input
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
+                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 text-sm">{t("userSettingsPage.phoneNumber")}</label>
+                <input
+                  value={phoneNumber}
+                  onChange={e => setPhoneNumber(e.target.value)}
+                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 text-sm">{t("userSettingsPage.address")}</label>
+                <input
+                  value={address}
+                  onChange={e => setAddress(e.target.value)}
+                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+              <div className="flex flex-col md:col-span-2">
+                <label className="text-gray-500 text-sm">{t("userSettingsPage.language")}</label>
+                <select
+                  value={language}
+                  onChange={e => setLanguage(e.target.value)}
+                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                >
+                  <option value="en">{t("userSettingsPage.languageEnglish")}</option>
+                  <option value="bg">{t("userSettingsPage.languageBulgarian")}</option>
+                </select>
+              </div>
+              <button
+                onClick={handleProfileUpdate}
+                className="md:col-span-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+              >
+                {t("userSettingsPage.saveProfile")}
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Change Email */}
         <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
           <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowEmailEdit(!showEmailEdit)}>
