@@ -200,22 +200,6 @@ export default function PigeonPage() {
     }
   };
 
-  useEffect(() => {
-  if (!pigeon) return;
-
-  const loadFullPedigree = async () => {
-    try {
-      const fullTree = await fetchAncestry(pigeon, 3); // 3 generations
-      setPigeon(fullTree); // now pigeon has nested parents/grandparents
-    } catch (err) {
-      console.error("Failed to load full pedigree", err);
-    }
-  };
-
-  loadFullPedigree();
-}, [pigeon]);
-
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
@@ -464,7 +448,7 @@ export default function PigeonPage() {
               pigeon={{
                 ...pigeon,
               }}
-              generations={2} // adjust generations
+              generations={3} // adjust generations
             />
           )}
         </div>
