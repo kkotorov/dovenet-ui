@@ -185,7 +185,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
               fontWeight: 500,
               marginTop: 6,
               whiteSpace: "nowrap",
-              overflow: "hidden",
+              overflow: "visible",
               textOverflow: "ellipsis",
             }}
           >
