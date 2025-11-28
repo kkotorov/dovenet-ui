@@ -119,94 +119,120 @@ export function UserSettingsTab() {
     <div className="px-6 py-6 max-w-3xl mx-auto">
       <Toaster position="top-right" />
 
-      {/* Profile Header */}
-      <div className="bg-indigo-50 flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl shadow-md mb-6 gap-4">
-        <div className="flex items-center gap-4">
-          <UserIcon className="w-10 h-10 text-indigo-600" />
-          <div>
-            <p className="font-bold text-xl">{user.username}</p>
-            <p className="text-gray-600">{user.email}</p>
-            {user.phoneNumber && <p className="text-gray-600">{user.phoneNumber}</p>}
-            {user.address && <p className="text-gray-600">{user.address}</p>}
-            {user.firstName && <p className="text-gray-600">{t("userSettingsPage.firstName")}: {user.firstName}</p>}
-            {user.lastName && <p className="text-gray-600">{t("userSettingsPage.lastName")}: {user.lastName}</p>}
-            {user.language && <p className="text-gray-600">{t("userSettingsPage.language")}: {user.language}</p>}
-          </div>
-        </div>
+{/* Profile Header */}
+<div className="bg-indigo-50 flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 rounded-2xl shadow-md mb-6 gap-4">
+  <div className="flex items-start md:items-center gap-4">
+    <UserIcon className="w-12 h-12 text-indigo-600" />
+    <div className="flex flex-col gap-2">
+      {/* Full Name */}
+      <p className="font-extrabold text-2xl text-gray-800">
+        {user.firstName || ""} {user.lastName || ""}
+      </p>
 
-        <button
-          onClick={!user.emailVerified ? handleSendVerificationEmail : undefined}
-          className={`px-4 py-2 rounded-full text-sm font-semibold transition 
-            ${user.emailVerified ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"}`}
-        >
-          {user.emailVerified ? t("userSettingsPage.verified") : t("userSettingsPage.notVerified")}
-        </button>
+      {/* Email */}
+      <div className="flex items-center gap-2 text-gray-600">
+        <MailIcon className="w-4 h-4 text-gray-500" />
+        <span>{user.email}</span>
       </div>
+
+      {/* Phone */}
+      {user.phoneNumber && (
+        <div className="flex items-center gap-2 text-gray-600">
+          <PhoneIcon className="w-4 h-4 text-gray-500" />
+          <span>{user.phoneNumber}</span>
+        </div>
+      )}
+
+      {/* Address */}
+      {user.address && (
+        <div className="flex items-center gap-2 text-gray-600">
+          <MapPinIcon className="w-4 h-4 text-gray-500" />
+          <span>{user.address}</span>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Email Verification Button */}
+  <button
+    onClick={!user.emailVerified ? handleSendVerificationEmail : undefined}
+    className={`px-4 py-2 rounded-full text-sm font-semibold transition
+      ${user.emailVerified ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"}`}
+  >
+    {user.emailVerified ? t("userSettingsPage.verified") : t("userSettingsPage.notVerified")}
+  </button>
+</div>
+
+
 
       {/* Settings Cards */}
       <div className="space-y-6">
 
         {/* Edit Profile Info */}
-        <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
-          <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowProfileEdit(!showProfileEdit)}>
-            <h3 className="font-semibold text-lg">{t("userSettingsPage.profileInfo")}</h3>
-            <span className="text-indigo-500">{showProfileEdit ? "-" : "+"}</span>
-          </div>
+<div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4 md:p-6">
+  <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowProfileEdit(!showProfileEdit)}>
+    <div className="flex items-center gap-2">
+      <UserIcon className="w-6 h-6 text-indigo-600" />
+      <h3 className="font-semibold text-lg">{t("userSettingsPage.profileInfo")}</h3>
+    </div>
+    <span className="text-indigo-500">{showProfileEdit ? "-" : "+"}</span>
+  </div>
 
-          {showProfileEdit && (
-            <div className="mt-4 grid gap-4 md:grid-cols-2" onClick={e => e.stopPropagation()}>
-              <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.firstName")}</label>
-                <input
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.lastName")}</label>
-                <input
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.phoneNumber")}</label>
-                <input
-                  value={phoneNumber}
-                  onChange={e => setPhoneNumber(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.address")}</label>
-                <input
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </div>
-              <div className="flex flex-col md:col-span-2">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.language")}</label>
-                <select
-                  value={language}
-                  onChange={e => setLanguage(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
-                >
-                  <option value="en">{t("userSettingsPage.languageEnglish")}</option>
-                  <option value="bg">{t("userSettingsPage.languageBulgarian")}</option>
-                </select>
-              </div>
-              <button
-                onClick={handleProfileUpdate}
-                className="md:col-span-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-              >
-                {t("userSettingsPage.saveProfile")}
-              </button>
-            </div>
-          )}
-        </div>
+  {showProfileEdit && (
+    <div className="mt-4 grid gap-3 md:grid-cols-2" onClick={e => e.stopPropagation()}>
+      <div className="flex flex-col">
+        <label className="text-gray-500 text-sm">{t("userSettingsPage.firstName")}</label>
+        <input
+          value={firstName}
+          onChange={e => setFirstName(e.target.value)}
+          className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-gray-500 text-sm">{t("userSettingsPage.lastName")}</label>
+        <input
+          value={lastName}
+          onChange={e => setLastName(e.target.value)}
+          className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-gray-500 text-sm">{t("userSettingsPage.phoneNumber")}</label>
+        <input
+          value={phoneNumber}
+          onChange={e => setPhoneNumber(e.target.value)}
+          className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-gray-500 text-sm">{t("userSettingsPage.address")}</label>
+        <input
+          value={address}
+          onChange={e => setAddress(e.target.value)}
+          className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+        />
+      </div>
+      <div className="flex flex-col md:col-span-2">
+        <label className="text-gray-500 text-sm">{t("userSettingsPage.language")}</label>
+        <select
+          value={language}
+          onChange={e => setLanguage(e.target.value)}
+          className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+        >
+          <option value="en">{t("userSettingsPage.languageEnglish")}</option>
+          <option value="bg">{t("userSettingsPage.languageBulgarian")}</option>
+        </select>
+      </div>
+      <button
+        onClick={handleProfileUpdate}
+        className="md:col-span-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+      >
+        {t("userSettingsPage.saveProfile")}
+      </button>
+    </div>
+  )}
+</div>
+
 
         {/* Change Email */}
         <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
