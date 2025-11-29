@@ -15,4 +15,26 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.warn("Token expired — logging out automatically");
+
+      // Remove expired token
+      localStorage.removeItem("token");
+
+      // Notify UserContext
+      window.dispatchEvent(
+        new StorageEvent("storage", {
+          key: "token",
+          newValue: null,
+        })
+      );
+    }
+
+    return Promise.reject(error);
+  }
+);
 export default api;
