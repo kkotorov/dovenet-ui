@@ -12,6 +12,8 @@ import { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+import { useUser } from "../UserContext";
+
 export default function PigeonPage() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
@@ -26,6 +28,9 @@ export default function PigeonPage() {
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [lofts, setLofts] = useState<Loft[]>([]);
+
+  const { user } = useUser();
+  const [showOwnerInfo, setShowOwnerInfo] = useState(false);
 
   const sortedCompetitions = [...competitions];
   if (sortConfig) {
@@ -455,21 +460,31 @@ export default function PigeonPage() {
         )}
       </div>
 
-        {/* Pedigree Tree */}
-        <div
-          ref={treeRef}  // <-- attach ref here
-          className="bg-white shadow-md rounded-2xl p-6 border border-gray-100"
-        >
-          <h2 className="text-lg font-semibold mb-4">Pedigree</h2>
-          {pigeon && (
-<PedigreeTree
-  pigeon={{ ...pigeon }}
-  generations={3}
-  competitions={sortedCompetitions} // <- pass it here
-/>
 
-          )}
-        </div>
+          <div className="flex items-center gap-2 mb-4">
+              <input
+                type="checkbox"
+                id="showOwnerInfo"
+                checked={showOwnerInfo}
+                onChange={(e) => setShowOwnerInfo(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <label htmlFor="showOwnerInfo" className="text-sm text-gray-700">
+                Show Owner Info
+            </label>
+          </div>
+
+          {/* Pedigree Tree */}
+          <div ref={treeRef} className="p-6">  {/* only padding, no border/shadow/bg */}
+            {pigeon && (
+              <PedigreeTree
+                pigeon={{ ...pigeon }}
+                generations={3}
+                competitions={sortedCompetitions}
+                owner={showOwnerInfo && user ? user : undefined}  // <-- filter out null
+              />
+            )}
+          </div>
 
         {openForm && (
           <PigeonForm
