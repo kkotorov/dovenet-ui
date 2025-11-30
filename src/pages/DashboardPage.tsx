@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import {
-  Home, Users, Trophy, Settings, CreditCard, Feather, Layers,
-  BarChart2, Bell, Archive, FileText, ShoppingCart,
+  Home, Users, Trophy, Settings, CreditCard, Feather,
+  BarChart2, Archive, FileText,
   ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
 
@@ -59,15 +59,12 @@ export default function DashboardPage() {
     { key: "lofts", title: t("dashboardPage.lofts"), icon: <Home />, content: <LoftsTab /> },
     { key: "pigeons", title: t("dashboardPage.pigeons"), icon: <Users />, content: <PigeonsTab onNavigateBack={() => handleTabChange("pigeons")} /> },
     { key: "competitions", title: t("dashboardPage.competitions"), icon: <Trophy />, content: <CompetitionsTab /> },
-    { key: "profile", title: t("dashboardPage.profile"), icon: <Settings />, content: <UserSettingsTab /> },
-    { key: "subscriptions", title: t("dashboardPage.subscriptions"), icon: <CreditCard />, content: <SubscriptionsTab /> },
     { key: "breeding", title: t("dashboardPage.breeding"), icon: <Feather />, content: <div>{t("dashboardPage.manageBreedingText")}</div> },
-    { key: "pedigrees", title: t("dashboardPage.pedigrees"), icon: <Layers />, content: <div>{t("dashboardPage.managePedigreesText")}</div> },
     { key: "statistics", title: t("dashboardPage.statistics"), icon: <BarChart2 />, content: <div>{t("dashboardPage.manageStatisticsText")}</div> },
-    { key: "notifications", title: t("dashboardPage.notifications"), icon: <Bell />, content: <div>{t("dashboardPage.manageNotificationsText")}</div> },
     { key: "inventory", title: t("dashboardPage.inventory"), icon: <Archive />, content: <div>{t("dashboardPage.manageInventoryText")}</div> },
     { key: "reports", title: t("dashboardPage.reports"), icon: <FileText />, content: <div>{t("dashboardPage.manageReportsText")}</div> },
-    { key: "marketplace", title: t("dashboardPage.marketplace"), icon: <ShoppingCart />, content: <div>{t("dashboardPage.manageMarketplaceText")}</div> },
+    { key: "profile", title: t("dashboardPage.profile"), icon: <Settings />, content: <UserSettingsTab /> },
+    { key: "subscriptions", title: t("dashboardPage.subscriptions"), icon: <CreditCard />, content: <SubscriptionsTab /> },
   ];
 
   if (loading) {
