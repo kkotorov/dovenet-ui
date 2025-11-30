@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import { LoftsTab } from "../Tabs/LoftsTab";
 import { SubscriptionsTab } from "../Tabs/SubscriptionsTab";
 import type { AppUser } from "../UserContext";
+import { BreedingTab } from "../Tabs/BreedingTab";
 
 interface TabItem {
   title: string;
@@ -59,7 +60,7 @@ export default function DashboardPage() {
     { key: "lofts", title: t("dashboardPage.lofts"), icon: <Home />, content: <LoftsTab /> },
     { key: "pigeons", title: t("dashboardPage.pigeons"), icon: <Users />, content: <PigeonsTab onNavigateBack={() => handleTabChange("pigeons")} /> },
     { key: "competitions", title: t("dashboardPage.competitions"), icon: <Trophy />, content: <CompetitionsTab /> },
-    { key: "breeding", title: t("dashboardPage.breeding"), icon: <Feather />, content: <div>{t("dashboardPage.manageBreedingText")}</div> },
+    { key: "breeding", title: t("dashboardPage.breeding"), icon: <Feather />,  content: <BreedingTab/> },
     { key: "statistics", title: t("dashboardPage.statistics"), icon: <BarChart2 />, content: <div>{t("dashboardPage.manageStatisticsText")}</div> },
     { key: "inventory", title: t("dashboardPage.inventory"), icon: <Archive />, content: <div>{t("dashboardPage.manageInventoryText")}</div> },
     { key: "reports", title: t("dashboardPage.reports"), icon: <FileText />, content: <div>{t("dashboardPage.manageReportsText")}</div> },

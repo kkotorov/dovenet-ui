@@ -30,10 +30,10 @@ export default function PigeonForm({ open, onClose, onSubmit, initialData }: Pig
     fatherRingNumber: "",
     motherRingNumber: "",
     owner: undefined,
-    loftId: undefined,       // ← NEW
+    loftId: undefined,     
   });
 
-  const [lofts, setLofts] = useState<Loft[]>([]); // ← NEW
+  const [lofts, setLofts] = useState<Loft[]>([]); 
 
   const [fatherSuggestions, setFatherSuggestions] = useState<string[]>([]);
   const [motherSuggestions, setMotherSuggestions] = useState<string[]>([]);
