@@ -9,6 +9,7 @@ import { Edit2, Trash2, FileText, Users, Eye } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
+import BulkCompetitionModal from "../components/BulkCompetitionModal";
 
 interface PigeonsTabProps {
   loftId?: number;
@@ -44,6 +45,8 @@ export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
   const [bulkDelete, setBulkDelete] = useState(false);
 
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
+
+  const [showBulkCompetitionModal, setShowBulkCompetitionModal] = useState(false);
 
   /** Fetch pigeons **/
   const fetchPigeons = async () => {
@@ -293,6 +296,14 @@ export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
             {t("pigeonsPage.bulkUpdate")}
           </button>
 
+          {/* Add to Competition button */}
+          <button
+            onClick={() => setShowBulkCompetitionModal(true)}
+            className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+          >
+            {t("pigeonsPage.addToCompetition")}
+          </button>
+
           <button
             onClick={() => confirmDelete()}
             className="p-2 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
@@ -301,7 +312,7 @@ export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
             <Trash2 className="w-4 h-4" />
           </button>
 
-          {/* New: Deselect all button */}
+          {/*Deselect all button */}
           <button
             onClick={() => {
               setSelectedPigeons([]);
@@ -466,6 +477,13 @@ export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
             toast.error(t("pigeonsPage.updateFailed"));
           }
         }}
+      />
+
+      {/* Bulk Competition Modal */}
+      <BulkCompetitionModal
+        open={showBulkCompetitionModal}
+        selectedPigeons={selectedPigeons}
+        onClose={() => setShowBulkCompetitionModal(false)}
       />
 
       {/* Confirm Delete */}
