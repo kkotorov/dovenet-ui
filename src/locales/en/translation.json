@@ -226,7 +226,11 @@
     "deleteSelectedTitle": "Delete Selected Pigeons",
     "deleteSelectedConfirm": "Are you sure you want to delete all selected pigeons?",
     "loft": "Loft",
-    "autocreated":"autocreated as parent reference"
+    "autocreated":"autocreated as parent reference",
+    "addToCompetition":"Add Competition Entry",
+    "selectCompetition":"Select Competition",
+    "selectOption":"Select Option",
+    "submit":"Submit"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",

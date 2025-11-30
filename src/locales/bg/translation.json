@@ -226,7 +226,11 @@
     "deleteSelectedTitle": "Изтриване на избрани гълъби",
     "deleteSelectedConfirm": "Сигурни ли сте, че искате да изтриете всички избрани гълъби?",
     "loft": "Гълъбарник",
-    "autocreated":"автоматично създаден като родител"
+    "autocreated":"автоматично създаден като родител",
+    "addToCompetition": "Добави участие в състезание",
+    "selectCompetition": "Избери състезание",
+    "selectOption": "Избери опция",
+    "submit": "Изпрати"
   },
   "pigeonForm": {
     "createPigeon": "Създай гълъб",
