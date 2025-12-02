@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import api from "../api/api";
-import {Users, ArrowLeft } from "lucide-react";
+import {Users, ArrowLeft,Trash2, Edit2, Download} from "lucide-react";
 import PigeonForm from "./PigeonForm";
 import type { Pigeon, CompetitionEntry, Loft } from "../types";
 import { useTranslation } from "react-i18next";
-
 import { PedigreeTree } from "../components/PedigreeTree";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-
 import { useUser } from "../UserContext";
+
 
 export default function PigeonPage() {
   const { t } = useTranslation();
@@ -28,6 +27,7 @@ export default function PigeonPage() {
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [lofts, setLofts] = useState<Loft[]>([]);
+
 
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
@@ -144,24 +144,21 @@ export default function PigeonPage() {
     fetchLofts();
   }, [t]);
 
-  /*
-  const downloadPedigreePdf = async () => {
+  const handleDelete = async () => {
     if (!pigeon?.id) return;
+
+    const confirmDelete = window.confirm(t("pigeonsPage.confirmDelete"));
+    if (!confirmDelete) return;
+
     try {
-      const res = await api.get(`/pigeons/${pigeon.id}/pedigree/pdf`, { responseType: "blob" });
-      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `pedigree_${pigeon.id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success(t("pigeonPage.downloadedPdf"));
+      await api.delete(`/pigeons/${pigeon.id}`);
+      toast.success(t("pigeonsPage.deleteSuccess"));
+      navigate("/pigeons"); // go back to the pigeons list
     } catch (err) {
       console.error(err);
-      toast.error(t("pigeonPage.downloadPdfError"));
+      toast.error(t("pigeonsPage.deleteFailed"));
     }
-  }; */
+  };
 
   const treeRef = useRef<HTMLDivElement>(null);
 
@@ -262,25 +259,35 @@ export default function PigeonPage() {
               </h1>
             </div>
           </div>
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Edit (icon only) */}
             <button
               onClick={handleEdit}
-              className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-sm transition"
+              className="p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-sm transition"
+              title={t("pigeonPage.editPigeon")} // shows tooltip on hover
             >
-              {t("pigeonPage.editPigeon")}
+              <Edit2 className="w-5 h-5" />
             </button>
 
-            {/* Download button */}
-              <button
-                onClick={downloadPedigreePdf}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm transition"
-              >
-                Download Pedigree PDF
-              </button>
+            {/* Delete (icon only) */}
+            <button
+              onClick={handleDelete}
+              className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 shadow-sm transition"
+              title={t("pigeonsPage.deletePigeon")} // tooltip
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+
+            {/* Download (icon + text) */}
+            <button
+              onClick={downloadPedigreePdf}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm transition flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              {t("pigeonPage.downloadPedigree")}
+            </button>
           </div>
         </div>
-
         {/* Basic Info */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="col-span-2 bg-white shadow-md rounded-2xl p-6 border border-gray-100">
@@ -461,18 +468,18 @@ export default function PigeonPage() {
       </div>
 
 
-          <div className="flex items-center gap-2 mb-4">
-              <input
-                type="checkbox"
-                id="showOwnerInfo"
-                checked={showOwnerInfo}
-                onChange={(e) => setShowOwnerInfo(e.target.checked)}
-                className="w-4 h-4"
-              />
-              <label htmlFor="showOwnerInfo" className="text-sm text-gray-700">
-                Show Owner Info
-            </label>
-          </div>
+        <div className="flex items-center gap-2 mb-4">
+          <input
+            type="checkbox"
+            id="showOwnerInfo"
+            checked={showOwnerInfo}
+            onChange={(e) => setShowOwnerInfo(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label htmlFor="showOwnerInfo" className="text-sm text-gray-700">
+            {t("pigeonPage.showOwnerInfo")}
+          </label>
+        </div>
 
           {/* Pedigree Tree */}
           <div ref={treeRef} className="p-6">  {/* only padding, no border/shadow/bg */}

@@ -520,7 +520,8 @@
     "position": "Position",
     "date": "Date",
     "distance": "Distance (km)",
-    "score": "Score"
+    "score": "Score",
+    "showOwnerInfo": "Show Owner Info"
   },
   "breedingPage": {
     "title": "Breeding Seasons",
