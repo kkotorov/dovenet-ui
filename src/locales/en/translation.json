@@ -564,6 +564,7 @@
     "removeOffspringTitle": "Remove Offspring",
     "removeOffspringSelect": "Select offspring you want to remove",
     "removeOffspringFailed": "Failed to remove offspring",
-    "offspringRemoved": "Selected offspring removed successfully"
+    "offspringRemoved": "Selected offspring removed successfully",
+    "noPairs": "Currently there are no pairs"
   }
 }
