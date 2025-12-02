@@ -59,3 +59,36 @@ export interface CompetitionEntry {
   flightTimeHours?: number;
   notes?: string;
 }
+
+export interface BreedingSeasonDTO {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  pairs: {
+    id: number;
+    offspringIds: number[];
+  }[];
+}
+
+export interface BreedingSeasonCard {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  totalPairs: number;
+  totalOffspring: number;
+  dto: BreedingSeasonDTO;
+}
+
+export interface BreedingPairDTO {
+  id?: number;
+  seasonId?: number;
+  maleId?: number;
+  femaleId?: number;
+  maleRing?: string;
+  femaleRing?: string;
+  breedingDate?: string;
+  notes?: string;
+  offspringIds?: number[];
+}

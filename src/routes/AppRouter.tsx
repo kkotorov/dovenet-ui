@@ -12,6 +12,7 @@ import LandingPage from '../pages/LandingPage';
 import TopBar from '../components/TopBar';
 import CompetitionDetailsPage from '../pages/CompetitionDetailsPage';
 import PigeonPage from '../pages/PigeonPage';
+import BreedingSeasonDetailsPage from '../pages/BreedingDetailsPage';
 
 export default function AppRouter() {
   return (
@@ -34,6 +35,7 @@ export default function AppRouter() {
           <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
           <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
           <Route path="/pigeons/:id" element={<PigeonPage />} />
+          <Route path="/breeding/:id" element={<BreedingSeasonDetailsPage />} />
         </Route>
 
         {/* FALLBACK */}

@@ -1,57 +1,229 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus } from "lucide-react";
-
-interface BreedingSeason {
-  id: number;
-  name: string;
-  startDate: string;
-  endDate: string;
-  totalPairs: number;
-  totalOffspring: number;
-}
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import api from "../api/api";
+import { Edit2, Trash2 } from "lucide-react";
+import CreateEditSeasonModal from "../components/CreateEditSeasonModal";
+import type { BreedingSeasonDTO, BreedingSeasonCard } from "../types";
 
 export function BreedingTab() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Mock data for now
-  const [seasons, setSeasons] = useState<BreedingSeason[]>([
-    { id: 1, name: "Spring 2025", startDate: "2025-03-01", endDate: "2025-05-31", totalPairs: 12, totalOffspring: 34 },
-    { id: 2, name: "Fall 2025", startDate: "2025-09-01", endDate: "2025-11-30", totalPairs: 8, totalOffspring: 21 },
-  ]);
+  const [seasons, setSeasons] = useState<BreedingSeasonCard[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "date" | "pairs" | "offspring">("date");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [openModal, setOpenModal] = useState(false);
+  const [editingSeason, setEditingSeason] = useState<BreedingSeasonDTO | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteSeasonId, setDeleteSeasonId] = useState<number | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const fetchSeasons = async () => {
+    try {
+      const res = await api.get<BreedingSeasonDTO[]>("/breeding/seasons");
+
+    const mapped = res.data.map((s) => ({
+      id: s.id,
+      name: s.name,
+      startDate: s.startDate,
+      endDate: s.endDate,
+      totalPairs: s.pairs.length,
+      totalOffspring: s.pairs.reduce((acc, p) => acc + p.offspringIds.length, 0),
+      dto: s,
+    }));
+
+      setSeasons(mapped);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("breedingPage.fetchError"));
+      setSeasons([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchSeasons();
+  }, []);
+
+  const handleCreateOrUpdate = async (season: BreedingSeasonDTO) => {
+    try {
+      if (season.id) {
+        await api.patch(`/breeding/seasons/${season.id}`, season);
+        toast.success(t("breedingPage.updateSuccess"));
+      } else {
+        await api.post(`/breeding/seasons`, season);
+        toast.success(t("breedingPage.createSuccess"));
+      }
+
+      fetchSeasons();
+      setOpenModal(false);
+      setEditingSeason(null);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("breedingPage.saveError"));
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteSeasonId) return;
+    setDeleteLoading(true);
+
+    try {
+      await api.delete(`/breeding/seasons/${deleteSeasonId}`);
+      setSeasons((prev) => prev.filter((s) => s.id !== deleteSeasonId));
+      toast.success(t("breedingPage.seasonDeleted"));
+      setDeleteModalOpen(false);
+      setDeleteSeasonId(null);
+    } catch (err) {
+      console.error(err);
+      toast.error(t("breedingPage.deleteError"));
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const sortSeasons = (list: BreedingSeasonCard[]) => {
+    return [...list].sort((a, b) => {
+      const dir = sortDirection === "asc" ? 1 : -1;
+      switch (sortBy) {
+        case "name": return a.name.localeCompare(b.name) * dir;
+        case "date": return (new Date(a.startDate).getTime() - new Date(b.startDate).getTime()) * dir;
+        case "pairs": return (a.totalPairs - b.totalPairs) * dir;
+        case "offspring": return (a.totalOffspring - b.totalOffspring) * dir;
+        default: return 0;
+      }
+    });
+  };
+
+  const filteredSeasons = sortSeasons(
+    seasons.filter((s) => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{t("breedingPage.title")}</h1>
+    <div className="p-4">
+      <Toaster position="top-right" />
+
+      {/* Search + Sort + Create */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex gap-3 items-center">
+          <input
+            type="text"
+            placeholder={t("breedingPage.searchPlaceholder")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+          />
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="px-2 py-2 rounded-lg border border-gray-300 bg-white"
+          >
+            <option value="date">{t("breedingPage.sortByDate")}</option>
+            <option value="name">{t("breedingPage.sortByName")}</option>
+            <option value="pairs">{t("breedingPage.sortByPairs")}</option>
+            <option value="offspring">{t("breedingPage.sortByOffspring")}</option>
+          </select>
+
+          <button
+            onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100"
+          >
+            {sortDirection === "asc" ? "↑" : "↓"}
+          </button>
+        </div>
+
         <button
-          className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-400 flex items-center gap-2"
-          onClick={() => alert("Create new season (mock)")}
+          onClick={() => { setEditingSeason(null); setOpenModal(true); }}
+          className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
         >
-          <Plus className="w-4 h-4" /> {t("breedingPage.createSeason")}
+          + {t("breedingPage.createSeason")}
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {seasons.map((season) => (
+      {/* List */}
+      <div className="flex flex-col gap-4">
+        {filteredSeasons.map((s) => (
           <div
-            key={season.id}
-            className="bg-white rounded-2xl shadow-lg p-5 cursor-pointer hover:shadow-2xl transition"
-            onClick={() => navigate(`/breeding/${season.id}`)}
+            key={s.id}
+            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer"
+            onClick={() => navigate(`/breeding/${s.id}`)}
           >
-            <h2 className="text-lg font-bold text-gray-800 mb-2">{season.name}</h2>
-            <p className="text-sm text-gray-500">
-              {season.startDate} → {season.endDate}
-            </p>
-            <div className="mt-3 text-sm text-gray-700 flex justify-between">
-              <span>{t("breedingPage.pairs")}: {season.totalPairs}</span>
-              <span>{t("breedingPage.offspring")}: {season.totalOffspring}</span>
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h2 className="text-lg font-bold text-gray-800">{s.name}</h2>
+                <p className="text-sm text-gray-500">{s.startDate} → {s.endDate}</p>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingSeason(s.dto);
+                    setOpenModal(true);
+                  }}
+                  className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (s.id) { setDeleteSeasonId(s.id); setDeleteModalOpen(true); }
+                  }}
+                  className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 text-sm text-gray-700">
+              <p><strong>{t("breedingPage.pairs")}:</strong> {s.totalPairs}</p>
+              <p><strong>{t("breedingPage.offspring")}:</strong> {s.totalOffspring}</p>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {openModal && (
+        <CreateEditSeasonModal
+          open={openModal}
+          initialData={editingSeason || undefined}
+          onClose={() => setOpenModal(false)}
+          onSubmit={handleCreateOrUpdate}
+        />
+      )}
+
+      {/* Delete */}
+      {deleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">{t("breedingPage.deleteSeasonTitle")}</h2>
+            <p className="text-sm text-gray-600 mb-6">{t("breedingPage.deleteSeasonConfirm")}</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setDeleteModalOpen(false)}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                disabled={deleteLoading}
+              >
+                {t("common.cancel")}
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                disabled={deleteLoading}
+              >
+                {t("common.delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
