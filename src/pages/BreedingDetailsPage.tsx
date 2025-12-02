@@ -17,7 +17,6 @@ export default function BreedingSeasonDetailsPage() {
   const [pairs, setPairs] = useState<BreedingPairDTO[]>([]);
   const [userPigeons, setUserPigeons] = useState<Pigeon[]>([]);
   const [seasonMeta, setSeasonMeta] = useState<BreedingSeasonDTO | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const [openPairForm, setOpenPairForm] = useState(false);
   const [editingPair, setEditingPair] = useState<BreedingPairDTO | null>(null);
@@ -40,7 +39,6 @@ export default function BreedingSeasonDetailsPage() {
   // ------------------------
   const fetchPairs = async () => {
     if (!seasonId) return;
-    setLoading(true);
     try {
       const res = await api.get<BreedingPairDTO[]>(`/breeding/seasons/${seasonId}/pairs`);
       setPairs(res.data);
@@ -48,8 +46,6 @@ export default function BreedingSeasonDetailsPage() {
       console.error("Failed to fetch pairs", err);
       toast.error(t("breedingPage.fetchPairsFailed"));
       setPairs([]);
-    } finally {
-      setLoading(false);
     }
   };
 
