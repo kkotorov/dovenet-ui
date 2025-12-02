@@ -7,6 +7,8 @@ import CreateEditLoftModal from "../components/lofts/CreateEditLoftModal";
 import toast, { Toaster } from "react-hot-toast";
 import { PigeonsTab } from "./PigeonsTab"; 
 
+import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
+
 export function LoftsTab() {
   const { t } = useTranslation();
 
@@ -183,34 +185,16 @@ export function LoftsTab() {
         initialData={editingLoft}
       />
 
-      {deleteModalOpen && loftToDelete && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              {t("loftsPage.deleteTitle")}
-            </h2>
-            <p className="text-sm text-gray-600 mb-6">
-              {t("loftsPage.deleteConfirm")}
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setDeleteModalOpen(false)}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-                disabled={deleteLoading}
-              >
-                {t("common.cancel")}
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                disabled={deleteLoading}
-              >
-                {t("common.delete")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    <ConfirmDeleteModal
+      open={deleteModalOpen}
+      title={t("loftsPage.deleteTitle")}
+      message={t("loftsPage.deleteConfirm")}
+      cancelLabel={t("common.cancel")}
+      deleteLabel={t("common.delete")}
+      loading={deleteLoading}
+      onCancel={() => setDeleteModalOpen(false)}
+      onConfirm={handleDelete}
+    />
     </div>
   );
 }

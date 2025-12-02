@@ -10,6 +10,7 @@ import PageHeader from "../components/utilities/PageHeader";
 import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
 import BulkCompetitionModal from "../components/pigeons/BulkCompetitionModal";
+import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 
 interface PigeonsTabProps {
   loftId?: number;
@@ -18,7 +19,7 @@ interface PigeonsTabProps {
 }
 
 export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps) {
-  const navigate = useNavigate(); // ← add this
+  const navigate = useNavigate();
     
   const { t } = useTranslation();
 
@@ -537,36 +538,25 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
       />
 
       {/* Confirm Delete */}
-      {deleteModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              {bulkDelete ? t("pigeonsPage.deleteSelectedTitle") : t("pigeonsPage.deleteTitle")}
-            </h2>
-            <p className="text-sm text-gray-600 mb-6">
-              {bulkDelete
-                ? t("pigeonsPage.deleteSelectedConfirm")
-                : t("pigeonsPage.deleteConfirm")}
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setDeleteModalOpen(false)}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-                disabled={deleteLoading}
-              >
-                {t("common.cancel")}
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                disabled={deleteLoading}
-              >
-                {t("common.delete")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDeleteModal
+        open={deleteModalOpen}
+        title={
+          bulkDelete
+            ? t("pigeonsPage.deleteSelectedTitle")
+            : t("pigeonsPage.deleteTitle")
+        }
+        message={
+          bulkDelete
+            ? t("pigeonsPage.deleteSelectedConfirm")
+            : t("pigeonsPage.deleteConfirm")
+        }
+        cancelLabel={t("common.cancel")}
+        deleteLabel={t("common.delete")}
+        loading={deleteLoading}
+        onCancel={() => setDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+      />
+
     </div>
   );
 }
