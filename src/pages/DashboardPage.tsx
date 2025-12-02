@@ -58,7 +58,7 @@ export default function DashboardPage() {
 
   const tabs: TabItem[] = [
     { key: "lofts", title: t("dashboardPage.lofts"), icon: <Home />, content: <LoftsTab /> },
-    { key: "pigeons", title: t("dashboardPage.pigeons"), icon: <Users />, content: <PigeonsTab onNavigateBack={() => handleTabChange("pigeons")} /> },
+    { key: "pigeons", title: t("dashboardPage.pigeons"), icon: <Users />, content: <PigeonsTab/> },
     { key: "competitions", title: t("dashboardPage.competitions"), icon: <Trophy />, content: <CompetitionsTab /> },
     { key: "breeding", title: t("dashboardPage.breeding"), icon: <Feather />,  content: <BreedingTab/> },
     { key: "statistics", title: t("dashboardPage.statistics"), icon: <BarChart2 />, content: <div>{t("dashboardPage.manageStatisticsText")}</div> },

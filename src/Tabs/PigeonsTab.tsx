@@ -17,7 +17,7 @@ interface PigeonsTabProps {
   onNavigateBack?: () => void;
 }
 
-export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
+export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps) {
   const navigate = useNavigate(); // ← add this
     
   const { t } = useTranslation();
@@ -267,27 +267,38 @@ export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
   return (
   <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
     <Toaster position="top-right" />
-
-    <PageHeader
-      title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
-      right={
-        <input
-          type="text"
-          placeholder={t("pigeonsPage.searchPlaceholder")}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-        />
-      }
-      actions={
-        <button
-          onClick={() => { setEditingPigeon(null); setOpenForm(true); }}
-          className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
-        >
-          + {t("pigeonsPage.createPigeon")}
-        </button>
-      }
+<PageHeader
+  title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
+  right={
+    <input
+      type="text"
+      placeholder={t("pigeonsPage.searchPlaceholder")}
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
     />
+  }
+  actions={
+    <div className="flex gap-2">
+      {onNavigateBack && (
+        <button
+          onClick={onNavigateBack}
+          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-gray-800 transition"
+        >
+          ← {t("common.back")}
+        </button>
+      )}
+
+      <button
+        onClick={() => { setEditingPigeon(null); setOpenForm(true); }}
+        className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
+      >
+        + {t("pigeonsPage.createPigeon")}
+      </button>
+    </div>
+  }
+/>
+
 
 {/* ========================= Bulk Actions Toolbar ========================= */}
 {selectedPigeons.length > 0 && (

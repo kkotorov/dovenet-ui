@@ -1,31 +1,27 @@
 import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import type { Loft } from "../types";
 import LoftCard from "../components/LoftCard";
 import CreateEditLoftModal from "../components/CreateEditLoftModal";
 import toast, { Toaster } from "react-hot-toast";
+import { PigeonsTab } from "./PigeonsTab"; 
 
 export function LoftsTab() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [lofts, setLofts] = useState<Loft[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoft, setEditingLoft] = useState<Loft | undefined>(undefined);
+  const [selectedLoft, setSelectedLoft] = useState<Loft | null>(null);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [loftToDelete, setLoftToDelete] = useState<Loft | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [sortBy, setSortBy] =
-    useState<"name" | "pigeons" | "capacity">("name");
-
-  const [sortDirection, setSortDirection] =
-    useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<"name" | "pigeons" | "capacity">("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   // Fetch lofts
   const fetchLofts = async () => {
@@ -106,24 +102,31 @@ export function LoftsTab() {
 
     return [...filtered].sort((a, b) => {
       const dir = sortDirection === "asc" ? 1 : -1;
-
       if (sortBy === "name") return a.name.localeCompare(b.name) * dir;
-      if (sortBy === "capacity")
-        return ((a.capacity || 0) - (b.capacity || 0)) * dir;
-      if (sortBy === "pigeons")
-        return ((a.pigeonCount || 0) - (b.pigeonCount || 0)) * dir;
-
+      if (sortBy === "capacity") return ((a.capacity || 0) - (b.capacity || 0)) * dir;
+      if (sortBy === "pigeons") return ((a.pigeonCount || 0) - (b.pigeonCount || 0)) * dir;
       return 0;
     });
   }, [lofts, searchTerm, sortBy, sortDirection]);
 
+  // ====== Step 3: Conditional render for PigeonsTab ======
+  if (selectedLoft) {
+    return (
+      <PigeonsTab
+        loftId={selectedLoft.id}
+        loftName={selectedLoft.name}
+        onNavigateBack={() => setSelectedLoft(null)}
+      />
+    );
+  }
+
+  // ====== Original LoftsTab content ======
   return (
     <div className="p-6">
       <Toaster position="top-right" />
 
       {/* Top controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-
         {/* Search + Sort */}
         <div className="flex gap-2 items-center">
           <input
@@ -133,7 +136,6 @@ export function LoftsTab() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
           />
-
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
@@ -143,12 +145,8 @@ export function LoftsTab() {
             <option value="pigeons">{t("loftsPage.sortByPigeons")}</option>
             <option value="capacity">{t("loftsPage.sortByCapacity")}</option>
           </select>
-
-          {/* Sorting arrow toggle */}
           <button
-            onClick={() =>
-              setSortDirection(sortDirection === "asc" ? "desc" : "asc")
-            }
+            onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
             className="px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition"
           >
             {sortDirection === "asc" ? "↑" : "↓"}
@@ -170,14 +168,14 @@ export function LoftsTab() {
           <LoftCard
             key={loft.id}
             loft={loft}
-            onView={() => loft.id && navigate(`/lofts/${loft.id}/pigeons`)}
+            onView={() => setSelectedLoft(loft)} // ← show PigeonsTab
             onEdit={handleEdit}
             onDelete={() => handleDeleteClick(loft)}
           />
         ))}
       </div>
 
-      {/* Create / Edit Modal */}
+      {/* Modals */}
       <CreateEditLoftModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -185,7 +183,6 @@ export function LoftsTab() {
         initialData={editingLoft}
       />
 
-      {/* Delete Modal */}
       {deleteModalOpen && loftToDelete && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
@@ -195,7 +192,6 @@ export function LoftsTab() {
             <p className="text-sm text-gray-600 mb-6">
               {t("loftsPage.deleteConfirm")}
             </p>
-
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setDeleteModalOpen(false)}
@@ -204,7 +200,6 @@ export function LoftsTab() {
               >
                 {t("common.cancel")}
               </button>
-
               <button
                 onClick={handleDelete}
                 className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
