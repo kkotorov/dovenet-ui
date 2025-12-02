@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useUser } from "../UserContext";
+import { useUser } from "./UserContext";
 
 export default function ProtectedRoute() {
   const { user, loading } = useUser();

@@ -1,4 +1,4 @@
-import type { Loft } from "../types/index";
+import type { Loft } from "../../types";
 import { useTranslation } from "react-i18next";
 import { Edit2, Trash2, MapPin } from "lucide-react";
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import api from "../api/api";
-import type { Pigeon, CompetitionEntry } from "../types";
+import api from "../../api/api";
+import type { Pigeon, CompetitionEntry } from "../../types";
 import { useTranslation } from "react-i18next";
-import type { AppUser } from "../UserContext";
+import type { AppUser } from "../utilities/UserContext";
 
 interface PedigreeTreeProps {
   pigeon: Pigeon;

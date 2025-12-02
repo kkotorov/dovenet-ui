@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import i18n from "../i18n";
 import { createPortal } from "react-dom";
-import api from "../api/api";
-import { useUser } from "../UserContext";
+import { useUser } from "./UserContext";
+import api from "../../api/api";
+import i18n from "../../i18n";
 
 export default function TopBar() {
   const { t } = useTranslation();

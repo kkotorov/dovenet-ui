@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { Pigeon, Competition, CompetitionEntry } from "../types";
+import type { Pigeon, Competition, CompetitionEntry } from "../../types";
 
 interface CompetitionEntryFormProps {
   open: boolean;

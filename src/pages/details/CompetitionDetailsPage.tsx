@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../api/api";
-import PageHeader from "../components/PageHeader";
-import CompetitionEntryForm from "../components/CompetitionEntryForm";
-import type { Pigeon, Competition, CompetitionEntry } from "../types";
+import api from "../../api/api";
+import PageHeader from "../../components/utilities/PageHeader";
+import CompetitionEntryForm from "../../components/competitions/CompetitionEntryForm";
+import type { Pigeon, Competition, CompetitionEntry } from "../../types";
 import { Edit2, Trash2 } from "lucide-react";
 
 export default function CompetitionDetailsPage() {

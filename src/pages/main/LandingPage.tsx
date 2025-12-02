@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import Pigeon from "../assets/pigeon.svg";
-import LandingNavbar from "../components/LandingNavBar";
+import Pigeon from "../../assets/pigeon.svg";
+import LandingNavbar from "../../components/landingpage/LandingNavBar";
 import { useTranslation, Trans } from "react-i18next";
 
 export default function LandingPage() {

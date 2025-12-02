@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../api/api";
-import PairForm from "../components/PairForm";
-import PigeonForm from "./PigeonForm";
+import api from "../../api/api";
+import PairForm from "../../components/breeding/PairForm";
+import PigeonForm from "../../components/pigeons/PigeonForm";
 import { Edit2, Trash2, Plus, User, Users, Minus} from "lucide-react";
-import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../types";
-import PageHeader from "../components/PageHeader";
+import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../../types";
+import PageHeader from "../../components/utilities/PageHeader";
 
 export default function BreedingSeasonDetailsPage() {
   const { t } = useTranslation();

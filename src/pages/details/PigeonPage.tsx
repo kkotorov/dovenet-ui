@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
-import api from "../api/api";
+import api from "../../api/api";
 import {Users, ArrowLeft,Trash2, Edit2, Download} from "lucide-react";
-import PigeonForm from "./PigeonForm";
-import type { Pigeon, CompetitionEntry, Loft } from "../types";
+import PigeonForm from "../../components/pigeons/PigeonForm";
+import type { Pigeon, CompetitionEntry, Loft } from "../../types";
 import { useTranslation } from "react-i18next";
-import { PedigreeTree } from "../components/PedigreeTree";
+import { PedigreeTree } from "../../components/pigeons/PedigreeTree";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useUser } from "../UserContext";
-
+import { useUser } from "../../components/utilities/UserContext";
 
 export default function PigeonPage() {
   const { t } = useTranslation();
@@ -27,7 +26,6 @@ export default function PigeonPage() {
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [lofts, setLofts] = useState<Loft[]>([]);
-
 
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);

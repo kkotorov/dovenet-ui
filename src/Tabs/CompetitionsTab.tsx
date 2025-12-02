@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import api from "../api/api";
 import { Edit2, Trash2, MapPin, Cloud, Wind, Droplet } from "lucide-react";
-import CompetitionFormModal from "../components/CompetitionFormModal";
+import CompetitionFormModal from "../components/competitions/CompetitionFormModal";
 import type { Competition } from "../types";
 
 export function CompetitionsTab() {

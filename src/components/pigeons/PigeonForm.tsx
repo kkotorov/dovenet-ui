@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import api from "../api/api";
-import type { Pigeon } from "../types/index";
+import api from "../../api/api";
+import type { Pigeon } from "../../types";
 
 interface Loft {
   id: number;

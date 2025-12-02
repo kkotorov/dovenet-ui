@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { loginUser } from "../api/auth";
-import { useUser } from "../UserContext"; 
+import { loginUser } from "../../api/auth";
+import { useUser } from "../../components/utilities/UserContext";
 
 export default function LoginPage() {
   const { t } = useTranslation();

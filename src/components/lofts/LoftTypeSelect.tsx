@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import type { LoftType } from "../types/index";
+import type { LoftType } from "../../types";
 
 interface LoftTypeOption {
   value: LoftType;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import type { Loft, LoftType } from "../types/index";
+import type { Loft, LoftType } from "../../types"; 
 import { useTranslation } from "react-i18next";
 import LoftTypeSelect from "./LoftTypeSelect";
-
 interface CreateEditLoftModalProps {
   open: boolean;
   onClose: () => void;

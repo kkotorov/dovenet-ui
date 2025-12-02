@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
-import PigeonForm from "../pages/PigeonForm";
-import ParentModal from "../pages/ParentModal";
-import BulkUpdateModal from "../components/BulkUpdateModal";
+import PigeonForm from "../components/pigeons/PigeonForm";
+import ParentModal from "../components/pigeons/ParentModal";
+import BulkUpdateModal from "../components/pigeons/BulkUpdateModal";
 import api from "../api/api";
 import { Edit2, Trash2, Download, Users, Eye, Square, Trophy } from "lucide-react";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "../components/utilities/PageHeader";
 import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
-import BulkCompetitionModal from "../components/BulkCompetitionModal";
+import BulkCompetitionModal from "../components/pigeons/BulkCompetitionModal";
 
 interface PigeonsTabProps {
   loftId?: number;

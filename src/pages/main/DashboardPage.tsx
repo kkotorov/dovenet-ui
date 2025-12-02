@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import api from "../api/api";
+import api from "../../api/api";
 import {
   Home, Users, Trophy, Settings, CreditCard, Feather,
   BarChart2, Archive, FileText,
   ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
 
-import { PigeonsTab } from "../Tabs/PigeonsTab";
-import { CompetitionsTab } from "../Tabs/CompetitionsTab";
-import { UserSettingsTab } from "../Tabs/UserSettingsTab";
+import { PigeonsTab } from "../../Tabs/PigeonsTab";
+import { CompetitionsTab } from "../../Tabs/CompetitionsTab";
+import { UserSettingsTab } from "../../Tabs/UserSettingsTab";
 import { useSearchParams } from "react-router-dom";
-import { LoftsTab } from "../Tabs/LoftsTab";
-import { SubscriptionsTab } from "../Tabs/SubscriptionsTab";
-import type { AppUser } from "../UserContext";
-import { BreedingTab } from "../Tabs/BreedingTab";
+import { LoftsTab } from "../../Tabs/LoftsTab";
+import { SubscriptionsTab } from "../../Tabs/SubscriptionsTab";
+import type { AppUser } from "../../components/utilities/UserContext"
+import { BreedingTab } from "../../Tabs/BreedingTab";
 
 interface TabItem {
   title: string;

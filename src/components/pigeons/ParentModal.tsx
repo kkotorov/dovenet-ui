@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { Pigeon } from "../types/index";
+import type { Pigeon } from "../../types";
 
 interface ParentModalProps {
   open: boolean;

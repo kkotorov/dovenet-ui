@@ -1,18 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import RegisterPage from '../pages/RegisterPage';
-import LoginPage from '../pages/LoginPage';
-import DashboardPage from '../pages/DashboardPage';
-import PigeonsPage from '../pages/PigeonsPage';
-import ForgotPasswordPage from '../pages/ForgotPasswordPage';
-import ResetPasswordPage from '../pages/ResetPasswordPage';
-import VerifyEmailPage from '../pages/VerifyEmailPage';
-import ProtectedRoute from '../components/ProtectedRoute';
-import LandingPage from '../pages/LandingPage';
-import TopBar from '../components/TopBar';
-import CompetitionDetailsPage from '../pages/CompetitionDetailsPage';
-import PigeonPage from '../pages/PigeonPage';
-import BreedingSeasonDetailsPage from '../pages/BreedingDetailsPage';
+import RegisterPage from '../pages/authentication/RegisterPage';
+import LoginPage from '../pages/authentication/LoginPage';
+import DashboardPage from '../pages/main/DashboardPage';
+import ForgotPasswordPage from '../pages/authentication/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/authentication/ResetPasswordPage';
+import VerifyEmailPage from '../pages/authentication/VerifyEmailPage';
+import ProtectedRoute from '../components/utilities/ProtectedRoute';
+import LandingPage from '../pages/main/LandingPage';
+import TopBar from '../components/utilities/TopBar';
+import CompetitionDetailsPage from '../pages/details/CompetitionDetailsPage';
+import PigeonPage from '../pages/details/PigeonPage';
+import BreedingSeasonDetailsPage from '../pages/details/BreedingDetailsPage';
 
 export default function AppRouter() {
   return (
@@ -32,7 +31,6 @@ export default function AppRouter() {
         {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/lofts/:loftId/pigeons" element={<PigeonsPage />} />
           <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
           <Route path="/pigeons/:id" element={<PigeonPage />} />
           <Route path="/breeding/:id" element={<BreedingSeasonDetailsPage />} />

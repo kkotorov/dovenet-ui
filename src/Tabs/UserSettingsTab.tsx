@@ -11,7 +11,7 @@ import api from "../api/api";
 import toast, { Toaster } from "react-hot-toast";
 import i18n from "../i18n";
 
-import { useUser } from "../UserContext";
+import { useUser } from "../components/utilities/UserContext";
 
 export function UserSettingsTab() {
   const { t } = useTranslation();

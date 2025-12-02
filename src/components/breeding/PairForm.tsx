@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { BreedingPairDTO, Pigeon } from "../types";
+import type { BreedingPairDTO, Pigeon } from "../../types";
 import toast from "react-hot-toast";
 
 interface PairFormProps {

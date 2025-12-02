@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { registerUser } from "../api/auth";
+import { registerUser } from "../../api/auth";
 
 export default function RegisterPage() {
   const { t } = useTranslation();

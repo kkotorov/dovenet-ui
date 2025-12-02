@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import api from "../api/api";
 import { Edit2, Trash2 } from "lucide-react";
-import CreateEditSeasonModal from "../components/CreateEditSeasonModal";
+import CreateEditSeasonModal from "../components/breeding/CreateEditSeasonModal";
 import type { BreedingSeasonDTO, BreedingSeasonCard } from "../types";
 
 export function BreedingTab() {

@@ -2,8 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import type { Loft } from "../types";
-import LoftCard from "../components/LoftCard";
-import CreateEditLoftModal from "../components/CreateEditLoftModal";
+import LoftCard from "../components/lofts/LoftCard";
+import CreateEditLoftModal from "../components/lofts/CreateEditLoftModal";
 import toast, { Toaster } from "react-hot-toast";
 import { PigeonsTab } from "./PigeonsTab"; 
 

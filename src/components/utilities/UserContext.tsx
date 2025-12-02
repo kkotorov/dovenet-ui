@@ -1,7 +1,7 @@
 // src/UserContext.tsx
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import api from "./api/api";
-import i18n from "./i18n";
+import api from "../../api/api";
+import i18n from "../../i18n";
 
 export type AppUser = {
   id?: string;
