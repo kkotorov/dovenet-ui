@@ -5,7 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import api from "../api/api";
 import PairForm from "../components/PairForm";
 import PigeonForm from "./PigeonForm";
-import { Edit2, Trash2, Plus, User, Users} from "lucide-react";
+import { Edit2, Trash2, Plus, User, Users, Minus} from "lucide-react";
 import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../types";
 import PageHeader from "../components/PageHeader";
 
@@ -288,35 +288,44 @@ export default function BreedingSeasonDetailsPage() {
 
                 {/* Footer actions */}
                 <div className="flex justify-end gap-2 p-3 border-t border-gray-100 bg-gray-50">
-                  <button
-                    onClick={() => { setEditingPair(pair); setOpenPairForm(true); }}
-                    className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100"
-                    title={t("breedingPage.editPair")}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleOpenOffspringForm(pair.id!)}
-                    className="p-2 text-green-700 rounded-md hover:bg-green-100"
-                    title={t("breedingPage.addOffspring")}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
+                  <div className="flex gap-2">
+  {/* Edit Pair */}
+  <button
+    onClick={() => { setEditingPair(pair); setOpenPairForm(true); }}
+    className="p-1 text-yellow-600 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
+    title={t("breedingPage.editPair")}
+  >
+    <Edit2 className="w-4 h-4" />
+  </button>
 
-                  <button
-                    onClick={() => handleOpenRemoveOffspringModal(pair.id!)}
-                    className="p-2 text-red-500 rounded-md hover:bg-red-100"
-                    title={t("breedingPage.removeOffspring")}
-                    >
-                    ×
-                 </button>
-                  <button
-                    onClick={() => { setPairToDelete(pair.id ?? null); setDeleteModalOpen(true); }}
-                    className="p-2 text-red-700 rounded-md hover:bg-red-100"
-                    title={t("breedingPage.deletePair")}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+  {/* Add Offspring */}
+  <button
+    onClick={() => handleOpenOffspringForm(pair.id!)}
+    className="p-1 text-green-600 rounded-md hover:bg-green-100 transition flex items-center justify-center"
+    title={t("breedingPage.addOffspring")}
+  >
+    <Plus className="w-4 h-4" />
+  </button>
+
+  {/* Remove Offspring */}
+  <button
+    onClick={() => handleOpenRemoveOffspringModal(pair.id!)}
+    className="p-1 text-red-600 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+    title={t("breedingPage.removeOffspring")}
+  >
+    <Minus className="w-4 h-4" /> {/* better than × for consistency with icons */}
+  </button>
+
+  {/* Delete Pair */}
+  <button
+    onClick={() => { setPairToDelete(pair.id ?? null); setDeleteModalOpen(true); }}
+    className="p-1 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+    title={t("breedingPage.deletePair")}
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+</div>
+
                 </div>
               </div>
             );

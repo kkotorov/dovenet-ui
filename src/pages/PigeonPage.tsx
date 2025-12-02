@@ -259,34 +259,37 @@ export default function PigeonPage() {
               </h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Edit (icon only) */}
+          <div className="flex items-center gap-2 mt-2">
+            {/* Edit */}
             <button
               onClick={handleEdit}
-              className="p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-sm transition"
-              title={t("pigeonPage.editPigeon")} // shows tooltip on hover
+              className="p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 shadow-md transition flex items-center gap-1"
+              title={t("pigeonPage.editPigeon")}
             >
               <Edit2 className="w-5 h-5" />
             </button>
 
-            {/* Delete (icon only) */}
+            {/* Delete */}
             <button
               onClick={handleDelete}
-              className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 shadow-sm transition"
-              title={t("pigeonsPage.deletePigeon")} // tooltip
+              className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 shadow-md transition flex items-center gap-1"
+              title={t("pigeonsPage.delete")}
             >
               <Trash2 className="w-5 h-5" />
+              <span className="text-sm font-medium"></span>
             </button>
 
-            {/* Download (icon + text) */}
+            {/* Download Pedigree */}
             <button
               onClick={downloadPedigreePdf}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm transition flex items-center gap-2"
+              className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-md transition flex items-center gap-2"
             >
-              <Download className="w-4 h-4" />
-              {t("pigeonPage.downloadPedigree")}
+              <Download className="w-5 h-5" />
+              <span className="text-sm font-medium">{t("pigeonPage.downloadPedigree")}</span>
             </button>
           </div>
+
+
         </div>
         {/* Basic Info */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

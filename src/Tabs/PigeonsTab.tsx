@@ -5,7 +5,7 @@ import PigeonForm from "../pages/PigeonForm";
 import ParentModal from "../pages/ParentModal";
 import BulkUpdateModal from "../components/BulkUpdateModal";
 import api from "../api/api";
-import { Edit2, Trash2, FileText, Users, Eye } from "lucide-react";
+import { Edit2, Trash2, Download, Users, Eye, Square, Trophy } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
@@ -249,189 +249,228 @@ export function PigeonsTab({ loftId, loftName }: PigeonsTabProps) {
     else setSelectedPigeons(pigeons.map((p) => p.id!).filter(Boolean));
   };
 
+    // Helper function
+    const statusColor = (status?: string) => {
+      switch (status) {
+        case "active": return "bg-green-100 text-green-800";
+        case "retired": return "bg-gray-200 text-gray-800";
+        case "lost": return "bg-yellow-100 text-yellow-800";
+        case "deceased": return "bg-red-100 text-red-800";
+        case "sold": return "bg-purple-100 text-purple-800";
+        case "gifted": return "bg-blue-100 text-blue-800";
+        case "injured": return "bg-orange-100 text-orange-800";
+        default: return "bg-gray-100 text-gray-800"; // fallback
+      }
+    };
+
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
-      <Toaster position="top-right" />
+  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+    <Toaster position="top-right" />
 
-      <PageHeader
-        title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
-        right={
+    <PageHeader
+      title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
+      right={
+        <input
+          type="text"
+          placeholder={t("pigeonsPage.searchPlaceholder")}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+        />
+      }
+      actions={
+        <button
+          onClick={() => { setEditingPigeon(null); setOpenForm(true); }}
+          className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
+        >
+          + {t("pigeonsPage.createPigeon")}
+        </button>
+      }
+    />
+
+{/* ========================= Bulk Actions Toolbar ========================= */}
+{selectedPigeons.length > 0 && (
+  <div className="fixed bottom-6 left-1/2 -translate-x-1/2 
+                bg-white shadow-xl rounded-xl px-4 py-2 
+                flex items-center gap-3 z-50 border border-gray-200">
+  <span className="font-medium text-gray-700">{selectedPigeons.length} selected</span>
+
+  {/* Bulk Edit */}
+  <button
+    onClick={() => setShowBulkModal(true)}
+    title={t("pigeonsPage.bulkUpdate")}
+    className="p-2 rounded-md hover:bg-yellow-100 text-yellow-600 transition"
+  >
+    <Edit2 className="w-4 h-4" />
+  </button>
+
+  {/* Add to Competition */}
+  <button
+    onClick={() => setShowBulkCompetitionModal(true)}
+    title={t("pigeonsPage.addToCompetition")}
+    className="p-2 rounded-md hover:bg-indigo-100 text-indigo-600 transition"
+  >
+    <Trophy className="w-4 h-4" />
+  </button>
+
+  {/* Delete */}
+  <button
+    onClick={() => confirmDelete()}
+    title={t("pigeonsPage.deleteSelected")}
+    className="p-2 rounded-md hover:bg-red-100 text-red-600 transition"
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+
+  {/* Deselect All */}
+  <button
+    onClick={() => { setSelectedPigeons([]); setLastSelectedIndex(null); }}
+    title={t("common.clear")}
+    className="p-2 rounded-md hover:bg-gray-100 text-gray-700 transition"
+  >
+    <Square className="w-4 h-4" />
+  </button>
+</div>
+)}
+
+    {/* ========================= Table ========================= */}
+<div className="overflow-x-auto rounded-2xl shadow-lg bg-white mt-6">
+  <table className="min-w-full divide-y divide-gray-200">
+    <thead className="bg-gray-50 sticky top-0 z-10">
+      <tr>
+        {/* Checkbox for select all */}
+        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
           <input
-            type="text"
-            placeholder={t("pigeonsPage.searchPlaceholder")}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            type="checkbox"
+            checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
+            onChange={toggleSelectAll}
           />
-        }
-        actions={
-          <>
-            <button
-              onClick={() => {
-                setEditingPigeon(null);
-                setOpenForm(true);
-              }}
-              className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
-            >
-              + {t("pigeonsPage.createPigeon")}
-            </button>
-          </>
-        }
-      />
+        </th>
 
-      {/* Bulk actions toolbar */}
-      {selectedPigeons.length > 0 && (
-        <div className="
-          fixed bottom-6 left-1/2 -translate-x-1/2 
-          bg-white shadow-xl rounded-xl px-6 py-3 
-          flex items-center gap-4 z-50
-          border border-gray-200
-        ">
-          <span className="font-semibold">{selectedPigeons.length} selected</span>
-
-          <button
-            onClick={() => setShowBulkModal(true)}
-            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        {/* Column headers with sorting */}
+        {[
+          ["ringNumber", t("pigeonsPage.ringNumber")],
+          ["name", t("pigeonsPage.name")],
+          ["gender", t("pigeonsPage.gender")],
+          ["status", t("pigeonsPage.status")],
+          ["birthDate", t("pigeonsPage.birthDate")],
+          ["loftId", t("pigeonsPage.loft")],
+        ].map(([field, label]) => (
+          <th
+            key={field}
+            className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none whitespace-nowrap"
+            onClick={() => handleSort(field as keyof Pigeon)}
           >
-            {t("pigeonsPage.bulkUpdate")}
-          </button>
+            <div className="flex items-center gap-1">
+              {label}
+              {sortField === field && (sortOrder === "asc" ? "↑" : "↓")}
+            </div>
+          </th>
+        ))}
 
-          {/* Add to Competition button */}
-          <button
-            onClick={() => setShowBulkCompetitionModal(true)}
-            className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-          >
-            {t("pigeonsPage.addToCompetition")}
-          </button>
+        <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+          {t("pigeonsPage.actions")}
+        </th>
+      </tr>
+    </thead>
 
-          <button
-            onClick={() => confirmDelete()}
-            className="p-2 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
-            title={t("pigeonsPage.deleteSelected")}
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+    <tbody className="divide-y divide-gray-100">
+      {sortedPigeons.map((p, index) => (
+        <tr
+          key={p.id}
+          className={`
+            cursor-pointer transition 
+            hover:shadow-md hover:bg-gray-50
+            ${selectedPigeons.includes(p.id!) ? "bg-blue-50 shadow-md" : index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+          `}
+          onClick={(e) => toggleSelect(p.id, index, e)}
+        >
+          {/* Checkbox */}
+          <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+            <input
+              type="checkbox"
+              checked={selectedPigeons.includes(p.id!)}
+              onChange={(e) => toggleSelect(p.id, index, e)}
+            />
+          </td>
 
-          {/*Deselect all button */}
-          <button
-            onClick={() => {
-              setSelectedPigeons([]);
-              setLastSelectedIndex(null);
-            }}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
-          >
-            {t("common.clear")}
-          </button>
-        </div>
-      )}
+          {/* Ring Number */}
+          <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-2xl shadow-lg bg-white">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                <input
-                  type="checkbox"
-                  checked={selectedPigeons.length === pigeons.length && pigeons.length > 0}
-                  onChange={toggleSelectAll}
-                />
-                
-              </th>
-              {[
-                ["ringNumber", t("pigeonsPage.ringNumber")],
-                ["name", t("pigeonsPage.name")],
-                ["color", t("pigeonsPage.color")],
-                ["gender", t("pigeonsPage.gender")],
-                ["status", t("pigeonsPage.status")],
-                ["birthDate", t("pigeonsPage.birthDate")],
-                ["loftId", t("pigeonsPage.loft")],
-              ].map(([field, label]) => (
-                <th
-                  key={field}
-                  className="px-4 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none whitespace-nowrap"
-                  onClick={() => handleSort(field as keyof Pigeon)}
-                >
-                  <div className="flex items-center gap-1">
-                    {label}
-                    {sortField === field && (sortOrder === "asc" ? "↑" : "↓")}
-                  </div>
-                </th>
-              ))}
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                {t("pigeonsPage.actions")}
-              </th>
-            </tr>
-          </thead>
+          {/* Name */}
+          <td className="px-4 py-3">{p.name || "-"}</td>
 
-          <tbody className="divide-y divide-gray-100">
-            {sortedPigeons.map((p, index) => (
-            <tr
-              key={p.id}
-              className={`hover:bg-gray-50 cursor-pointer ${
-                selectedPigeons.includes(p.id!) ? "bg-blue-50" : ""
-              }`}
-              onClick={(e) => toggleSelect(p.id, index, e)}
-            >
+          {/* Gender */}
+          <td className="px-4 py-3">
+            <span className={`font-bold ${genderSymbol(p.gender).color}`} title={p.gender || ""}>
+              {genderSymbol(p.gender).symbol}
+            </span>
+          </td>
 
-                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
-                  <input
-                    type="checkbox"
-                    checked={selectedPigeons.includes(p.id!)}
-                    onChange={(e) => toggleSelect(p.id, index, e)}
-                  />
-                </td>
+          {/* Status */}
+          <td className="px-4 py-3">
+            {p.status && (
+              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusColor(p.status)}`} title={t(`pigeonsPage.${p.status}`)}>
+                {t(`pigeonsPage.${p.status}`)}
+              </span>
+            )}
+          </td>
 
-                <td className="px-4 py-3 font-bold">{p.ringNumber}</td>
-                <td className="px-4 py-3">{p.name || ""}</td>
-                <td className="px-4 py-3">{p.color || ""}</td>
-                <td className={`px-4 py-3 font-bold ${genderSymbol(p.gender).color}`}>
-                  {genderSymbol(p.gender).symbol}
-                </td>
-                <td className="px-4 py-3">{p.status ? t(`pigeonsPage.${p.status}`) : ""}</td>
-                <td className="px-4 py-3">{p.birthDate || ""}</td>
-                <td className="px-4 py-3">{lofts.find((l) => l.id === p.loftId)?.name || "-"}</td>
-                <td
-                  className="px-4 py-3 flex justify-center gap-2 flex-wrap"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() => navigate(`/pigeons/${p.id}`)}
-                    className="p-2 text-indigo-700 rounded-md hover:bg-indigo-100 transition flex items-center justify-center"
-                    title={t("pigeonsPage.viewPigeon")}
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleEdit(p)}
-                    className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => confirmDelete(p)}
-                    className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => downloadPedigreePdf(p.id!)}
-                    className="p-2 text-blue-700 rounded-md hover:bg-blue-100 transition"
-                  >
-                    <FileText className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => fetchParents(p.id!, p)}
-                    className="p-2 text-green-700 rounded-md hover:bg-green-100 transition"
-                  >
-                    <Users className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          {/* Birth Date */}
+          <td className="px-4 py-3" title={p.birthDate || ""}>
+            {p.birthDate || "-"}
+          </td>
+
+          {/* Loft */}
+          <td className="px-4 py-3" title={lofts.find((l) => l.id === p.loftId)?.name || "-"}>
+            {lofts.find((l) => l.id === p.loftId)?.name || "-"}
+          </td>
+
+  {/* Actions */}
+<td className="px-4 py-3 flex justify-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
+  {/* View */}
+  <button
+    onClick={() => navigate(`/pigeons/${p.id}`)}
+    title={t("pigeonsPage.viewPigeon")}
+    className="p-2 rounded-md hover:bg-indigo-100 text-indigo-600 transition"
+  >
+    <Eye className="w-4 h-4" />
+  </button>
+
+  {/* Edit */}
+  <button
+    onClick={() => handleEdit(p)}
+    title={t("pigeonsPage.edit")}
+    className="p-2 rounded-md hover:bg-yellow-100 text-yellow-600 transition"
+  >
+    <Edit2 className="w-4 h-4" />
+  </button>
+
+  {/* Pedigree PDF */}
+  <button
+    onClick={() => downloadPedigreePdf(p.id!)}
+    title={t("pigeonsPage.download")}
+    className="p-2 rounded-md hover:bg-blue-100 text-blue-600 transition"
+  >
+    <Download className="w-4 h-4" />
+  </button>
+
+  {/* Parents */}
+  <button
+    onClick={() => fetchParents(p.id!, p)}
+    title={t("pigeonsPage.parents")}
+    className="p-2 rounded-md hover:bg-green-100 text-green-600 transition"
+  >
+    <Users className="w-4 h-4" />
+  </button>
+</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
 
       {/* Pigeon Form */}

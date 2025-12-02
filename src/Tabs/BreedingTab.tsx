@@ -158,27 +158,35 @@ export function BreedingTab() {
               </div>
 
               <div className="flex gap-2">
+                {/* Edit Button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingSeason(s.dto);
                     setOpenModal(true);
                   }}
-                  className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
+                  className="p-1 text-yellow-600 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
+                  title={t("seasonsPage.edit")}
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
 
+                {/* Delete Button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (s.id) { setDeleteSeasonId(s.id); setDeleteModalOpen(true); }
+                    if (s.id) {
+                      setDeleteSeasonId(s.id);
+                      setDeleteModalOpen(true);
+                    }
                   }}
-                  className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
+                  className="p-1 text-red-600 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+                  title={t("seasonsPage.delete")}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
+
             </div>
 
             <div className="flex flex-col gap-2 text-sm text-gray-700">

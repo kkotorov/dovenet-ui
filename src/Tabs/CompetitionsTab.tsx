@@ -164,19 +164,21 @@ export function CompetitionsTab() {
                 <h2 className="text-lg font-bold text-gray-800">{c.name}</h2>
                 <p className="text-sm text-gray-500">{c.date}</p>
               </div>
-
               <div className="flex gap-2">
+                {/* Edit Button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingCompetition(c);
                     setOpenForm(true);
                   }}
-                  className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition"
+                  className="p-1 text-yellow-600 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
+                  title={t("competitionFormModal.edit")}
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
 
+                {/* Delete Button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -185,11 +187,13 @@ export function CompetitionsTab() {
                       setDeleteModalOpen(true);
                     }
                   }}
-                  className="p-2 text-red-700 rounded-md hover:bg-red-100 transition"
+                  className="p-1 text-red-600 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+                  title={t("competitionFormModal.delete")}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
+
             </div>
 
             {/* Optional info */}

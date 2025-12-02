@@ -1,6 +1,6 @@
 import type { Loft } from "../types/index";
 import { useTranslation } from "react-i18next";
-import { Pencil, Trash, MapPin } from "lucide-react";
+import { Edit2, Trash2, MapPin } from "lucide-react";
 
 interface LoftCardProps {
   loft: Loft;
@@ -23,34 +23,29 @@ export default function LoftCard({ loft, onView, onEdit, onDelete }: LoftCardPro
       onClick={() => onView(loft.id)}
       className="bg-white rounded-2xl shadow-md hover:shadow-xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between relative overflow-visible"
     >
-      {/* Top-right action buttons */}
-      <div className="absolute top-3 right-3 flex space-x-1 z-10">
-        {/* Edit Button */}
-        <div className="relative group">
-          <button
-            onClick={(e) => { e.stopPropagation(); onEdit(loft); }}
-            className="p-2 text-yellow-700 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
-          >
-            <Pencil className="w-4 h-4" />
-          </button>
-          <span className="absolute -top-7 right-0 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-            {t("loftsPage.edit")}
-          </span>
-        </div>
 
-        {/* Delete Button */}
-        <div className="relative group">
-          <button
-            onClick={(e) => { e.stopPropagation(); onDelete(loft.id); }}
-            className="p-2 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
-          >
-            <Trash className="w-4 h-4" />
-          </button>
-          <span className="absolute -top-7 right-0 whitespace-nowrap bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-            {t("loftsPage.delete")}
-          </span>
-        </div>
-      </div>
+{/* Top-right action buttons */}
+<div className="absolute top-3 right-3 flex space-x-1 z-10">
+  {/* Edit Button */}
+  <button
+    onClick={(e) => { e.stopPropagation(); onEdit(loft); }}
+    className="p-1 text-yellow-600 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
+    title={t("loftsPage.edit")}
+  >
+    <Edit2 className="w-4 h-4" />
+  </button>
+
+  {/* Delete Button */}
+  <button
+    onClick={(e) => { e.stopPropagation(); onDelete(loft.id); }}
+    className="p-1 text-red-600 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+    title={t("loftsPage.delete")}
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+</div>
+
+
 
       {/* Card Body */}
       <div className="p-6 flex flex-col gap-2">

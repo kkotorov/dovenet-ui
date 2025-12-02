@@ -192,6 +192,7 @@
     "alive": "Alive",
     "deceased": "Deceased",
     "sold": "Sold",
+    "injured":"Injured",
     "birthDate": "Birth Date",
     "fatherRingNumber": "Father Ring Number",
     "motherRingNumber": "Mother Ring Number",
@@ -230,7 +231,8 @@
     "addToCompetition":"Add Competition Entry",
     "selectCompetition":"Select Competition",
     "selectOption":"Select Option",
-    "submit":"Submit"
+    "submit":"Submit",
+    "viewPigeon":"View Pigeon Details"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
