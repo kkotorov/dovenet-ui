@@ -565,6 +565,11 @@
     "removeOffspringSelect": "Select offspring you want to remove",
     "removeOffspringFailed": "Failed to remove offspring",
     "offspringRemoved": "Selected offspring removed successfully",
-    "noPairs": "Currently there are no pairs"
+    "noPairs": "Currently there are no pairs",
+    "pairCreated": "Pair created successfully",
+    "deletePairTitle": "Delete Pair",
+    "deletePairConfirm": "Are you sure you want to delete this pair?",
+    "pairDeleted": "Pair deleted successfully",
+    "pairUpdated": "Pair updated successfully"
   }
 }
