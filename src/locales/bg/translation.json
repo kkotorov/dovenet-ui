@@ -351,7 +351,10 @@
     "updateFailed": "Неуспешно обновяване на гълъбарник",
     "pigeons": "Гълъби",
     "viewPigeons": "Преглед на гълъби",
-    "searchPlaceholder":"Търсене на гълъбарник"
+    "searchPlaceholder":"Търсене на гълъбарник",
+    "sortByName": "Сортирай по име",
+    "sortByPigeons": "Сортирай по брой гълъби",
+    "sortByCapacity": "Сортирай по капацитет"
   },
   "loftTypes": {
     "racing": "Състезателен гълъбарник",

@@ -351,7 +351,10 @@
     "updateFailed": "Failed to update loft",
     "pigeons": "Pigeons",
     "viewPigeons": "View Pigeons",
-    "searchPlaceholder":"Search for a loft"
+    "searchPlaceholder":"Search for a loft",
+    "sortByName": "Sort by Name",
+    "sortByPigeons": "Sort by Pigeon Count",
+    "sortByCapacity": "Sort by Capacity"
   },
   "loftTypes": {
     "racing": "Racing Loft",

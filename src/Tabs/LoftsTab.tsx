@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom"; // <-- import
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import type { Loft } from "../types";
 import LoftCard from "../components/LoftCard";
 import CreateEditLoftModal from "../components/CreateEditLoftModal";
-import PageHeader from "../components/PageHeader";
 import toast, { Toaster } from "react-hot-toast";
 
 export function LoftsTab() {
   const { t } = useTranslation();
-  const navigate = useNavigate(); // <-- hook for navigation
+  const navigate = useNavigate();
+
   const [lofts, setLofts] = useState<Loft[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoft, setEditingLoft] = useState<Loft | undefined>(undefined);
@@ -21,6 +21,13 @@ export function LoftsTab() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [sortBy, setSortBy] =
+    useState<"name" | "pigeons" | "capacity">("name");
+
+  const [sortDirection, setSortDirection] =
+    useState<"asc" | "desc">("asc");
+
+  // Fetch lofts
   const fetchLofts = async () => {
     try {
       const res = await api.get("/lofts");
@@ -35,6 +42,7 @@ export function LoftsTab() {
     fetchLofts();
   }, []);
 
+  // Handlers
   const handleCreate = () => {
     setEditingLoft(undefined);
     setModalOpen(true);
@@ -53,6 +61,7 @@ export function LoftsTab() {
   const handleDelete = async () => {
     if (!loftToDelete) return;
     setDeleteLoading(true);
+
     try {
       await api.delete(`/lofts/${loftToDelete.id}`);
       setLofts((prev) => prev.filter((l) => l.id !== loftToDelete.id));
@@ -60,7 +69,6 @@ export function LoftsTab() {
       setDeleteModalOpen(false);
       setLoftToDelete(null);
     } catch (err) {
-      console.error(err);
       toast.error(t("loftsPage.deleteFailed"));
     } finally {
       setDeleteLoading(false);
@@ -82,7 +90,6 @@ export function LoftsTab() {
       }
       setModalOpen(false);
     } catch (err) {
-      console.error(err);
       toast.error(
         editingLoft
           ? t("loftsPage.updateFailed")
@@ -91,17 +98,34 @@ export function LoftsTab() {
     }
   };
 
-  const filteredLofts = lofts.filter((loft) =>
-    loft.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Sorting
+  const sortedLofts = useMemo(() => {
+    const filtered = lofts.filter((loft) =>
+      loft.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return [...filtered].sort((a, b) => {
+      const dir = sortDirection === "asc" ? 1 : -1;
+
+      if (sortBy === "name") return a.name.localeCompare(b.name) * dir;
+      if (sortBy === "capacity")
+        return ((a.capacity || 0) - (b.capacity || 0)) * dir;
+      if (sortBy === "pigeons")
+        return ((a.pigeonCount || 0) - (b.pigeonCount || 0)) * dir;
+
+      return 0;
+    });
+  }, [lofts, searchTerm, sortBy, sortDirection]);
 
   return (
     <div className="p-6">
       <Toaster position="top-right" />
 
-      <PageHeader
-        title={t("loftsPage.title")}
-        right={
+      {/* Top controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+
+        {/* Search + Sort */}
+        <div className="flex gap-2 items-center">
           <input
             type="text"
             placeholder={t("loftsPage.searchPlaceholder")}
@@ -109,29 +133,51 @@ export function LoftsTab() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
           />
-        }
-        actions={
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition flex items-center gap-1"
-          >
-            + {t("loftsPage.createLoft")}
-          </button>
-        }
-      />
 
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white"
+          >
+            <option value="name">{t("loftsPage.sortByName")}</option>
+            <option value="pigeons">{t("loftsPage.sortByPigeons")}</option>
+            <option value="capacity">{t("loftsPage.sortByCapacity")}</option>
+          </select>
+
+          {/* Sorting arrow toggle */}
+          <button
+            onClick={() =>
+              setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+            }
+            className="px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition"
+          >
+            {sortDirection === "asc" ? "↑" : "↓"}
+          </button>
+        </div>
+
+        {/* Create button */}
+        <button
+          onClick={handleCreate}
+          className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition flex items-center gap-1"
+        >
+          + {t("loftsPage.createLoft")}
+        </button>
+      </div>
+
+      {/* Loft Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredLofts.map((loft) => (
+        {sortedLofts.map((loft) => (
           <LoftCard
             key={loft.id}
             loft={loft}
-            onView={() => loft.id && navigate(`/lofts/${loft.id}/pigeons`)} // <-- correct route
+            onView={() => loft.id && navigate(`/lofts/${loft.id}/pigeons`)}
             onEdit={handleEdit}
             onDelete={() => handleDeleteClick(loft)}
           />
         ))}
       </div>
 
+      {/* Create / Edit Modal */}
       <CreateEditLoftModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -139,6 +185,7 @@ export function LoftsTab() {
         initialData={editingLoft}
       />
 
+      {/* Delete Modal */}
       {deleteModalOpen && loftToDelete && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
@@ -148,6 +195,7 @@ export function LoftsTab() {
             <p className="text-sm text-gray-600 mb-6">
               {t("loftsPage.deleteConfirm")}
             </p>
+
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setDeleteModalOpen(false)}
@@ -156,6 +204,7 @@ export function LoftsTab() {
               >
                 {t("common.cancel")}
               </button>
+
               <button
                 onClick={handleDelete}
                 className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
