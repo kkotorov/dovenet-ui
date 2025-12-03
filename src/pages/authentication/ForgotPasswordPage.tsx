@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import api from "../../api//api";
+import { sendForgotPasswordEmail } from "../../api/auth";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
@@ -19,8 +19,8 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await api.post("/users/forgot-password", { email });
-      setMessage(res.data?.message || t("forgotPasswordPage.successMessage"));
+      const data = await sendForgotPasswordEmail(email);
+      setMessage(data?.message || t("forgotPasswordPage.successMessage"));
     } catch (err: any) {
       setError(err.response?.data?.message || t("forgotPasswordPage.errorMessage"));
     } finally {

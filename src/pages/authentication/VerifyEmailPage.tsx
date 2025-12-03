@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import api from "../../api/api";
+import { verifyEmail } from "../../api/auth";
 
 export default function VerifyEmailPage() {
   const { t } = useTranslation();
@@ -24,8 +24,8 @@ export default function VerifyEmailPage() {
     setSuccess("");
 
     try {
-      const res = await api.get(`/users/verify?token=${token}`);
-      setSuccess(res.data?.message || t("verifyEmailPage.successMessage"));
+      const data = await verifyEmail(token);
+      setSuccess(data.message || t("verifyEmailPage.successMessage"));
     } catch (err: any) {
       setError(err.response?.data?.message || t("verifyEmailPage.errorMessage"));
     } finally {

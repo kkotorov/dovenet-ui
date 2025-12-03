@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import api from "../../api/api";
+import { resetPassword } from "../../api/auth";
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
@@ -33,13 +33,10 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await api.post("/users/reset-password", {
-        token,
-        newPassword: password,
-      });
+      const data = await resetPassword(token, password);
 
       setMessage(
-        res.data?.message || t("resetPasswordPage.successMessage")
+        data.message || t("resetPasswordPage.successMessage")
       );
 
       // Automatically navigate to login after short delay

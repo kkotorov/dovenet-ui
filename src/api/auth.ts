@@ -58,3 +58,18 @@ export async function updateProfile(profile: Partial<AppUser>): Promise<AppUser>
   const res = await api.patch<AppUser>("/users/me/update-settings", profile);
   return res.data;
 }
+
+export async function sendForgotPasswordEmail(email: string): Promise<{ message: string }> {
+  const res = await api.post("/users/forgot-password", { email });
+  return res.data; // return only the data
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+  const res = await api.post("/users/reset-password", { token, newPassword });
+  return res.data; // only return data
+}
+
+export async function verifyEmail(token: string): Promise<{ message: string }> {
+  const res = await api.get(`/users/verify?token=${token}`);
+  return res.data; // return only the data
+}
