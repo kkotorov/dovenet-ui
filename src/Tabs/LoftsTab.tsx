@@ -1,12 +1,16 @@
 import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import api from "../api/api";
 import type { Loft } from "../types";
 import LoftCard from "../components/lofts/LoftCard";
 import CreateEditLoftModal from "../components/lofts/CreateEditLoftModal";
 import toast, { Toaster } from "react-hot-toast";
 import { PigeonsTab } from "./PigeonsTab"; 
-
+import {
+  getLofts,
+  createLoft,
+  updateLoft,
+  deleteLoft
+} from "../api/lofts";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 
 export function LoftsTab() {
@@ -28,7 +32,7 @@ export function LoftsTab() {
   // Fetch lofts
   const fetchLofts = async () => {
     try {
-      const res = await api.get("/lofts");
+      const res = await getLofts();
       setLofts(res.data);
     } catch (err) {
       setLofts([]);
@@ -61,7 +65,7 @@ export function LoftsTab() {
     setDeleteLoading(true);
 
     try {
-      await api.delete(`/lofts/${loftToDelete.id}`);
+      await deleteLoft(loftToDelete.id);
       setLofts((prev) => prev.filter((l) => l.id !== loftToDelete.id));
       toast.success(t("loftsPage.deleteSuccess"));
       setDeleteModalOpen(false);
@@ -76,13 +80,13 @@ export function LoftsTab() {
   const handleSubmit = async (loft: Partial<Loft>) => {
     try {
       if (editingLoft) {
-        const res = await api.put(`/lofts/${editingLoft.id}`, loft);
+        const res = await updateLoft(editingLoft.id, loft);
         setLofts((prev) =>
           prev.map((l) => (l.id === editingLoft.id ? res.data : l))
         );
         toast.success(t("loftsPage.updateSuccess"));
       } else {
-        const res = await api.post("/lofts", loft);
+        const res = await createLoft(loft);
         setLofts((prev) => [...prev, res.data]);
         toast.success(t("loftsPage.createSuccess"));
       }
