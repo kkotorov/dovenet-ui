@@ -6,12 +6,6 @@ export const registerUser = (username: string, email: string, password: string) 
   return api.post("/users/register", { username, email, password });
 };
 
-
-export async function fetchCurrentUser(): Promise<AppUser> {
-  const res = await api.get<AppUser>("/users/me");
-  return res.data; 
-}
-
 // Login — store token only, UserContext will fetch the profile
 export const loginUser = async (
   username: string,
@@ -37,3 +31,30 @@ export const logoutUser = () => {
 export const isLoggedIn = (): boolean => {
   return !!localStorage.getItem("token");
 };
+
+export async function fetchCurrentUser(): Promise<AppUser> {
+  const res = await api.get<AppUser>("/users/me");
+  return res.data; 
+}
+
+// Trigger verification email
+export async function sendVerificationEmail(): Promise<{ message?: string }> {
+  const res = await api.get("/users/trigger-verify");
+  return res.data;
+}
+
+// Change email
+export async function updateEmail(newEmail: string, password: string): Promise<void> {
+  await api.patch("/users/me/change-email", { newEmail, password });
+}
+
+// Change password
+export async function updatePassword(oldPassword: string, newPassword: string): Promise<void> {
+  await api.patch("/users/me/change-password", { oldPassword, newPassword });
+}
+
+// Update profile settings
+export async function updateProfile(profile: Partial<AppUser>): Promise<AppUser> {
+  const res = await api.patch<AppUser>("/users/me/update-settings", profile);
+  return res.data;
+}

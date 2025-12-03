@@ -7,11 +7,11 @@ import {
   PhoneIcon,
   MapPinIcon,
 } from "lucide-react";
-import api from "../api/api";
 import toast, { Toaster } from "react-hot-toast";
 import i18n from "../i18n";
-
 import { useUser } from "../components/utilities/UserContext";
+import { fetchCurrentUser, sendVerificationEmail, updateEmail, updatePassword, updateProfile } from "../api/auth";
+
 
 export function UserSettingsTab() {
   const { t } = useTranslation();
@@ -45,11 +45,21 @@ export function UserSettingsTab() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await api.get("/users/me");
-        setUser(res.data);
+          const data = await fetchCurrentUser();
 
-        if (res.data.language && res.data.language !== i18n.language) {
-          i18n.changeLanguage(res.data.language);
+          setUser({
+            username: data.username || "",
+            email: data.email || "",
+            emailVerified: data.emailVerified || false,
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            phoneNumber: data.phoneNumber || "",
+            address: data.address || "",
+            language: data.language || "en",
+          });
+
+        if (data.language && data.language !== i18n.language) {
+          i18n.changeLanguage(data.language);
         }
       } catch (err) {
         toast.error(t("userSettingsPage.settingsFailed"));
@@ -60,9 +70,9 @@ export function UserSettingsTab() {
 
   const handleSendVerificationEmail = async () => {
     try {
-      const res = await api.get("/users/trigger-verify");
+      const data = await sendVerificationEmail();
       toast.success(
-        res.data?.message || t("userSettingsPage.verificationEmailSent")
+        data?.message || t("userSettingsPage.verificationEmailSent")
       );
     } catch (err: any) {
       toast.error(
@@ -78,10 +88,7 @@ export function UserSettingsTab() {
       return toast.error(t("userSettingsPage.enterCurrentPassword"));
 
     try {
-      await api.patch("/users/me/change-email", {
-        newEmail,
-        password: currentPasswordForEmail,
-      });
+      await updateEmail(newEmail, currentPasswordForEmail)
 
       toast.success(t("userSettingsPage.emailUpdated"));
       setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false }));
@@ -102,10 +109,7 @@ export function UserSettingsTab() {
     if (!oldPassword) return toast.error(t("userSettingsPage.enterCurrentPassword"));
 
     try {
-      await api.patch("/users/me/change-password", {
-        oldPassword,
-        newPassword,
-      });
+      await updatePassword(oldPassword, newPassword);
 
       toast.success(t("userSettingsPage.passwordUpdated"));
       setOldPassword("");
@@ -132,7 +136,7 @@ export function UserSettingsTab() {
 
   const handleProfileUpdate = async () => {
     try {
-      const res = await api.patch("/users/me/update-settings", {
+      const data = await updateProfile ({
         firstName: user.firstName,
         lastName: user.lastName,
         phoneNumber: user.phoneNumber,
@@ -140,14 +144,22 @@ export function UserSettingsTab() {
         language: newLanguage || currentLanguage,
 
       });
-
-      setUser(res.data);
-      setCtxUser(res.data); // sync context
+      setUser({
+        username: data.username || "",
+        email: data.email || "",
+        emailVerified: data.emailVerified || false,
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        phoneNumber: data.phoneNumber || "",
+        address: data.address || "",
+        language: data.language || "en",
+      });
+      setCtxUser(data); // sync context
       toast.success(t("userSettingsPage.profileUpdated"));
       setShowProfileEdit(false);
 
-      if (res.data.language && res.data.language !== i18n.language) {
-        i18n.changeLanguage(res.data.language);
+      if (data.language && data.language !== i18n.language) {
+        i18n.changeLanguage(data.language);
       }
     } catch (err: any) {
       toast.error(
