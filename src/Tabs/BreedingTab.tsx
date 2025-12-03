@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../api/api";
 import { Edit2, Trash2 } from "lucide-react";
 import CreateEditSeasonModal from "../components/breeding/CreateEditSeasonModal";
 import type { BreedingSeasonDTO, BreedingSeasonCard } from "../types";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
+import {
+  getBreedingSeasons,
+  createBreedingSeason,
+  updateBreedingSeason,
+  deleteBreedingSeason,
+} from "../api/breeding";
+
 
 export function BreedingTab() {
   const { t } = useTranslation();
@@ -24,8 +30,7 @@ export function BreedingTab() {
 
   const fetchSeasons = async () => {
     try {
-      const res = await api.get<BreedingSeasonDTO[]>("/breeding/seasons");
-
+    const res = await getBreedingSeasons();
     const mapped = res.data.map((s) => ({
       id: s.id,
       name: s.name,
@@ -51,10 +56,10 @@ export function BreedingTab() {
   const handleCreateOrUpdate = async (season: BreedingSeasonDTO) => {
     try {
       if (season.id) {
-        await api.patch(`/breeding/seasons/${season.id}`, season);
+        await updateBreedingSeason(season);
         toast.success(t("breedingPage.updateSuccess"));
       } else {
-        await api.post(`/breeding/seasons`, season);
+        await createBreedingSeason(season);
         toast.success(t("breedingPage.createSuccess"));
       }
 
@@ -72,7 +77,7 @@ export function BreedingTab() {
     setDeleteLoading(true);
 
     try {
-      await api.delete(`/breeding/seasons/${deleteSeasonId}`);
+      await deleteBreedingSeason(deleteSeasonId);
       setSeasons((prev) => prev.filter((s) => s.id !== deleteSeasonId));
       toast.success(t("breedingPage.seasonDeleted"));
       setDeleteModalOpen(false);
@@ -223,3 +228,4 @@ export function BreedingTab() {
     </div>
   );
 }
+
