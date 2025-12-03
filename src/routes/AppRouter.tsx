@@ -12,6 +12,7 @@ import TopBar from '../components/utilities/TopBar';
 import CompetitionDetailsPage from '../pages/details/CompetitionDetailsPage';
 import PigeonPage from '../pages/details/PigeonPage';
 import BreedingSeasonDetailsPage from '../pages/details/BreedingDetailsPage';
+import PublicPigeonPage from '../pages/details/PublicPigeonPage';
 
 export default function AppRouter() {
   return (
@@ -27,6 +28,7 @@ export default function AppRouter() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/public/pigeons/:id" element={<PublicPigeonPage />} />
 
         {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>
