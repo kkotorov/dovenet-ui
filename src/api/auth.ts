@@ -1,9 +1,16 @@
 import api from "./api";
+import type { AppUser } from "../components/utilities/UserContext";
 
 // Register user
 export const registerUser = (username: string, email: string, password: string) => {
   return api.post("/users/register", { username, email, password });
 };
+
+
+export async function fetchCurrentUser(): Promise<AppUser> {
+  const res = await api.get<AppUser>("/users/me");
+  return res.data; 
+}
 
 // Login — store token only, UserContext will fetch the profile
 export const loginUser = async (

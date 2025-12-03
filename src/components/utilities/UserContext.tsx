@@ -1,7 +1,13 @@
 // src/UserContext.tsx
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import api from "../../api/api";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import i18n from "../../i18n";
+import { fetchCurrentUser } from "../../api/auth";
 
 export type AppUser = {
   id?: string;
@@ -29,24 +35,28 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshUser = useCallback(async () => {
-    setLoading(true);
     try {
-      const res = await api.get("/users/me");
-      setUser(res.data);
+      setLoading(true);
 
-      // sync i18n immediately
-      if (res.data?.language && res.data.language !== i18n.language) {
-        i18n.changeLanguage(res.data.language);
-        localStorage.setItem("lang", res.data.language);
+      const res = await fetchCurrentUser();
+      const userData = res;
+
+      setUser(userData);
+
+      // Sync language preferences
+      if (userData?.language && userData.language !== i18n.language) {
+        i18n.changeLanguage(userData.language);
+        localStorage.setItem("lang", userData.language);
       }
     } catch (err) {
+      // Token invalid or expired → user is logged out
       setUser(null);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // mount: attempt to fetch if token exists
+  // On mount: fetch user if token exists
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -55,18 +65,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
 
-    // keep context in sync across tabs
+    // Synchronize auth + language across browser tabs
     const onStorage = (e: StorageEvent) => {
       if (e.key === "token") {
-        const newToken = e.newValue;
-        if (newToken) {
-          // token added/updated -> fetch user
+        if (e.newValue) {
+          // Login on another tab
           refreshUser();
         } else {
-          // token removed -> logged out
+          // Logout on another tab
           setUser(null);
         }
       }
+
       if (e.key === "lang" && e.newValue) {
         i18n.changeLanguage(e.newValue);
       }
