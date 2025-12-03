@@ -236,7 +236,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     {/* QR code in bottom-right corner */}
     {pigeon.id && (
       <div style={{ position: "absolute", bottom: 20, right: 20 }}>
-        <QRCodeCanvas value={`${window.location.origin}/pigeons/${pigeon.id}`} size={100} />
+        <QRCodeCanvas value={`${window.location.origin}/public/pigeons/${pigeon.id}`} size={100} />
       </div>
     )}
   </div>
