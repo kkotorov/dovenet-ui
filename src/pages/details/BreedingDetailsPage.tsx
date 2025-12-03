@@ -2,13 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../../api/api";
 import PairForm from "../../components/breeding/PairForm";
 import PigeonForm from "../../components/pigeons/PigeonForm";
 import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../../types";
 import PageHeader from "../../components/utilities/PageHeader";
 import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
 import PairCard from "../../components/breeding/PairCard";
+import { getUserPigeons, createPigeon } from "../../api/pigeon";
+import {
+  getPairsForSeason,
+  getBreedingSeason,
+  deletePair,
+  createPair,
+  updatePair,
+  addOffspring,
+  removeOffspring
+} from "../../api/breeding";
 
 export default function BreedingSeasonDetailsPage() {
   const { t } = useTranslation();
@@ -35,7 +44,7 @@ export default function BreedingSeasonDetailsPage() {
   const fetchPairs = async () => {
     if (!seasonId) return;
     try {
-      const res = await api.get<BreedingPairDTO[]>(`/breeding/seasons/${seasonId}/pairs`);
+      const res = await getPairsForSeason(seasonId);
       setPairs(res.data);
     } catch (err) {
       console.error("Failed to fetch pairs", err);
@@ -47,7 +56,7 @@ export default function BreedingSeasonDetailsPage() {
   const fetchSeason = async () => {
     if (!seasonId) return;
     try {
-      const res = await api.get<BreedingSeasonDTO>(`/breeding/seasons/${seasonId}`);
+      const res = await getBreedingSeason(seasonId);
       setSeasonMeta(res.data);
     } catch (err) {
       console.error("Failed to fetch season", err);
@@ -57,7 +66,7 @@ export default function BreedingSeasonDetailsPage() {
 
   const fetchUserPigeons = async () => {
     try {
-      const res = await api.get<Pigeon[]>("/pigeons");
+      const res = await getUserPigeons();
       setUserPigeons(res.data || []);
     } catch (err) {
       console.error("Failed to fetch pigeons", err);
@@ -87,8 +96,8 @@ export default function BreedingSeasonDetailsPage() {
   // ------------------------
   const handleCreateOrUpdatePair = async (dto: BreedingPairDTO) => {
     try {
-      if (dto.id) await api.patch(`/breeding/pairs/${dto.id}`, dto);
-      else await api.post(`/breeding/seasons/${seasonId}/pairs`, dto);
+      if (dto.id) await updatePair(dto)
+      else await createPair(seasonId!, dto);
 
       toast.success(dto.id ? t("breedingPage.pairUpdated") : t("breedingPage.pairCreated"));
       setOpenPairForm(false);
@@ -102,7 +111,7 @@ export default function BreedingSeasonDetailsPage() {
 
   const handleDeletePair = async (pairId: number) => {
     try {
-      await api.delete(`/breeding/pairs/${pairId}`);
+      await deletePair(pairId);
       setPairs((prev) => prev.filter((p) => p.id !== pairId));
       toast.success(t("breedingPage.pairDeleted"));
     } catch (err) {
@@ -117,9 +126,9 @@ export default function BreedingSeasonDetailsPage() {
   const handleCreateOffspring = async (pigeon: Pigeon) => {
     if (!activePairId) return;
     try {
-      const res = await api.post<Pigeon>("/pigeons", pigeon);
+      const res = await createPigeon(pigeon);
       const newPigeon = res.data;
-      await api.post(`/breeding/pairs/${activePairId}/offspring/${newPigeon.id}`);
+      await addOffspring(activePairId, newPigeon.id!)
       toast.success(t("breedingPage.offspringCreated"));
       setOpenOffspringForm(false);
       setActivePairId(null);
@@ -134,7 +143,7 @@ export default function BreedingSeasonDetailsPage() {
   const handleRemoveOffspring = async (pairId: number, offspringIds: number[]) => {
     try {
       await Promise.all(offspringIds.map(id =>
-        api.delete(`/breeding/pairs/${pairId}/offspring/${id}`)
+        removeOffspring(pairId,id)
       ));
       toast.success(t("breedingPage.offspringRemoved"));
       await fetchPairs();

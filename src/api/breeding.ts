@@ -1,36 +1,55 @@
-import api from "./api";
-import type { BreedingSeasonDTO } from "../types";
+import api from "../api/api";
+import type { BreedingPairDTO, BreedingSeasonDTO } from "../types";
 
 // ----------------------
-// GET all breeding seasons
+// SEASON
 // ----------------------
+export async function getBreedingSeason(id: string | number) {
+  return api.get<BreedingSeasonDTO>(`/breeding/seasons/${id}`);
+}
+
 export async function getBreedingSeasons() {
-  const res = await api.get<BreedingSeasonDTO[]>("/breeding/seasons");
-  return res;
+  return api.get<BreedingSeasonDTO[]>("/breeding/seasons");
 }
 
-// ----------------------
-// CREATE breeding season
-// ----------------------
 export async function createBreedingSeason(season: BreedingSeasonDTO) {
-  const res = await api.post("/breeding/seasons", season);
-  return res;
+  return api.post("/breeding/seasons", season);
 }
 
-// ----------------------
-// UPDATE breeding season
-// ----------------------
 export async function updateBreedingSeason(season: BreedingSeasonDTO) {
-  if (!season.id) throw new Error("Season ID missing for update");
+  return api.patch(`/breeding/seasons/${season.id}`, season);
+}
 
-  const res = await api.patch(`/breeding/seasons/${season.id}`, season);
-  return res;
+export async function deleteBreedingSeason(id: number) {
+  return api.delete(`/breeding/seasons/${id}`);
 }
 
 // ----------------------
-// DELETE breeding season
+// PAIRS
 // ----------------------
-export async function deleteBreedingSeason(id: number) {
-  const res = await api.delete(`/breeding/seasons/${id}`);
-  return res;
+export async function getPairsForSeason(id: string | number) {
+  return api.get<BreedingPairDTO[]>(`/breeding/seasons/${id}/pairs`);
+}
+
+export async function createPair(seasonId: string | number, dto: BreedingPairDTO) {
+  return api.post(`/breeding/seasons/${seasonId}/pairs`, dto);
+}
+
+export async function updatePair(dto: BreedingPairDTO) {
+  return api.patch(`/breeding/pairs/${dto.id}`, dto);
+}
+
+export async function deletePair(pairId: number) {
+  return api.delete(`/breeding/pairs/${pairId}`);
+}
+
+// ----------------------
+// OFFSPRING
+// ----------------------
+export async function addOffspring(pairId: number, pigeonId: number) {
+  return api.post(`/breeding/pairs/${pairId}/offspring/${pigeonId}`);
+}
+
+export async function removeOffspring(pairId: number, offspringId: number) {
+  return api.delete(`/breeding/pairs/${pairId}/offspring/${offspringId}`);
 }
