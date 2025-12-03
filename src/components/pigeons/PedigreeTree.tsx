@@ -3,6 +3,7 @@ import api from "../../api/api";
 import type { Pigeon, CompetitionEntry } from "../../types";
 import { useTranslation } from "react-i18next";
 import type { AppUser } from "../utilities/UserContext";
+import { QRCodeCanvas } from "qrcode.react";
 
 interface PedigreeTreeProps {
   pigeon: Pigeon;
@@ -209,10 +210,36 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     </div>
   );
 
-  return (
+  /*return (
     <div style={{ width: "100%", maxWidth: 900, margin: "0 auto", padding: 20, backgroundColor: "#fff", border: "1px solid #ccc" }}>
       {renderHeader()}
       <div>{renderTreeLR(tree)}</div>
     </div>
-  );
+  );*/
+
+
+  return (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: 900,
+      margin: "0 auto",
+      padding: 20,
+      backgroundColor: "#fff",
+      border: "1px solid #ccc",
+      position: "relative", // <- make it relative for absolute QR code
+    }}
+  >
+    {renderHeader()}
+    <div>{renderTreeLR(tree)}</div>
+
+    {/* QR code in bottom-right corner */}
+    {pigeon.id && (
+      <div style={{ position: "absolute", bottom: 20, right: 20 }}>
+        <QRCodeCanvas value={`${window.location.origin}/pigeons/${pigeon.id}`} size={100} />
+      </div>
+    )}
+  </div>
+);
+
 };
