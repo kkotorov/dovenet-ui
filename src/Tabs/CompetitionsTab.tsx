@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import api from "../api/api";
 import { Edit2, Trash2, MapPin, Cloud, Wind, Droplet } from "lucide-react";
 import CompetitionFormModal from "../components/competitions/CompetitionFormModal";
-import type { Competition } from "../types";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
+import type { Competition } from "../types";
+
+import {
+  getCompetitions,
+  createCompetition,
+  updateCompetition,
+  deleteCompetition,
+} from "../api/competition";
 
 export function CompetitionsTab() {
   const { t } = useTranslation();
@@ -24,11 +30,10 @@ export function CompetitionsTab() {
   const [sortBy, setSortBy] = useState<"name" | "date" | "distance">("date");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
-
-  const fetchCompetitions = async () => {
+  const fetchCompetitionsList = async () => {
     try {
-      const res = await api.get<Competition[]>("/competitions");
-      setCompetitions(res.data);
+      const data = await getCompetitions();
+      setCompetitions(data);
     } catch (err) {
       console.error("Failed to fetch competitions", err);
       toast.error(t("competitionsPage.fetchError"));
@@ -37,18 +42,18 @@ export function CompetitionsTab() {
   };
 
   useEffect(() => {
-    fetchCompetitions();
+    fetchCompetitionsList();
   }, []);
 
   const handleCreateOrUpdate = async (competition: Competition) => {
     try {
-      if (competition.id) await api.patch(`/competitions/${competition.id}`, competition);
-      else await api.post("/competitions", competition);
+      if (competition.id) await updateCompetition(competition);
+      else await createCompetition(competition);
 
       toast.success(
         competition.id ? t("competitionsPage.updated") : t("competitionsPage.created")
       );
-      fetchCompetitions();
+      fetchCompetitionsList();
       setOpenForm(false);
       setEditingCompetition(null);
     } catch (err) {
@@ -61,7 +66,7 @@ export function CompetitionsTab() {
     if (!deleteCompetitionId) return;
     setDeleteLoading(true);
     try {
-      await api.delete(`/competitions/${deleteCompetitionId}`);
+      await deleteCompetition(deleteCompetitionId);
       setCompetitions((prev) => prev.filter((c) => c.id !== deleteCompetitionId));
       toast.success(t("competitionsPage.deleted"));
       setDeleteModalOpen(false);
@@ -74,37 +79,30 @@ export function CompetitionsTab() {
     }
   };
 
-    const sortCompetitions = (list: Competition[]) => {
+  const sortCompetitions = (list: Competition[]) => {
     return [...list].sort((a, b) => {
       const dir = sortDirection === "asc" ? 1 : -1;
 
       switch (sortBy) {
         case "name":
           return a.name.localeCompare(b.name) * dir;
-
         case "date":
-          return (
-            (new Date(a.date).getTime() - new Date(b.date).getTime()) * dir
-          );
-
+          return (new Date(a.date).getTime() - new Date(b.date).getTime()) * dir;
         case "distance":
           const da = a.distanceKm ?? 0;
           const db = b.distanceKm ?? 0;
           return (da - db) * dir;
-
         default:
           return 0;
       }
     });
   };
 
-
   const filteredCompetitions = sortCompetitions(
     competitions.filter((c) =>
       c.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
-
 
   return (
     <div className="p-4">
@@ -280,7 +278,7 @@ export function CompetitionsTab() {
         onCancel={() => setDeleteModalOpen(false)}
         onConfirm={handleDelete}
       />
-      
+
     </div>
   );
 }

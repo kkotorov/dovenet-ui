@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import api from "../../api/api";
 import {
   Home, Users, Trophy, Settings, CreditCard, Feather,
   BarChart2, Archive, FileText,
   ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
-
+import { fetchCurrentUser } from "../../api/auth";
 import { PigeonsTab } from "../../Tabs/PigeonsTab";
 import { CompetitionsTab } from "../../Tabs/CompetitionsTab";
 import { UserSettingsTab } from "../../Tabs/UserSettingsTab";
@@ -42,8 +41,8 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await api.get("/users/me");
-        setUser(res.data);
+        const data = await fetchCurrentUser();
+        setUser(data);
       } finally {
         setLoading(false);
       }
