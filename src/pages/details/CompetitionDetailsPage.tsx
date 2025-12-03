@@ -211,8 +211,8 @@ export default function CompetitionDetailsPage() {
         open={deleteModalOpen && deleteEntryId !== null}
         title={t("competitionEntryForm.deleteTitle")}
         message={t("competitionEntryForm.deleteConfirm")}
-        cancelLabel={t("competitionEntryForm.cancel")}
-        deleteLabel={t("competitionEntryForm.delete")}
+        cancelLabel={t("common.cancel")}
+        deleteLabel={t("common.delete")}
         onCancel={() => {
           setDeleteModalOpen(false);
           setDeleteEntryId(null);
