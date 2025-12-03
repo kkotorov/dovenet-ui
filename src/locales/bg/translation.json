@@ -231,7 +231,8 @@
     "addToCompetition": "Добави участие в състезание",
     "selectCompetition": "Избери състезание",
     "selectOption": "Избери опция",
-    "submit": "Изпрати"
+    "submit": "Изпрати",
+    "bulkCompetitionSuccess": "Всички избрани гълъби бяха успешно добавени към състезанието."
   },
   "pigeonForm": {
     "createPigeon": "Създай гълъб",
@@ -464,7 +465,9 @@
     "update": "Обнови запис",
     "create": "Създай запис",
     "selectPigeon": "Изберете гълъб",
-    "cancel": "Отказ"
+    "cancel": "Отказ",
+    "deleteTitle": "Изтриване на участие в състезание"
+
   },
   "bulkUpdateModal": {
     "bulkUpdate": "Масова редакция",

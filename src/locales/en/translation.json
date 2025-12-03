@@ -232,7 +232,8 @@
     "selectCompetition":"Select Competition",
     "selectOption":"Select Option",
     "submit":"Submit",
-    "viewPigeon":"View Pigeon Details"
+    "viewPigeon":"View Pigeon Details",
+    "bulkCompetitionSuccess": "All selected pigeons have been successfully added to the competition."
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
@@ -465,7 +466,8 @@
     "update": "Update Entry",
     "create": "Create Entry",
     "selectPigeon": "Select a pigeon",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "deleteTitle": "Delete Competition Entry"
   },
   "bulkUpdateModal": {
     "bulkUpdate": "Bulk Update",
