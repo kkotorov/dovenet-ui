@@ -11,6 +11,7 @@ import { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useUser } from "../../components/utilities/UserContext";
+import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
 
 export default function PigeonPage() {
   const { t } = useTranslation();
@@ -26,9 +27,9 @@ export default function PigeonPage() {
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [lofts, setLofts] = useState<Loft[]>([]);
-
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const sortedCompetitions = [...competitions];
   if (sortConfig) {
@@ -143,18 +144,14 @@ export default function PigeonPage() {
   }, [t]);
 
   const handleDelete = async () => {
-    if (!pigeon?.id) return;
-
-    const confirmDelete = window.confirm(t("pigeonsPage.confirmDelete"));
-    if (!confirmDelete) return;
-
+  if (!pigeon?.id) return;
     try {
       await api.delete(`/pigeons/${pigeon.id}`);
-      toast.success(t("pigeonsPage.deleteSuccess"));
-      navigate("/pigeons"); // go back to the pigeons list
+      toast.success(t("pigeonPage.deleteSuccess"));
+      navigate(-1);
     } catch (err) {
       console.error(err);
-      toast.error(t("pigeonsPage.deleteFailed"));
+      toast.error(t("pigeonPage.deleteFailed"));
     }
   };
 
@@ -269,12 +266,11 @@ export default function PigeonPage() {
 
             {/* Delete */}
             <button
-              onClick={handleDelete}
+              onClick={() => setShowDeleteModal(true)}
               className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 shadow-md transition flex items-center gap-1"
               title={t("pigeonsPage.delete")}
             >
               <Trash2 className="w-5 h-5" />
-              <span className="text-sm font-medium"></span>
             </button>
 
             {/* Download Pedigree */}
@@ -502,6 +498,16 @@ export default function PigeonPage() {
             onSubmit={updatePigeonData}
           />
         )}
+
+      <ConfirmDeleteModal
+        open={showDeleteModal} 
+        title={t("pigeonsPage.deleteTitle")}
+        message={t("pigeonsPage.deleteConfirm")}
+        cancelLabel={t("common.cancel")}
+        deleteLabel={t("common.delete")}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+      />
       </div>
     </div>
   );

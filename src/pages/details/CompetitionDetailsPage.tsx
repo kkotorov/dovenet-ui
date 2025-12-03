@@ -7,6 +7,7 @@ import PageHeader from "../../components/utilities/PageHeader";
 import CompetitionEntryForm from "../../components/competitions/CompetitionEntryForm";
 import type { Pigeon, Competition, CompetitionEntry } from "../../types";
 import { Edit2, Trash2 } from "lucide-react";
+import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
 
 export default function CompetitionDetailsPage() {
   const { t } = useTranslation();
@@ -206,30 +207,18 @@ export default function CompetitionDetailsPage() {
         </table>
       </div>
 
-      {/* CUSTOM DELETE MODAL (VERIFY-STYLE) */}
-      {deleteModalOpen && deleteEntryId !== null && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">{t("competitionEntryForm.deleteTitle")}</h2>
-            <p className="mb-6">{t("competitionEntryForm.deleteConfirm")}</p>
-
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={handleDelete}
-                className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition"
-              >
-                {t("competitionEntryForm.delete")}
-              </button>
-              <button
-                onClick={() => { setDeleteModalOpen(false); setDeleteEntryId(null); }}
-                className="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg shadow hover:bg-gray-300 transition"
-              >
-                {t("competitionEntryForm.cancel")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDeleteModal
+        open={deleteModalOpen && deleteEntryId !== null}
+        title={t("competitionEntryForm.deleteTitle")}
+        message={t("competitionEntryForm.deleteConfirm")}
+        cancelLabel={t("competitionEntryForm.cancel")}
+        deleteLabel={t("competitionEntryForm.delete")}
+        onCancel={() => {
+          setDeleteModalOpen(false);
+          setDeleteEntryId(null);
+        }}
+        onConfirm={handleDelete}
+      />
 
       <CompetitionEntryForm
         open={openForm}

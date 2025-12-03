@@ -8,6 +8,7 @@ import PigeonForm from "../../components/pigeons/PigeonForm";
 import { Edit2, Trash2, Plus, User, Users, Minus} from "lucide-react";
 import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../../types";
 import PageHeader from "../../components/utilities/PageHeader";
+import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
 
 export default function BreedingSeasonDetailsPage() {
   const { t } = useTranslation();
@@ -288,43 +289,43 @@ export default function BreedingSeasonDetailsPage() {
 
                 {/* Footer actions */}
                 <div className="flex justify-end gap-2 p-3 border-t border-gray-100 bg-gray-50">
-                  <div className="flex gap-2">
-  {/* Edit Pair */}
-  <button
-    onClick={() => { setEditingPair(pair); setOpenPairForm(true); }}
-    className="p-1 text-yellow-600 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
-    title={t("breedingPage.editPair")}
-  >
-    <Edit2 className="w-4 h-4" />
-  </button>
+                <div className="flex gap-2">
+                {/* Edit Pair */}
+                <button
+                  onClick={() => { setEditingPair(pair); setOpenPairForm(true); }}
+                  className="p-1 text-yellow-600 rounded-md hover:bg-yellow-100 transition flex items-center justify-center"
+                  title={t("breedingPage.editPair")}
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
 
-  {/* Add Offspring */}
-  <button
-    onClick={() => handleOpenOffspringForm(pair.id!)}
-    className="p-1 text-green-600 rounded-md hover:bg-green-100 transition flex items-center justify-center"
-    title={t("breedingPage.addOffspring")}
-  >
-    <Plus className="w-4 h-4" />
-  </button>
+                {/* Add Offspring */}
+                <button
+                  onClick={() => handleOpenOffspringForm(pair.id!)}
+                  className="p-1 text-green-600 rounded-md hover:bg-green-100 transition flex items-center justify-center"
+                  title={t("breedingPage.addOffspring")}
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
 
-  {/* Remove Offspring */}
-  <button
-    onClick={() => handleOpenRemoveOffspringModal(pair.id!)}
-    className="p-1 text-red-600 rounded-md hover:bg-red-100 transition flex items-center justify-center"
-    title={t("breedingPage.removeOffspring")}
-  >
-    <Minus className="w-4 h-4" /> {/* better than × for consistency with icons */}
-  </button>
+                {/* Remove Offspring */}
+                <button
+                  onClick={() => handleOpenRemoveOffspringModal(pair.id!)}
+                  className="p-1 text-red-600 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+                  title={t("breedingPage.removeOffspring")}
+                >
+                  <Minus className="w-4 h-4" /> {/* better than × for consistency with icons */}
+                </button>
 
-  {/* Delete Pair */}
-  <button
-    onClick={() => { setPairToDelete(pair.id ?? null); setDeleteModalOpen(true); }}
-    className="p-1 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
-    title={t("breedingPage.deletePair")}
-  >
-    <Trash2 className="w-4 h-4" />
-  </button>
-</div>
+                {/* Delete Pair */}
+                <button
+                  onClick={() => { setPairToDelete(pair.id ?? null); setDeleteModalOpen(true); }}
+                  className="p-1 text-red-700 rounded-md hover:bg-red-100 transition flex items-center justify-center"
+                  title={t("breedingPage.deletePair")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
 
                 </div>
               </div>
@@ -354,29 +355,15 @@ export default function BreedingSeasonDetailsPage() {
         />
       )}
 
-      {/* Delete Modal */}
-      {deleteModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">{t("breedingPage.deletePairTitle")}</h2>
-            <p className="text-sm text-gray-600 mb-6">{t("breedingPage.deletePairConfirm")}</p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setDeleteModalOpen(false)}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-              >
-                {t("common.cancel")}
-              </button>
-              <button
-                onClick={handleDeletePair}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-              >
-                {t("common.delete")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <ConfirmDeleteModal
+    open={deleteModalOpen}
+    title={t("breedingPage.deletePairTitle")}
+    message={t("breedingPage.deletePairConfirm")}
+    cancelLabel={t("common.cancel")}
+    deleteLabel={t("common.delete")}
+    onCancel={() => setDeleteModalOpen(false)}
+    onConfirm={handleDeletePair}
+  />
 
       {removeOffspringModalOpen && activeRemovePairId !== null && (
   <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
