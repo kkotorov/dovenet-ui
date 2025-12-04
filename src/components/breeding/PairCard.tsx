@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Edit2, Trash2, Plus, User, Users, Minus } from "lucide-react";
+import { Edit2, Trash2, Plus, User, Users, Minus, Info } from "lucide-react";
 import type { BreedingPairDTO, Pigeon } from "../../types";
 
 interface PairCardProps {
@@ -36,23 +36,46 @@ export default function PairCard({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div
+      className={`rounded-2xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition
+        ${pair.inbred ? "border-2 border-red-500" : "border border-transparent"}`}
+      title={pair.inbred ? t("breedingPage.inbredPairTooltip") : undefined}
+    >
       {/* Header */}
-      <div className="bg-indigo-50 flex justify-between items-center p-4">
+      <div
+        className={`flex justify-between items-center p-4
+          ${pair.inbred ? "bg-red-50" : "bg-indigo-50"}`}
+      >
+        {/* Male */}
         <div className="flex items-center gap-2">
-          <User className="w-5 h-5 text-blue-700" />
+          <User className={`w-5 h-5 ${pair.inbred ? "text-red-600" : "text-blue-700"}`} />
           <button
             onClick={() => navigate(`/pigeons/${pair.maleId}`)}
-            className="text-sm font-semibold text-blue-800 hover:underline"
+            className={`text-sm font-semibold hover:underline ${
+              pair.inbred ? "text-red-700" : "text-blue-800"
+            }`}
           >
             {pair.maleRing ?? pair.maleId}
           </button>
+          {pair.inbred && (
+            <span className="ml-2 px-2 py-0.5 text-xs font-semibold text-red-700 bg-red-100 rounded-full relative group">
+              {t("breedingPage.inbredBadge")}
+              <Info className="w-3 h-3 inline ml-1 text-red-600" />
+              <span className="absolute left-1/2 -translate-x-1/2 -top-6 px-2 py-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition">
+                {t("breedingPage.inbredPairTooltip")}
+              </span>
+            </span>
+          )}
         </div>
+
+        {/* Female */}
         <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-pink-700" />
+          <Users className={`w-5 h-5 ${pair.inbred ? "text-red-600" : "text-pink-700"}`} />
           <button
             onClick={() => navigate(`/pigeons/${pair.femaleId}`)}
-            className="text-sm font-semibold text-pink-800 hover:underline"
+            className={`text-sm font-semibold hover:underline ${
+              pair.inbred ? "text-red-700" : "text-pink-800"
+            }`}
           >
             {pair.femaleRing ?? pair.femaleId}
           </button>

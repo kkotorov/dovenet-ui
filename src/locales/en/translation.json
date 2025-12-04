@@ -574,6 +574,8 @@
     "deletePairTitle": "Delete Pair",
     "deletePairConfirm": "Are you sure you want to delete this pair?",
     "pairDeleted": "Pair deleted successfully",
-    "pairUpdated": "Pair updated successfully"
+    "pairUpdated": "Pair updated successfully",
+    "inbredBadge": "Inbred",
+    "inbredPairTooltip": "This pair is inbred. Offspring may have higher risk of genetic issues."
   }
 }

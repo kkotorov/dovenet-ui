@@ -91,4 +91,5 @@ export interface BreedingPairDTO {
   breedingDate?: string;
   notes?: string;
   offspringIds?: number[];
+  inbred?: boolean;
 }
