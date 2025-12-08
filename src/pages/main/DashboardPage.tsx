@@ -2,18 +2,19 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Home, Users, Trophy, Settings, CreditCard, Feather,
-  BarChart2, Archive, FileText,
-  ChevronLeft, ChevronRight, Menu
+  BarChart2, Archive, FileText, ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
+
 import { fetchCurrentUser } from "../../api/auth";
 import { PigeonsTab } from "../../Tabs/PigeonsTab";
 import { CompetitionsTab } from "../../Tabs/CompetitionsTab";
 import { UserSettingsTab } from "../../Tabs/UserSettingsTab";
-import { useSearchParams } from "react-router-dom";
 import { LoftsTab } from "../../Tabs/LoftsTab";
 import { SubscriptionsTab } from "../../Tabs/SubscriptionsTab";
-import type { AppUser } from "../../components/utilities/UserContext"
 import { BreedingTab } from "../../Tabs/BreedingTab";
+
+import { useSearchParams } from "react-router-dom";
+import type { AppUser } from "../../components/utilities/UserContext";
 
 interface TabItem {
   title: string;
@@ -39,7 +40,7 @@ export default function DashboardPage() {
   }, [tabFromUrl]);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const loadUser = async () => {
       try {
         const data = await fetchCurrentUser();
         setUser(data);
@@ -47,7 +48,7 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
-    fetchUser();
+    loadUser();
   }, []);
 
   const handleTabChange = (key: string) => {
@@ -57,9 +58,9 @@ export default function DashboardPage() {
 
   const tabs: TabItem[] = [
     { key: "lofts", title: t("dashboardPage.lofts"), icon: <Home />, content: <LoftsTab /> },
-    { key: "pigeons", title: t("dashboardPage.pigeons"), icon: <Users />, content: <PigeonsTab/> },
+    { key: "pigeons", title: t("dashboardPage.pigeons"), icon: <Users />, content: <PigeonsTab /> },
     { key: "competitions", title: t("dashboardPage.competitions"), icon: <Trophy />, content: <CompetitionsTab /> },
-    { key: "breeding", title: t("dashboardPage.breeding"), icon: <Feather />,  content: <BreedingTab/> },
+    { key: "breeding", title: t("dashboardPage.breeding"), icon: <Feather />, content: <BreedingTab /> },
     { key: "statistics", title: t("dashboardPage.statistics"), icon: <BarChart2 />, content: <div>{t("dashboardPage.manageStatisticsText")}</div> },
     { key: "inventory", title: t("dashboardPage.inventory"), icon: <Archive />, content: <div>{t("dashboardPage.manageInventoryText")}</div> },
     { key: "reports", title: t("dashboardPage.reports"), icon: <FileText />, content: <div>{t("dashboardPage.manageReportsText")}</div> },
@@ -78,42 +79,67 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 flex relative">
 
-      {/* Floating Hamburger Menu for Mobile */}
-      <button onClick={() => setMobileOpen(true)} className="md:hidden fixed top-6 left-6 z-50 bg-indigo-500 text-white p-3 rounded-full shadow-lg">
+      {/* Mobile Hamburger */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="md:hidden fixed top-6 left-6 z-50 bg-indigo-500 text-white p-3 rounded-full shadow-lg"
+      >
         <Menu size={22} />
       </button>
 
-      {/* SIDEBAR - lighter color */}
-      <div className={`fixed md:static top-0 left-0 h-full md:h-auto z-40 bg-indigo-500 border border-indigo-600 shadow-xl transition-all duration-300 ${collapsed ? "w-20" : "w-64"} ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} rounded-r-3xl p-6 flex flex-col space-y-4`}>
+      {/* MOBILE OVERLAY */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
-        {/* Close mobile sidebar when clicking outside */}
-        {mobileOpen && <div className="fixed inset-0 bg-black/30 md:hidden z-30" onClick={() => setMobileOpen(false)}></div>}
-
-        {/* Collapse Button (only desktop) */}
-        <button onClick={() => setCollapsed(!collapsed)} className="self-end hidden md:block text-white drop-shadow">
+      {/* SIDEBAR */}
+      <div
+        className={`
+          fixed md:static top-0 left-0 h-full md:h-auto
+          bg-indigo-500 border border-indigo-600 shadow-xl
+          transition-all duration-300
+          rounded-r-3xl p-6 flex flex-col space-y-4
+          z-50
+          ${collapsed ? "w-20" : "w-64"}
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        `}
+      >
+        {/* Collapse button */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="self-end hidden md:block text-white drop-shadow"
+        >
           {collapsed ? <ChevronRight /> : <ChevronLeft />}
         </button>
 
-        {/* User Profile */}
+        {/* Profile */}
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-indigo-400 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
             {user?.username?.[0]?.toUpperCase() ?? "U"}
           </div>
-          {!collapsed && <h1 className="text-lg font-semibold text-white drop-shadow-lg">{t("dashboardPage.welcome", { username: user?.username })}</h1>}
+          {!collapsed && (
+            <h1 className="text-lg font-semibold text-white drop-shadow-lg">
+              {t("dashboardPage.welcome", { username: user?.username })}
+            </h1>
+          )}
         </div>
 
         {/* Tabs */}
         <div className="flex flex-col space-y-2 mt-4">
-          {tabs.map(tab => (
+          {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => handleTabChange(tab.key)}
               className={`
                 flex items-center gap-3 rounded-xl transition backdrop-blur-xl
-                ${collapsed ? "justify-center px-0 py-3 w-full" : "justify-start px-4 py-3"}
-                ${activeTab === tab.key
-                  ? "bg-indigo-400 text-white shadow-lg"
-                  : "bg-indigo-400/70 text-white hover:bg-indigo-300/70"
+                ${collapsed ? "justify-center px-0 py-3" : "justify-start px-4 py-3"}
+                ${
+                  activeTab === tab.key
+                    ? "bg-indigo-400 text-white shadow-lg"
+                    : "bg-indigo-400/70 text-white hover:bg-indigo-300/70"
                 }
               `}
             >
@@ -126,7 +152,7 @@ export default function DashboardPage() {
 
       {/* CONTENT */}
       <div className="flex-1 md:ml-6 mt-20 md:mt-0 p-6 bg-white rounded-3xl shadow-xl min-h-[400px] overflow-auto">
-        {tabs.find(tab => tab.key === activeTab)?.content}
+        {tabs.find((tab) => tab.key === activeTab)?.content}
       </div>
     </div>
   );
