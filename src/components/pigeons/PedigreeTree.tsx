@@ -59,8 +59,9 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     const normalize = (r?: string) => (r ? r.trim().toUpperCase() : r);
 
     const fetchParentByRing = async (ringNumber?: string) => {
-      if (!ringNumber) return undefined;
       const rn = normalize(ringNumber);
+      if (!rn) return undefined;   // ← FIX
+
       try {
         const res = await api.get<Pigeon[]>(`/pigeons?ringNumber=${encodeURIComponent(rn)}`);
         if (!Array.isArray(res.data) || res.data.length === 0) return undefined;
@@ -69,6 +70,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
         return undefined;
       }
     };
+
 
     const buildTree = async (p: Pigeon | undefined, level: number, seen = new Set<string | number>()): Promise<TreeNode | undefined> => {
       if (!p || level <= 0) return p ? ({ ...p } as TreeNode) : undefined;
@@ -130,7 +132,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     );
   };
 
-  const renderBox = (node: TreeNode, showCompetitions?: boolean, includePhoto?: boolean, mainPigeon?: boolean, heightOverride?: number) => {
+  const renderBox = (node: TreeNode, showCompetitions?: boolean, mainPigeon?: boolean, heightOverride?: number) => {
     const birthDate = node.birthDate ? new Date(node.birthDate) : null;
     const monthYear = birthDate
       ? birthDate.toLocaleString("default", { month: "short", year: "numeric" })
@@ -263,7 +265,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
       {/* Boxes */}
       {positions.map((p, idx) => (
         <div key={idx} style={{ position: "absolute", top: p.y, left: p.x }}>
-          {renderBox(p.node, p.showCompetitions, p.includePhoto, p.mainPigeon, p.heightOverride)}
+          {renderBox(p.node, p.showCompetitions, p.mainPigeon, p.heightOverride)}
         </div>
       ))}
 
