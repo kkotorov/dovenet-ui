@@ -4,19 +4,14 @@ import type { Pigeon, CompetitionEntry } from "../../types";
 import { useTranslation } from "react-i18next";
 import type { AppUser } from "../utilities/UserContext";
 import { QRCodeCanvas } from "qrcode.react";
+import "./PedigreeTree.css";
 
 interface PedigreeTreeProps {
   pigeon: Pigeon;
   generations?: number;
   competitions?: CompetitionEntry[];
-  boxWidth?: number;
-  boxHeight?: number;
-  horizontalSpacing?: number;
-  verticalSpacing?: number;
   owner?: AppUser;
   logoUrl?: string;
-  pageWidth?: number;
-  pageHeight?: number;
 }
 
 interface TreeNode extends Pigeon {
@@ -25,76 +20,57 @@ interface TreeNode extends Pigeon {
   competitions?: CompetitionEntry[];
 }
 
-interface Position {
-  node: TreeNode;
-  x: number;
-  y: number;
-  showCompetitions?: boolean;
-  includePhoto?: boolean;
-  mainPigeon?: boolean;
-  heightOverride?: number;
-}
-
 export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
   pigeon,
-  competitions,  
-  generations = 2,
-  boxWidth = 220,
-  boxHeight = 160,
-  horizontalSpacing = 40,
-  verticalSpacing = 20,
+  competitions,
+  generations = 3, // Default to 3 generations for a standard pedigree view
   owner,
   logoUrl,
-  pageWidth = 1123,
-  pageHeight = 794,
 }) => {
   const { t } = useTranslation();
   const [tree, setTree] = useState<TreeNode | null>(null);
-  const treeRef = useRef<HTMLDivElement>(null);
 
-  // Build tree
   useEffect(() => {
     let cancelled = false;
 
-    const normalize = (r?: string) => (r ? r.trim().toUpperCase() : r);
+    const normalize = (r?: string) => (r ? r.trim().toUpperCase() : undefined);
 
     const fetchParentByRing = async (ringNumber?: string) => {
       const rn = normalize(ringNumber);
-      if (!rn) return undefined;   // ← FIX
-
+      if (!rn) return undefined;
       try {
         const res = await api.get<Pigeon[]>(`/pigeons?ringNumber=${encodeURIComponent(rn)}`);
-        if (!Array.isArray(res.data) || res.data.length === 0) return undefined;
-        return res.data.find((p) => p.ringNumber?.trim().toUpperCase() === rn);
+        return res.data.find((p) => normalize(p.ringNumber) === rn);
       } catch {
         return undefined;
       }
     };
 
-
-    const buildTree = async (p: Pigeon | undefined, level: number, seen = new Set<string | number>()): Promise<TreeNode | undefined> => {
-      if (!p || level <= 0) return p ? ({ ...p } as TreeNode) : undefined;
-      const key = p.id ?? p.ringNumber;
-      if (key && seen.has(key)) return { ...p } as TreeNode;
+    const buildTree = async (p: Pigeon | undefined, level: number, seen = new Set<string>()): Promise<TreeNode | undefined> => {
+      if (!p || level <= 0) return p ? { ...p } : undefined;
+      
+      const key = normalize(p.ringNumber);
+      if (key && seen.has(key)) return { ...p };
       if (key) seen.add(key);
 
       const node: TreeNode = { ...p };
+      
       const hasFatherObj = (p as any).father && typeof (p as any).father === "object";
       const hasMotherObj = (p as any).mother && typeof (p as any).mother === "object";
 
       const fatherPromise = hasFatherObj ? Promise.resolve((p as any).father) : fetchParentByRing(p.fatherRingNumber);
       const motherPromise = hasMotherObj ? Promise.resolve((p as any).mother) : fetchParentByRing(p.motherRingNumber);
-
+      
       const [father, mother] = await Promise.all([fatherPromise, motherPromise]);
 
       if (father) node.father = await buildTree(father, level - 1, new Set(seen));
       if (mother) node.mother = await buildTree(mother, level - 1, new Set(seen));
-
+      
       return node;
     };
 
     (async () => {
-      const built = await buildTree(pigeon, generations + 1);
+      const built = await buildTree(pigeon, generations);
       if (!cancelled) setTree(built ?? null);
     })();
 
@@ -102,29 +78,32 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
       cancelled = true;
     };
   }, [pigeon, generations]);
-
-  if (!tree) return <div>Loading pedigree...</div>;
-
-  const genderSymbol = (gender?: string) => {
-    if (!gender) return { symbol: "", color: "#6B7280" };
+  
+  const genderClass = (gender?: string) => {
+    if (!gender) return "pigeon-gender-unknown";
     const lower = gender.toLowerCase();
-    if (lower === "male") return { symbol: "♂", color: "#3B82F6" };
-    if (lower === "female") return { symbol: "♀", color: "#EC4899" };
-    return { symbol: "", color: "#6B7280" };
+    if (lower === "male") return "pigeon-gender-male";
+    if (lower === "female") return "pigeon-gender-female";
+    return "pigeon-gender-unknown";
   };
+  
+  const genderSymbol = (gender?: string) => {
+    if (!gender) return "";
+    const lower = gender.toLowerCase();
+    if (lower === "male") return "♂";
+    if (lower === "female") return "♀";
+    return "";
+  }
 
   const renderCompetitions = (comps?: CompetitionEntry[]) => {
     if (!comps || comps.length === 0) return null;
     return (
-      <table style={{ fontSize: 10, width: "100%", marginTop: 4, borderCollapse: "collapse" }}>
+      <table className="pigeon-competitions">
         <tbody>
-          {comps.map((c) => (
+          {comps.slice(0, 3).map((c) => ( // Limit to 3 competitions for space
             <tr key={c.id}>
-              <td style={{ padding: 2 }}>{c.competition?.name || "-"}</td>
-              <td style={{ padding: 2 }}>{c.competition?.date || "-"}</td>
-              <td style={{ padding: 2, textAlign: "right" }}>{c.actualDistanceKm ?? "-"}</td>
-              <td style={{ padding: 2, textAlign: "right" }}>{c.place ?? "-"}</td>
-              <td style={{ padding: 2, textAlign: "right" }}>{c.score ?? "-"}</td>
+              <td>{c.competition?.name || "-"}</td>
+              <td style={{ textAlign: "right" }}>{c.place ?? "-"}</td>
             </tr>
           ))}
         </tbody>
@@ -132,147 +111,98 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     );
   };
 
-  const renderBox = (node: TreeNode, showCompetitions?: boolean, mainPigeon?: boolean, heightOverride?: number) => {
-    const birthDate = node.birthDate ? new Date(node.birthDate) : null;
-    const monthYear = birthDate
-      ? birthDate.toLocaleString("default", { month: "short", year: "numeric" })
-      : "-";
+  const renderPigeonBox = (node?: TreeNode, isMain: boolean = false) => {
+    if (!node) {
+      // Render a placeholder box
+      return <div className="pedigree-pigeon placeholder" />;
+    }
 
-    const height = heightOverride ?? (mainPigeon ? boxHeight * 1.5 : boxHeight);
+    const birthDate = node.birthDate ? new Date(node.birthDate) : null;
+    const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : "-";
 
     return (
-      <div
-        style={{
-          width: boxWidth,
-          height,
-          border: "2px solid #4B5563",
-          borderRadius: 10,
-          backgroundColor: "#F3F4F6",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          textAlign: "center",
-          padding: 8,
-          boxSizing: "border-box",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "center", gap: 6, alignItems: "center", fontWeight: 600, fontSize: 14 }}>
+      <div className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
+        <div className={`pigeon-ring ${genderClass(node.gender)}`}>
           <span>{node.ringNumber || "-"}</span>
-          <span style={{ color: genderSymbol(node.gender).color }}>{genderSymbol(node.gender).symbol}</span>
+          <span> {genderSymbol(node.gender)}</span>
         </div>
-        <div style={{ fontSize: 14, fontWeight: 500, marginTop: 2 }}>{node.name || t("pigeonPage.notInDatabase")}</div>
-        <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{monthYear}</div>
-        {showCompetitions && node.competitions && renderCompetitions(node.competitions)}
+        <div className="pigeon-name">{node.name || t("pigeonPage.notInDatabase")}</div>
+        <div className="pigeon-details">{node.color} - {monthYear}</div>
+        {isMain && renderCompetitions(competitions)}
       </div>
     );
   };
 
-  const centerY = pageHeight / 2 - boxHeight / 2;
-  const mainBoxHeight = boxHeight * 1.5;
-  const mainTop = centerY;
+  const renderGeneration = (node: TreeNode, level: number): React.ReactNode => {
+    if (!node || level <= 0) return null;
 
-  const positions: Position[] = [];
-
-  // Calculate total tree width: main + parents + grandparents
-  const treeDepth = 3; // main + parents + grandparents
-  const totalWidth = treeDepth * boxWidth + (treeDepth - 1) * horizontalSpacing;
-  const startX = (pageWidth - totalWidth) / 2; // shift to center
-
-  // Main pigeon
-  positions.push({
-    node: {
-      ...tree,
-      competitions: competitions ?? [],
-    },
-    x: startX,
-    y: mainTop,
-    showCompetitions: true,
-    includePhoto: true,
-    mainPigeon: true,
-    heightOverride: mainBoxHeight,
-  });
-
-  // Parents
-  const parentX = startX + boxWidth + horizontalSpacing;
-  const parentHeight = boxHeight * 1.1;
-
-  if (tree.father) {
-    const fatherTop = mainTop + mainBoxHeight / 2 - parentHeight;
-    positions.push({ node: tree.father, x: parentX, y: fatherTop, showCompetitions: true, heightOverride: parentHeight });
-
-    if (tree.father.father && tree.father.mother) {
-      const gpHeight = parentHeight / 2 - verticalSpacing / 2;
-      const grandX = parentX + boxWidth + horizontalSpacing;
-      positions.push({ node: tree.father.father, x: grandX, y: fatherTop, showCompetitions: true, heightOverride: gpHeight });
-      positions.push({ node: tree.father.mother, x: grandX, y: fatherTop + gpHeight + verticalSpacing, showCompetitions: true, heightOverride: gpHeight });
-    }
+    return (
+      <div className="pedigree-generation">
+        <div className="parent-pair">
+          {renderPigeonBox(node.father)}
+          {renderPigeonBox(node.mother)}
+        </div>
+        { (node.father || node.mother) && renderGeneration(node.father || node.mother, level -1)}
+      </div>
+    )
   }
+  
+  const renderTree = (root: TreeNode) => {
+    // Generation 1
+    const G1 = root;
+    // Generation 2
+    const G2_father = G1?.father;
+    const G2_mother = G1?.mother;
+    // Generation 3
+    const G3_ff = G2_father?.father;
+    const G3_fm = G2_father?.mother;
+    const G3_mf = G2_mother?.father;
+    const G3_mm = G2_mother?.mother;
 
-  if (tree.mother) {
-    const motherTop = mainTop + mainBoxHeight / 2 + verticalSpacing;
-    positions.push({ node: tree.mother, x: parentX, y: motherTop, showCompetitions: true, heightOverride: parentHeight });
+    return (
+      <div className="pedigree-tree">
+        {/* Gen 1 */}
+        <div className="pedigree-generation g1">
+          {renderPigeonBox(G1, true)}
+        </div>
+        {/* Gen 2 */}
+        <div className="pedigree-generation g2">
+          {renderPigeonBox(G2_father)}
+          {renderPigeonBox(G2_mother)}
+        </div>
+        {/* Gen 3 */}
+        <div className="pedigree-generation g3">
+          {renderPigeonBox(G3_ff)}
+          {renderPigeonBox(G3_fm)}
+          {renderPigeonBox(G3_mf)}
+          {renderPigeonBox(G3_mm)}
+        </div>
+      </div>
+    );
+  };
 
-    if (tree.mother.father && tree.mother.mother) {
-      const gpHeight = parentHeight / 2 - verticalSpacing / 2;
-      const grandX = parentX + boxWidth + horizontalSpacing;
-      positions.push({ node: tree.mother.father, x: grandX, y: motherTop, showCompetitions: true, heightOverride: gpHeight });
-      positions.push({ node: tree.mother.mother, x: grandX, y: motherTop + gpHeight + verticalSpacing, showCompetitions: true, heightOverride: gpHeight });
-    }
-  }
+
+  if (!tree) return <div>Loading pedigree...</div>;
 
   return (
-    <div
-      ref={treeRef}
-      style={{
-        width: pageWidth,
-        height: pageHeight,
-        position: "relative",
-        backgroundColor: "#fff",
-        border: "1px solid #ccc",
-        margin: "0 auto",
-        padding: 20,
-        boxSizing: "border-box",
-      }}
-    >
-      {/* Owner + QR */}
+    <div className="pedigree-container">
       {owner && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#E5E7EB",
-            padding: 10,
-            borderRadius: 6,
-            boxSizing: "border-box",
-          }}
-        >
-          <div style={{ textAlign: "left" }}>
-            <div style={{ fontWeight: 600 }}>{owner.firstName} {owner.lastName}</div>
-            {owner.phoneNumber && <div style={{ fontSize: 12 }}>Phone: {owner.phoneNumber}</div>}
-            <div style={{ fontSize: 12 }}>Email: {owner.email}</div>
-            {owner.address && <div style={{ fontSize: 12 }}>Address: {owner.address}</div>}
+        <div className="pedigree-header">
+          <div className="pedigree-owner-info">
+            <div className="owner-name">{owner.firstName} {owner.lastName}</div>
+            {owner.phoneNumber && <div>Phone: {owner.phoneNumber}</div>}
+            <div>Email: {owner.email}</div>
+            {owner.address && <div>Address: {owner.address}</div>}
           </div>
           {pigeon.id && <QRCodeCanvas value={`${window.location.origin}/public/pigeons/${pigeon.id}`} size={80} />}
         </div>
       )}
 
-      {/* Boxes */}
-      {positions.map((p, idx) => (
-        <div key={idx} style={{ position: "absolute", top: p.y, left: p.x }}>
-          {renderBox(p.node, p.showCompetitions, p.mainPigeon, p.heightOverride)}
-        </div>
-      ))}
+      {renderTree(tree)}
 
-      {/* Footer logo */}
       {logoUrl && (
-        <div style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)" }}>
-          <img src={logoUrl} alt="Loft Logo" style={{ height: 60 }} />
+        <div className="pedigree-footer">
+          <img src={logoUrl} alt="Loft Logo" />
         </div>
       )}
     </div>

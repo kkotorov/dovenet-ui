@@ -1,0 +1,171 @@
+/* src/components/pigeons/PedigreeTree.css */
+
+.pedigree-container {
+  width: 1123px; /* A4 landscape width in pixels at 96 DPI */
+  height: 794px;  /* A4 landscape height in pixels at 96 DPI */
+  background-color: white;
+  border: 1px solid #ccc;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+.pedigree-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ccc;
+}
+
+.pedigree-owner-info { text-align: left; }
+.pedigree-owner-info div { font-size: 12px; }
+.pedigree-owner-info .owner-name { font-weight: bold; font-size: 14px; }
+
+.pedigree-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.pedigree-footer img { height: 50px; }
+
+.pedigree-tree {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding-top: 80px; /* Space for header */
+  padding-bottom: 60px; /* Space for footer */
+  box-sizing: border-box;
+}
+
+.pedigree-generation {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-grow: 0;
+  position: relative;
+  margin-right: 40px;
+}
+.pedigree-generation:nth-child(1) {
+  margin-right: 60px;
+}
+.pedigree-generation:last-child {
+  margin-right: 0;
+}
+
+.pedigree-pigeon {
+  border: 1px solid #888;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  padding: 6px;
+  box-sizing: border-box;
+  text-align: center;
+  width: 200px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.pedigree-pigeon.main-pigeon {
+  height: 220px;
+  border-width: 2px;
+  border-color: #333;
+}
+
+.pigeon-ring {
+  font-weight: bold;
+  font-size: 13px;
+}
+.pigeon-gender-male { color: #3B82F6; }
+.pigeon-gender-female { color: #EC4899; }
+.pigeon-gender-unknown { color: #6B7280; }
+
+.pigeon-name {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+.pigeon-details {
+  font-size: 11px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.pigeon-competitions {
+  font-size: 9px;
+  width: 100%;
+  margin-top: 4px;
+  border-collapse: collapse;
+}
+.pigeon-competitions td { padding: 1px; }
+.pigeon-placeholder { background-color: #fafafa; border-style: dashed; }
+
+/* --- Connector Lines --- */
+
+/* Horizontal line coming out of a parent */
+.pedigree-pigeon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 20px; /* Half of the space between generations */
+  height: 1px;
+  background-color: #999;
+}
+.g3 .pedigree-pigeon::after { display: none; } /* No lines out of the last generation */
+.main-pigeon::after { width: 30px; }
+
+
+/* Vertical line connecting a pair of parents */
+.pedigree-generation > .pedigree-pigeon:nth-of-type(1)::before,
+.pedigree-generation > .pedigree-pigeon:nth-of-type(3)::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  width: 20px;
+  border-left: 1px solid #999;
+  border-top: 1px solid #999;
+}
+.pedigree-generation > .pedigree-pigeon:nth-of-type(2)::before,
+.pedigree-generation > .pedigree-pigeon:nth-of-type(4)::before {
+  content: '';
+  position: absolute;
+  bottom: 50%;
+  left: -20px;
+  width: 20px;
+  border-left: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+
+/* Specific lines for Gen 1 -> Gen 2 */
+.g2 > .pedigree-pigeon:nth-of-type(1)::before,
+.g2 > .pedigree-pigeon:nth-of-type(2)::before {
+  height: calc(50% + 92px);
+  width: 30px;
+  left: -30px;
+}
+
+/* Specific lines for Gen 2 -> Gen 3 */
+.g3 > .pedigree-pigeon:nth-of-type(1)::before,
+.g3 > .pedigree-pigeon:nth-of-type(2)::before,
+.g3 > .pedigree-pigeon:nth-of-type(3)::before,
+.g3 > .pedigree-pigeon:nth-of-type(4)::before {
+  height: calc(50% + 16px);
+}
+
+/* Remove ::before lines for the main pigeon */
+.g1 .pedigree-pigeon::before { display: none; }
