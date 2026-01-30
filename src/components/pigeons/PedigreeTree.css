@@ -142,13 +142,12 @@
   height: 1px;
   background-color: #999;
 }
-.g3 .pedigree-pigeon::after { display: none; } /* No lines out of the last generation */
-.main-pigeon::after { width: 30px; }
+.pedigree-generation:last-child .pedigree-pigeon::after { display: none; }
+.main-pigeon::after { width: 42px; }
 
 
 /* Vertical line connecting a pair of parents */
-.pedigree-generation > .pedigree-pigeon:nth-of-type(1)::before,
-.pedigree-generation > .pedigree-pigeon:nth-of-type(3)::before {
+.pedigree-generation:not(.g1) > .pedigree-pigeon:nth-of-type(odd)::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -157,8 +156,7 @@
   border-left: 1px solid #999;
   border-top: 1px solid #999;
 }
-.pedigree-generation > .pedigree-pigeon:nth-of-type(2)::before,
-.pedigree-generation > .pedigree-pigeon:nth-of-type(4)::before {
+.pedigree-generation:not(.g1) > .pedigree-pigeon:nth-of-type(even)::before {
   content: '';
   position: absolute;
   bottom: 50%;
@@ -171,18 +169,79 @@
 /* Specific lines for Gen 1 -> Gen 2 */
 .g2 > .pedigree-pigeon:nth-of-type(1)::before,
 .g2 > .pedigree-pigeon:nth-of-type(2)::before {
-  height: calc(50% + 92px);
-  width: 30px;
-  left: -30px;
+  height: calc(50% + 94px);
+  width: 40px;
+  left: -40px;
 }
 
-/* Specific lines for Gen 2 -> Gen 3 */
-.g3 > .pedigree-pigeon:nth-of-type(1)::before,
-.g3 > .pedigree-pigeon:nth-of-type(2)::before,
-.g3 > .pedigree-pigeon:nth-of-type(3)::before,
-.g3 > .pedigree-pigeon:nth-of-type(4)::before {
-  height: calc(50% + 16px);
+/* Specific lines for Gen 2 -> Gen 3 and deeper */
+.g3 > .pedigree-pigeon::before {
+  height: calc(50% + 12px);
+}
+.g4 > .pedigree-pigeon::before {
+  height: calc(50% + 10px);
+}
+.g5 > .pedigree-pigeon::before {
+  height: calc(50% + 6px);
 }
 
 /* Remove ::before lines for the main pigeon */
 .g1 .pedigree-pigeon::before { display: none; }
+
+/* Adjustments for 4 and 5 generations to fit */
+.gens-4 .pedigree-pigeon,
+.gens-5 .pedigree-pigeon {
+  width: 160px;
+  font-size: 0.9em;
+}
+.gens-4 .pedigree-generation,
+.gens-5 .pedigree-generation {
+  margin-right: 20px;
+}
+
+/* Fix connector lines for compact 20px margin */
+.gens-4 .pedigree-pigeon::after,
+.gens-5 .pedigree-pigeon::after {
+  width: 10px;
+}
+.gens-4 .main-pigeon::after,
+.gens-5 .main-pigeon::after {
+  width: 10px;
+} 
+.gens-4 .pedigree-generation:not(.g1) > .pedigree-pigeon::before,
+.gens-5 .pedigree-generation:not(.g1) > .pedigree-pigeon::before {
+  width: 10px;
+  left: -10px;
+}
+.gens-4 .g4 .pedigree-pigeon::after,
+.gens-5 .g5 .pedigree-pigeon::after {
+  display: none;
+}
+
+/* Compact boxes for 4 generations */
+.gens-4 .g4 .pedigree-pigeon {
+  height: 60px;
+  font-size: 10px;
+  justify-content: center;
+}
+.gens-4 .g4 .pigeon-details-row { display: none; }
+.gens-4 .g4 .pigeon-gender { top: 2px; right: 2px; }
+
+/* Compact boxes for 5 generations */
+.gens-5 .g4 .pedigree-pigeon {
+  height: 60px;
+  font-size: 10px;
+  justify-content: center;
+}
+.gens-5 .g4 .pigeon-details-row { display: none; }
+
+.gens-5 .g5 .pedigree-pigeon {
+  height: 30px;
+  font-size: 9px;
+  padding: 2px;
+  justify-content: center;
+}
+.gens-5 .g5 .pigeon-details-row,
+.gens-5 .g5 .pigeon-gender,
+.gens-5 .g5 .pigeon-name { display: none; }
+.gens-5 .g5 .pigeon-header { padding-right: 0; justify-content: center; }

@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../api/api";
 import type { Pigeon, CompetitionEntry } from "../../types";
-import { useTranslation } from "react-i18next";
 import type { AppUser } from "../utilities/UserContext";
 import { QRCodeCanvas } from "qrcode.react";
 import "./PedigreeTree.css";
@@ -23,11 +22,10 @@ interface TreeNode extends Pigeon {
 export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
   pigeon,
   competitions,
-  generations = 3, // Default to 3 generations for a standard pedigree view
+  generations = 4, // Default to 4 generations for a standard pedigree view
   owner,
   logoUrl,
 }) => {
-  const { t } = useTranslation();
   const [tree, setTree] = useState<TreeNode | null>(null);
 
   useEffect(() => {
@@ -111,17 +109,17 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     );
   };
 
-  const renderPigeonBox = (node?: TreeNode, isMain: boolean = false) => {
+  const renderPigeonBox = (node: TreeNode | undefined, isMain: boolean, key: number) => {
     if (!node) {
       // Render a placeholder box
-      return <div className="pedigree-pigeon placeholder" />;
+      return <div key={key} className="pedigree-pigeon placeholder" />;
     }
 
     const birthDate = node.birthDate ? new Date(node.birthDate) : null;
     const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : null;
 
     return (
-      <div className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
+      <div key={key} className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
         <div className="pigeon-header">
           <span className={`pigeon-ring ${genderClass(node.gender)}`}>{node.ringNumber || "-"}</span>
           {node.name && <span className="pigeon-name">{node.name}</span>}
@@ -138,35 +136,30 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
   };
 
   const renderTree = (root: TreeNode) => {
-    // Generation 1
-    const G1 = root;
-    // Generation 2
-    const G2_father = G1?.father;
-    const G2_mother = G1?.mother;
-    // Generation 3
-    const G3_ff = G2_father?.father;
-    const G3_fm = G2_father?.mother;
-    const G3_mf = G2_mother?.father;
-    const G3_mm = G2_mother?.mother;
+    const generationsList: (TreeNode | undefined)[][] = [];
+    let currentGen: (TreeNode | undefined)[] = [root];
+
+    for (let i = 0; i < generations; i++) {
+      generationsList.push(currentGen);
+      if (i < generations - 1) {
+        const nextGen: (TreeNode | undefined)[] = [];
+        currentGen.forEach((node) => {
+          nextGen.push(node?.father);
+          nextGen.push(node?.mother);
+        });
+        currentGen = nextGen;
+      }
+    }
 
     return (
-      <div className="pedigree-tree">
-        {/* Gen 1 */}
-        <div className="pedigree-generation g1">
-          {renderPigeonBox(G1, true)}
-        </div>
-        {/* Gen 2 */}
-        <div className="pedigree-generation g2">
-          {renderPigeonBox(G2_father)}
-          {renderPigeonBox(G2_mother)}
-        </div>
-        {/* Gen 3 */}
-        <div className="pedigree-generation g3">
-          {renderPigeonBox(G3_ff)}
-          {renderPigeonBox(G3_fm)}
-          {renderPigeonBox(G3_mf)}
-          {renderPigeonBox(G3_mm)}
-        </div>
+      <div className={`pedigree-tree gens-${generations}`}>
+        {generationsList.map((nodes, genIndex) => (
+          <div key={genIndex} className={`pedigree-generation g${genIndex + 1}`}>
+            {nodes.map((node, nodeIndex) => (
+              renderPigeonBox(node, genIndex === 0, nodeIndex)
+            ))}
+          </div>
+        ))}
       </div>
     );
   };

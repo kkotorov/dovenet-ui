@@ -525,7 +525,8 @@
     "date": "Date",
     "distance": "Distance (km)",
     "score": "Score",
-    "showOwnerInfo": "Show Owner Info"
+    "showOwnerInfo": "Show Owner Info",
+    "generations": "Generations"
   },
   "breedingPage": {
     "title": "Breeding Seasons",

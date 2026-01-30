@@ -30,6 +30,7 @@ export default function PigeonPage() {
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [generations, setGenerations] = useState(4);
 
   const sortedCompetitions = [...competitions];
   if (sortConfig) {
@@ -465,7 +466,8 @@ export default function PigeonPage() {
       </div>
 
 
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex flex-wrap items-center gap-6 mb-4">
+          <div className="flex items-center gap-2">
           <input
             type="checkbox"
             id="showOwnerInfo"
@@ -476,6 +478,24 @@ export default function PigeonPage() {
           <label htmlFor="showOwnerInfo" className="text-sm text-gray-700">
             {t("pigeonPage.showOwnerInfo")}
           </label>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-700 font-medium">{t("pigeonPage.generations")}:</span>
+            {[3, 4, 5].map((gen) => (
+              <label key={gen} className="flex items-center gap-1 text-sm text-gray-700 cursor-pointer">
+                <input
+                  type="radio"
+                  name="generations"
+                  value={gen}
+                  checked={generations === gen}
+                  onChange={() => setGenerations(gen)}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                />
+                {gen}
+              </label>
+            ))}
+          </div>
         </div>
 
           {/* Pedigree Tree */}
@@ -483,7 +503,7 @@ export default function PigeonPage() {
             {pigeon && (
               <PedigreeTree
                 pigeon={{ ...pigeon }}
-                generations={3}
+                generations={generations}
                 competitions={sortedCompetitions}
                 owner={showOwnerInfo && user ? user : undefined}  // <-- filter out null
               />
