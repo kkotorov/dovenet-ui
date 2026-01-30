@@ -119,15 +119,18 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
 
     const birthDate = node.birthDate ? new Date(node.birthDate) : null;
     const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : null;
-    const details = [node.color, monthYear].filter(Boolean).join(" - ");
 
     return (
       <div className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
         <div className="pigeon-header">
           <span className={`pigeon-ring ${genderClass(node.gender)}`}>{node.ringNumber || "-"}</span>
           {node.name && <span className="pigeon-name">{node.name}</span>}
-          {details && <span className="pigeon-details">{details}</span>}
           <span className={`pigeon-gender ${genderClass(node.gender)}`}>{genderSymbol(node.gender)}</span>
+        </div>
+        <div className="pigeon-details-row">
+          {monthYear && <span>{monthYear}</span>}
+          {monthYear && node.color && <span> - </span>}
+          {node.color && <span>{node.color}</span>}
         </div>
         {isMain && renderCompetitions(competitions)}
       </div>
