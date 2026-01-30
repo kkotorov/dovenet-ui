@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import api from "../../api/api";
-import {Users, ArrowLeft,Trash2, Edit2, Download} from "lucide-react";
+import { Users, Trash2, Edit2, Download, Calendar, Hash, Palette, Activity, Award, Home } from "lucide-react";
+import BackButton from "../../components/utilities/BackButton";
 import PigeonForm from "../../components/pigeons/PigeonForm";
 import type { Pigeon, CompetitionEntry, Loft } from "../../types";
 import { useTranslation } from "react-i18next";
@@ -30,7 +31,7 @@ export default function PigeonPage() {
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [generations, setGenerations] = useState(4);
+  const [generations, setGenerations] = useState(3);
 
   const sortedCompetitions = [...competitions];
   if (sortConfig) {
@@ -198,6 +199,20 @@ export default function PigeonPage() {
     }
   };
 
+  const getThemeColors = (gender?: string) => {
+    const lower = gender?.toLowerCase();
+    if (lower === "female") {
+      return {
+        background: "bg-gradient-to-r from-rose-600 to-rose-500",
+        badge: "text-rose-100 bg-rose-700/30"
+      };
+    }
+    return {
+      background: "bg-gradient-to-r from-blue-600 to-blue-500",
+      badge: "text-blue-100 bg-blue-700/30"
+    };
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
@@ -238,114 +253,106 @@ export default function PigeonPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <BackButton />
+          
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 px-3 py-2 bg-white/80 border border-gray-200 text-gray-800 rounded-lg hover:shadow transition"
-            >
-              <ArrowLeft className="w-4 h-4" /> <span className="text-sm">{t("pigeonPage.back")}</span>
-            </button>
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-500">{t("pigeonPage.pigeon")}</span>
-              <h1 className="text-2xl font-bold text-gray-800">
-                {pigeon.name} <span className="text-gray-400 text-base">({pigeon.ringNumber})</span>
-              </h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-2">
             {/* Edit */}
             <button
               onClick={handleEdit}
-              className="p-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 shadow-md transition flex items-center gap-1"
+              className="flex items-center gap-2 px-4 py-2 bg-white text-yellow-600 rounded-full shadow-sm hover:shadow-md transition-all"
               title={t("pigeonPage.editPigeon")}
             >
-              <Edit2 className="w-5 h-5" />
+              <Edit2 className="w-4 h-4" />
+              <span className="font-medium hidden sm:inline">{t("pigeonPage.editPigeon")}</span>
             </button>
 
             {/* Delete */}
             <button
               onClick={() => setShowDeleteModal(true)}
-              className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 shadow-md transition flex items-center gap-1"
+              className="flex items-center gap-2 px-4 py-2 bg-white text-red-600 rounded-full shadow-sm hover:shadow-md transition-all"
               title={t("pigeonsPage.delete")}
             >
-              <Trash2 className="w-5 h-5" />
+              <Trash2 className="w-4 h-4" />
+              <span className="font-medium hidden sm:inline">{t("pigeonsPage.delete")}</span>
             </button>
 
             {/* Download Pedigree */}
             <button
               onClick={downloadPedigreePdf}
-              className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-md transition flex items-center gap-2"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full shadow-sm hover:shadow-md hover:bg-blue-700 transition-all"
             >
-              <Download className="w-5 h-5" />
+              <Download className="w-4 h-4" />
               <span className="text-sm font-medium">{t("pigeonPage.downloadPedigree")}</span>
             </button>
           </div>
-
-
         </div>
-        {/* Basic Info */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="col-span-2 bg-white shadow-md rounded-2xl p-6 border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4">{t("pigeonPage.basicInfo")}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.name")}</div>
-                <div className="font-medium text-gray-800">{pigeon.name || "-"}</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.ring")}</div>
-                <div className="font-medium text-gray-800">{pigeon.ringNumber || "-"}</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.color")}</div>
-                <div className="font-medium text-gray-800">{pigeon.color || "-"}</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.gender")}</div>
-                <div className={`font-medium ${genderSymbol(pigeon.gender).color}`}>
-                  {genderSymbol(pigeon.gender).symbol}
+
+        {/* Hero / Basic Info Card */}
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-white/50">
+          {/* Top Banner with Name and Ring */}
+          <div className={`${getThemeColors(pigeon.gender).background} p-8 text-white`}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                  {pigeon.name || <span className="italic opacity-70">{t("pigeonPage.unnamed")}</span>}
+                </h1>
+                <div className={`flex items-center gap-2 mt-2 ${getThemeColors(pigeon.gender).badge} w-fit px-3 py-1 rounded-lg backdrop-blur-sm`}>
+                  <Hash className="w-4 h-4" />
+                  <span className="font-mono text-lg">{pigeon.ringNumber}</span>
                 </div>
               </div>
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.status")}</div>
-                  <div className="font-medium text-gray-800">
-                    {pigeon.status ? t(`pigeonsPage.${pigeon.status}`) : "-"}
-                  </div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.birthDate")}</div>
-                <div className="font-medium text-gray-800">{pigeon.birthDate || "-"}</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-xs text-gray-500">{t("pigeonPage.loft")}</div>
-                <div
-                  className="font-medium text-blue-600 hover:underline cursor-pointer"
-                  onClick={() => {
-                    const loft = lofts.find((l) => l.id === pigeon.loftId);
-                    if (loft) navigate(`/lofts/${loft.id}/pigeons`, { state: { loftName: loft.name } });
-                  }}
-                >
-                  {lofts.find((l) => l.id === pigeon.loftId)?.name || "-"}
-                </div>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-sm`}>
+                <span className="text-2xl drop-shadow-sm">{genderSymbol(pigeon.gender).symbol}</span>
+                <span className="font-semibold capitalize tracking-wide">{pigeon.gender || "-"}</span>
               </div>
             </div>
           </div>
 
-          {/* Relations */}
-          <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm text-gray-500">{t("pigeonPage.relations")}</h3>
-              <div className="mt-3">
-                <div className="text-xs text-gray-500">{t("pigeonPage.parents")}</div>
-                <div className="text-lg font-semibold text-gray-800">{parents.length}</div>
+          {/* Details Grid */}
+          <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 text-gray-500 mb-1">
+                <Palette className="w-4 h-4" />
+                <span className="text-xs font-bold uppercase tracking-wider">{t("pigeonPage.color")}</span>
               </div>
-              <div className="mt-4">
-                <div className="text-xs text-gray-500">{t("pigeonPage.children")}</div>
-                <div className="text-lg font-semibold text-gray-800">{children.length}</div>
+              <p className="text-lg font-medium text-gray-900">{pigeon.color || "-"}</p>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 text-gray-500 mb-1">
+                <Activity className="w-4 h-4" />
+                <span className="text-xs font-bold uppercase tracking-wider">{t("pigeonPage.status")}</span>
               </div>
+              <p className="text-lg font-medium text-gray-900">
+                {pigeon.status ? t(`pigeonsPage.${pigeon.status}`) : "-"}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 text-gray-500 mb-1">
+                <Calendar className="w-4 h-4" />
+                <span className="text-xs font-bold uppercase tracking-wider">{t("pigeonPage.birthDate")}</span>
+              </div>
+              <p className="text-lg font-medium text-gray-900">{pigeon.birthDate || "-"}</p>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 text-gray-500 mb-1">
+                <Home className="w-4 h-4" />
+                <span className="text-xs font-bold uppercase tracking-wider">{t("pigeonPage.loft")}</span>
+              </div>
+              <p
+                className="text-lg font-medium text-blue-600 hover:underline cursor-pointer"
+                onClick={() => {
+                  const loft = lofts.find((l) => l.id === pigeon.loftId);
+                  if (loft) navigate(`/lofts/${loft.id}/pigeons`, { state: { loftName: loft.name } });
+                }}
+              >
+                {lofts.find((l) => l.id === pigeon.loftId)?.name || "-"}
+              </p>
             </div>
           </div>
         </div>
@@ -353,7 +360,7 @@ export default function PigeonPage() {
         {/* Parents + Children */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Parents */}
-          <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
+          <div className="bg-white rounded-3xl shadow-xl border border-white/50 p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-gray-600" /> {t("pigeonPage.parents")}
             </h2>
@@ -379,7 +386,7 @@ export default function PigeonPage() {
           </div>
 
           {/* Children */}
-          <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
+          <div className="bg-white rounded-3xl shadow-xl border border-white/50 p-6">
             <h2 className="text-lg font-semibold mb-4">{t("pigeonPage.children")}</h2>
             {children.length === 0 ? (
               <p className="text-gray-500">{t("pigeonPage.noChildren")}</p>
@@ -404,14 +411,24 @@ export default function PigeonPage() {
         </div>
 
        {/* Competitions */}
-      <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
-        <h2 className="text-lg font-semibold mb-4">{t("pigeonPage.competitions")}</h2>
+      <div className="bg-white rounded-3xl shadow-xl border border-white/50 overflow-hidden">
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <div className="flex items-center gap-3">
+                <div className="p-2 bg-yellow-100 text-yellow-700 rounded-xl">
+                    <Award className="w-5 h-5" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-800">{t("pigeonPage.competitions")}</h2>
+            </div>
+            <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-bold">
+                {competitions.length}
+            </span>
+        </div>
         {competitions.length === 0 ? (
-          <p className="text-gray-500">{t("pigeonPage.noCompetitions")}</p>
+          <div className="p-8 text-center text-gray-500">{t("pigeonPage.noCompetitions")}</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
-              <thead className="bg-gray-100">
+            <table className="min-w-full divide-y divide-gray-100">
+              <thead className="bg-gray-50">
                 <tr>
                   <th
                     className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
@@ -445,7 +462,7 @@ export default function PigeonPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-100">
                 {sortedCompetitions.map((c) => (
                   <tr
                     key={c.id}
@@ -468,16 +485,16 @@ export default function PigeonPage() {
 
         <div className="flex flex-wrap items-center gap-6 mb-4">
           <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="showOwnerInfo"
-            checked={showOwnerInfo}
-            onChange={(e) => setShowOwnerInfo(e.target.checked)}
-            className="w-4 h-4"
-          />
-          <label htmlFor="showOwnerInfo" className="text-sm text-gray-700">
-            {t("pigeonPage.showOwnerInfo")}
-          </label>
+            <input
+              type="checkbox"
+              id="showOwnerInfo"
+              checked={showOwnerInfo}
+              onChange={(e) => setShowOwnerInfo(e.target.checked)}
+              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+            />
+            <label htmlFor="showOwnerInfo" className="text-sm text-gray-700 font-medium">
+              {t("pigeonPage.showOwnerInfo")}
+            </label>
           </div>
 
           <div className="flex items-center gap-3">
@@ -509,6 +526,7 @@ export default function PigeonPage() {
               />
             )}
           </div>
+        </div>
 
         {openForm && (
           <PigeonForm
@@ -529,6 +547,5 @@ export default function PigeonPage() {
         onConfirm={handleDelete}
       />
       </div>
-    </div>
   );
 }
