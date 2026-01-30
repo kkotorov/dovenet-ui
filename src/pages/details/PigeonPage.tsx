@@ -176,7 +176,7 @@ export default function PigeonPage() {
     if (!gender) return { symbol: "", color: "text-gray-600" };
     const lower = gender.toLowerCase();
     if (lower === "male") return { symbol: "♂", color: "text-blue-600" };
-    if (lower === "female") return { symbol: "♀", color: "text-pink-600" };
+    if (lower === "female") return { symbol: "♀", color: "text-rose-600" };
     return { symbol: "", color: "text-gray-600" };
   };
 
