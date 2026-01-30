@@ -118,35 +118,22 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     }
 
     const birthDate = node.birthDate ? new Date(node.birthDate) : null;
-    const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : "-";
+    const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : null;
+    const details = [node.color, monthYear].filter(Boolean).join(" - ");
 
     return (
       <div className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
-        <div className={`pigeon-ring ${genderClass(node.gender)}`}>
-          <span>{node.ringNumber || "-"}</span>
-          <span> {genderSymbol(node.gender)}</span>
+        <div className="pigeon-header">
+          <span className={`pigeon-ring ${genderClass(node.gender)}`}>{node.ringNumber || "-"}</span>
+          {node.name && <span className="pigeon-name">{node.name}</span>}
+          {details && <span className="pigeon-details">{details}</span>}
+          <span className={`pigeon-gender ${genderClass(node.gender)}`}>{genderSymbol(node.gender)}</span>
         </div>
-        <div className="pigeon-name">{node.name || t("pigeonPage.notInDatabase")}</div>
-        <div className="pigeon-details">{node.color} - {monthYear}</div>
         {isMain && renderCompetitions(competitions)}
       </div>
     );
   };
 
-  const renderGeneration = (node: TreeNode, level: number): React.ReactNode => {
-    if (!node || level <= 0) return null;
-
-    return (
-      <div className="pedigree-generation">
-        <div className="parent-pair">
-          {renderPigeonBox(node.father)}
-          {renderPigeonBox(node.mother)}
-        </div>
-        { (node.father || node.mother) && renderGeneration(node.father || node.mother, level -1)}
-      </div>
-    )
-  }
-  
   const renderTree = (root: TreeNode) => {
     // Generation 1
     const G1 = root;

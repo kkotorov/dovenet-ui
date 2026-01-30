@@ -73,7 +73,7 @@
   height: 140px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   position: relative;
   z-index: 1;
@@ -81,8 +81,14 @@
 
 .pedigree-pigeon.main-pigeon {
   height: 220px;
-  border-width: 2px;
-  border-color: #333;
+}
+
+.pigeon-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  width: 100%;
+  gap: 5px;
 }
 
 .pigeon-ring {
@@ -96,18 +102,23 @@
 .pigeon-name {
   font-size: 12px;
   font-weight: 500;
-  margin-top: 2px;
+  margin-top: 0;
 }
 .pigeon-details {
   font-size: 11px;
   color: #6B7280;
-  margin-top: 2px;
+  margin-top: 0;
+}
+
+.pigeon-gender {
+  margin-left: auto;
+  font-weight: bold;
 }
 
 .pigeon-competitions {
   font-size: 9px;
   width: 100%;
-  margin-top: 4px;
+  margin-top: auto;
   border-collapse: collapse;
 }
 .pigeon-competitions td { padding: 1px; }
