@@ -5,16 +5,15 @@ import {
   BarChart2, Archive, FileText, ChevronLeft, ChevronRight, Menu
 } from "lucide-react";
 
-import { fetchCurrentUser } from "../../api/auth";
 import { PigeonsTab } from "../../Tabs/PigeonsTab";
 import { CompetitionsTab } from "../../Tabs/CompetitionsTab";
 import { UserSettingsTab } from "../../Tabs/UserSettingsTab";
 import { LoftsTab } from "../../Tabs/LoftsTab";
 import { SubscriptionsTab } from "../../Tabs/SubscriptionsTab";
 import { BreedingTab } from "../../Tabs/BreedingTab";
-
+import SubscriptionWallPage from "./SubscriptionWallPage";
 import { useSearchParams } from "react-router-dom";
-import type { AppUser } from "../../components/utilities/UserContext";
+import { useUser } from "../../components/utilities/UserContext";
 
 interface TabItem {
   title: string;
@@ -25,8 +24,7 @@ interface TabItem {
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const [user, setUser] = useState<AppUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, isSubscriptionActive } = useUser();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "lofts";
@@ -38,18 +36,6 @@ export default function DashboardPage() {
   useEffect(() => {
     setActiveTab(tabFromUrl);
   }, [tabFromUrl]);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const data = await fetchCurrentUser();
-        setUser(data);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadUser();
-  }, []);
 
   const handleTabChange = (key: string) => {
     setSearchParams({ tab: key });
@@ -75,6 +61,21 @@ export default function DashboardPage() {
       </div>
     );
   }
+  
+  // A user has access if they have a paid subscription OR if their trial period is still active.
+  const isTrialActive =
+    ((user?.subscription || "FREE").toUpperCase() === "FREE") &&
+    user?.subscriptionValidUntil &&
+    new Date(user.subscriptionValidUntil) > new Date();
+
+  const hasAccess = isSubscriptionActive || isTrialActive;
+
+  const content =
+    !hasAccess && activeTab !== "subscriptions" && activeTab !== "profile" ? (
+      <SubscriptionWallPage />
+    ) : (
+      tabs.find((tab) => tab.key === activeTab)?.content
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 flex relative">
@@ -152,7 +153,7 @@ export default function DashboardPage() {
 
       {/* CONTENT */}
       <div className="flex-1 md:ml-6 mt-20 md:mt-0 p-6 bg-white rounded-3xl shadow-xl min-h-[400px] overflow-auto">
-        {tabs.find((tab) => tab.key === activeTab)?.content}
+        {content}
       </div>
     </div>
   );

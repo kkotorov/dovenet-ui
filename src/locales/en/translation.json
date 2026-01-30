@@ -283,12 +283,6 @@
     "cancel": "Cancel"
   },
   "subscriptionPage": {
-    "tabs": {
-      "currentPlan": "Current Plan",
-      "changePlan": "Change Plan",
-      "billingHistory": "Billing History",
-      "cancelSubscription": "Cancel Subscription"
-    },
     "changePlan": "Change Plan",
     "title": "Choose Your Plan",
     "subtitle": "Manage your pigeons and competitions with the plan that fits you best.",
@@ -301,13 +295,15 @@
     "activePlan": "Active Plan",
     "billingCycle": "Billing Cycle",
     "nextBilling": "Next Billing",
-    "viewInvoices": "View Invoices",
     "yearlyDiscountInfo": "Pay yearly and save up to 45%!",
-    "freeTrial": "14-Day Free Trial",
-    "freePlanLimit14Days": "Limited to 14 days usage",
+    "freeTrial": "10-Day Free Trial",
+    "freePlanLimit14Days": "Limited to 10 days usage",
     "freePlan": "Free Plan",
     "standardPlan": "Standard Plan",
     "premiumPlan": "Premium Plan",
+    "proPlan": "Pro",
+    "inactive": "Inactive",
+    "freePlanLimit10Days": "10 days from creation",
     "planFeatures": {
       "unlimitedPigeons": "Unlimited pigeons in your account",
       "singleLoft": "1 loft only",
@@ -325,7 +321,11 @@
     "cancelSubscription": "Cancel Active Subscription",
     "cancelWarning": "Are you sure you want to cancel your subscription? This action cannot be undone.",
     "proceedCancel": "Proceed to Cancel",
-    "billingHistory":"Billing History"
+    "cancelSuccess": "Subscription cancelled successfully",
+    "cancelFailed": "Failed to cancel subscription",
+    "upgradePlan": "Upgrade Your Plan",
+    "subscriptionStatus": "Subscription Status",
+    "subscriptionWillExpireOn": "Your subscription has been cancelled and will expire on {{date}}."
   },
   "loftsPage": {
     "title": "Lofts",
@@ -577,5 +577,10 @@
     "pairUpdated": "Pair updated successfully",
     "inbredBadge": "Inbred",
     "inbredPairTooltip": "This pair is inbred. Offspring may have higher risk of genetic issues."
+  },
+  "subscriptionWall": {
+    "title": "Subscription Required",
+    "message": "Your subscription has expired or is inactive. Please renew your plan to continue accessing all features.",
+    "button": "Manage Subscription"
   }
 }

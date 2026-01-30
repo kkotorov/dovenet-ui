@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import i18n from "../../i18n";
 import { fetchCurrentUser } from "../../api/auth";
+import api from "../../api/api";
 
 export type AppUser = {
   id?: string;
@@ -19,6 +20,10 @@ export type AppUser = {
   phoneNumber?: string;
   address?: string;
   emailVerified?: boolean;
+  subscription?: string;
+  subscriptionValidUntil?: string;
+  subscriptionActive?: boolean;
+  autoRenew?: boolean;
 };
 
 type UserContextType = {
@@ -26,6 +31,7 @@ type UserContextType = {
   setUser: (u: AppUser | null) => void;
   loading: boolean;
   refreshUser: () => Promise<void>;
+  isSubscriptionActive: boolean;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -34,12 +40,41 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const isSubscriptionActive = React.useMemo(() => {
+    if (!user) return false;
+    if (typeof user.subscriptionActive === "boolean") return user.subscriptionActive;
+    if (user.subscription && user.subscription !== 'free') return true;
+    if (user.subscriptionValidUntil) {
+      const validUntil = new Date(user.subscriptionValidUntil);
+      return validUntil > new Date();
+    }
+    return false;
+  }, [user]);
+
   const refreshUser = useCallback(async () => {
     try {
       setLoading(true);
 
-      const res = await fetchCurrentUser();
-      const userData = res;
+      const userData = await fetchCurrentUser();
+
+      try {
+        // Fetch subscription status from the new endpoint
+        const { data: subData } = await api.get("/users/me/subscription-status");
+        userData.subscriptionActive = subData.active;
+        userData.subscription = subData.type;
+        userData.subscriptionValidUntil =
+          subData.validUntil && subData.validUntil !== "null"
+            ? subData.validUntil
+            : undefined;
+        userData.autoRenew = subData.autoRenew;
+      } catch (err) {
+        console.error("Failed to fetch subscription status", err);
+        // If fetching subscription fails, treat user as having no active subscription
+        userData.subscriptionActive = false;
+        userData.subscription = undefined;
+        userData.subscriptionValidUntil = undefined;
+        userData.autoRenew = false;
+      }
 
       setUser(userData);
 
@@ -87,7 +122,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, [refreshUser]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading, refreshUser }}>
+    <UserContext.Provider value={{ user, setUser, loading, refreshUser, isSubscriptionActive }}>
       {children}
     </UserContext.Provider>
   );
