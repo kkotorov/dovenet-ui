@@ -5,7 +5,6 @@ import toast, { Toaster } from "react-hot-toast";
 import PairForm from "../../components/breeding/PairForm";
 import PigeonForm from "../../components/pigeons/PigeonForm";
 import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../../types";
-import PageHeader from "../../components/utilities/PageHeader";
 import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
 import PairCard from "../../components/breeding/PairCard";
 import { getUserPigeons, createPigeon } from "../../api/pigeon";
@@ -18,6 +17,8 @@ import {
   addOffspring,
   removeOffspring
 } from "../../api/breeding";
+import Button from "../../components/utilities/Button";
+import { usePageHeader } from "../../components/utilities/PageHeaderContext";
 
 export default function BreedingSeasonDetailsPage() {
   const { t } = useTranslation();
@@ -37,6 +38,8 @@ export default function BreedingSeasonDetailsPage() {
   const [pairToDelete, setPairToDelete] = useState<number | null>(null);
 
   const [searchText, setSearchText] = useState("");
+
+  const { setHeader, clearHeader } = usePageHeader();
 
   // ------------------------
   // Fetchers
@@ -162,42 +165,44 @@ export default function BreedingSeasonDetailsPage() {
     return male.includes(searchText.toLowerCase()) || female.includes(searchText.toLowerCase());
   });
 
+  useEffect(() => {
+    setHeader({
+      title: null,
+      right: (
+        <input
+          type="text"
+          placeholder={t("breedingPage.searchPair")}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-gray-50 focus:bg-white transition-colors"
+        />
+      ),
+      actions: (
+        <>
+          <Button
+            variant="secondary"
+            onClick={() => navigate(-1)}
+          >
+            ← {t("common.back")}
+          </Button>
+          <Button
+            onClick={() => { setEditingPair(null); setOpenPairForm(true); }}
+          >
+            {t("breedingPage.addPair")}
+          </Button>
+        </>
+      ),
+    });
+    return () => clearHeader();
+  }, [searchText, t, setHeader, navigate]);
+
   if (!seasonId) return <div className="p-6">{t("breedingPage.noSeasonSelected")}</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      <PageHeader
-        title={seasonMeta?.name ?? t("breedingPage.seasonDetails")}
-        right={
-          <input
-            type="text"
-            placeholder={t("breedingPage.searchPair")}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="px-4 py-2 border rounded-lg w-full md:w-64"
-          />
-        }
-        actions={
-          <>
-            <button
-              onClick={() => navigate(-1)}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-            >
-              ← {t("common.back")}
-            </button>
-            <button
-              onClick={() => { setEditingPair(null); setOpenPairForm(true); }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-            >
-              {t("breedingPage.addPair")}
-            </button>
-          </>
-        }
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 relative z-0">
         {filteredPairs.length === 0 ? (
           <div className="col-span-full text-center text-gray-500 py-6">{t("breedingPage.noPairs")}</div>
         ) : (

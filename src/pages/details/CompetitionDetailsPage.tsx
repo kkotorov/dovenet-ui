@@ -3,11 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
 import api from "../../api/api";
-import PageHeader from "../../components/utilities/PageHeader";
 import CompetitionEntryForm from "../../components/competitions/CompetitionEntryForm";
 import type { Pigeon, Competition, CompetitionEntry } from "../../types";
 import { Edit2, Trash2 } from "lucide-react";
 import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
+import Button from "../../components/utilities/Button";
+import { usePageHeader } from "../../components/utilities/PageHeaderContext";
 
 export default function CompetitionDetailsPage() {
   const { t } = useTranslation();
@@ -23,6 +24,8 @@ export default function CompetitionDetailsPage() {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteEntryId, setDeleteEntryId] = useState<number | null>(null);
+
+  const { setHeader, clearHeader } = usePageHeader();
 
   // FETCH FUNCTIONS
   const fetchEntries = async () => {
@@ -106,46 +109,47 @@ export default function CompetitionDetailsPage() {
     return ring.includes(term) || name.includes(term);
   });
 
+  useEffect(() => {
+    setHeader({
+      title: null,
+      right: (
+        <input
+          type="text"
+          placeholder={t("competitionDetailsPage.searchPlaceholder")}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-gray-50 focus:bg-white transition-colors"
+        />
+      ),
+      actions: (
+        <>
+          <Button
+            variant="secondary"
+            onClick={() => navigate(-1)}
+          >
+            ← {t("competitionDetailsPage.back")}
+          </Button>
+
+          <Button
+            onClick={() => {
+              setEditingEntry(null);
+              setOpenForm(true);
+            }}
+          >
+            + {t("competitionDetailsPage.addPigeon")}
+          </Button>
+        </>
+      ),
+    });
+    return () => clearHeader();
+  }, [searchTerm, t, setHeader, navigate]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" reverseOrder={false} />
 
-      <PageHeader
-        title={t("competitionDetailsPage.title")}
-        right={
-          <input
-            type="text"
-            placeholder={t("competitionDetailsPage.searchPlaceholder")}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 w-64 rounded-lg border border-gray-300 
-                       focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-          />
-        }
-        actions={
-          <>
-            <button
-              onClick={() => navigate(-1)}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-            >
-              ← {t("competitionDetailsPage.back")}
-            </button>
-
-            <button
-              onClick={() => {
-                setEditingEntry(null);
-                setOpenForm(true);
-              }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-            >
-              + {t("competitionDetailsPage.addPigeon")}
-            </button>
-          </>
-        }
-      />
-
       {/* ENTRIES TABLE */}
-      <div className="overflow-x-auto rounded-2xl shadow-lg bg-white mt-6">
+      <div className="overflow-x-auto rounded-2xl shadow-lg bg-white mt-6 relative z-0">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
             <tr>
