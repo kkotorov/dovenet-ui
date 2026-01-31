@@ -12,6 +12,8 @@ import {
   deleteLoft
 } from "../api/lofts";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
+import PageHeader from "../components/utilities/PageHeader";
+import Button from "../components/utilities/Button";
 
 export function LoftsTab() {
   const { t } = useTranslation();
@@ -128,48 +130,49 @@ export function LoftsTab() {
 
   // ====== Original LoftsTab content ======
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      {/* Top controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        {/* Search + Sort */}
-        <div className="flex gap-2 items-center">
+      <PageHeader
+        title={t("loftsPage.manageLofts") || "Lofts"}
+        right={
           <input
             type="text"
             placeholder={t("loftsPage.searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
           />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white"
-          >
-            <option value="name">{t("loftsPage.sortByName")}</option>
-            <option value="pigeons">{t("loftsPage.sortByPigeons")}</option>
-            <option value="capacity">{t("loftsPage.sortByCapacity")}</option>
-          </select>
-          <button
-            onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 transition"
-          >
-            {sortDirection === "asc" ? "↑" : "↓"}
-          </button>
-        </div>
-
-        {/* Create button */}
-        <button
-          onClick={handleCreate}
-          className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition flex items-center gap-1"
-        >
-          + {t("loftsPage.createLoft")}
-        </button>
-      </div>
+        }
+        actions={
+          <>
+            <div className="flex gap-2 items-center">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="name">{t("loftsPage.sortByName")}</option>
+                <option value="pigeons">{t("loftsPage.sortByPigeons")}</option>
+                <option value="capacity">{t("loftsPage.sortByCapacity")}</option>
+              </select>
+              <Button
+                variant="secondary"
+                onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
+                className="px-3"
+              >
+                {sortDirection === "asc" ? "↑" : "↓"}
+              </Button>
+            </div>
+            <Button onClick={handleCreate}>
+              + {t("loftsPage.createLoft")}
+            </Button>
+          </>
+        }
+      />
 
       {/* Loft Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative z-0">
         {sortedLofts.map((loft) => (
           <LoftCard
             key={loft.id}

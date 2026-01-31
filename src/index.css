@@ -1,11 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-  margin: 0;
-  background-color: #E5E8EB; /* updated to match new theme default background */
-  font-family: 'Inter', 'Roboto', sans-serif; /* updated font */
-  color: #1A1A1A; /* primary text color from theme */
-}
-

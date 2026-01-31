@@ -89,7 +89,7 @@
     "errorMessage": "Verification failed."
   },
   "dashboardPage": {
-    "welcome": "Welcome, {{username}}!",
+    "welcome": "Welcome, {{username}}",
     "lofts": "Lofts",
     "manageLoftsText": "Manage your lofts and organize your pigeons.",
     "manageLofts": "Manage Lofts",

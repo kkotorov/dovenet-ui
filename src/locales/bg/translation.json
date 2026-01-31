@@ -89,7 +89,7 @@
     "errorMessage": "Потвърждението е неуспешно."
   },
   "dashboardPage": {
-    "welcome": "Добре дошли, {{username}}!",
+    "welcome": "Добре дошли, {{username}}",
     "lofts": "Гълъбарници",
     "manageLoftsText": "Управлявайте гълъбарниците си и организирайте гълъбите.",
     "manageLofts": "Управление на гълъбарници",

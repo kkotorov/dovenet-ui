@@ -13,6 +13,8 @@ import {
   updateCompetition,
   deleteCompetition,
 } from "../api/competition";
+import PageHeader from "../components/utilities/PageHeader";
+import Button from "../components/utilities/Button";
 
 export function CompetitionsTab() {
   const { t } = useTranslation();
@@ -105,53 +107,52 @@ export function CompetitionsTab() {
   );
 
   return (
-    <div className="p-4">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      {/* Search and Create */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-3 items-center">
+      <PageHeader
+        title={t("competitionsPage.manageCompetitions")}
+        right={
           <input
             type="text"
             placeholder={t("competitionsPage.searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
           />
-
-          {/* Sort By */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-2 py-2 rounded-lg border border-gray-300 bg-white"
-          >
-            <option value="date">{t("competitionsPage.sortByDate")}</option>
-            <option value="name">{t("competitionsPage.sortByName")}</option>
-            <option value="distance">{t("competitionsPage.sortByDistance")}</option>
-          </select>
-
-          {/* Asc/Desc toggle */}
-          <button
-            onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
-            className="px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100"
-          >
-            {sortDirection === "asc" ? "↑" : "↓"}
-          </button>
-        </div>
-          <button
-            onClick={() => {
+        }
+        actions={
+          <>
+            <div className="flex gap-2 items-center">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="date">{t("competitionsPage.sortByDate")}</option>
+                <option value="name">{t("competitionsPage.sortByName")}</option>
+                <option value="distance">{t("competitionsPage.sortByDistance")}</option>
+              </select>
+              <Button
+                variant="secondary"
+                onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
+                className="px-3"
+              >
+                {sortDirection === "asc" ? "↑" : "↓"}
+              </Button>
+            </div>
+            <Button onClick={() => {
               setEditingCompetition(null);
               setOpenForm(true);
-            }}
-            className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
-          >
-            + {t("competitionsPage.createCompetition")}
-          </button>
-      </div>
-
+            }}>
+              + {t("competitionsPage.createCompetition")}
+            </Button>
+          </>
+        }
+      />
 
       {/* Vertical list of competitions */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 relative z-0">
         {filteredCompetitions.map((c) => (
           <div
             key={c.id}

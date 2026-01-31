@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createPortal } from "react-dom";
 import { useUser } from "./UserContext";
 import api from "../../api/api";
 import i18n from "../../i18n";
+import { LogOut, Settings, Globe, ChevronDown } from "lucide-react";
 
 export default function TopBar() {
   const { t } = useTranslation();
@@ -16,38 +16,39 @@ export default function TopBar() {
   const hideTopBar = location.pathname === "/";
 
   const [langOpen, setLangOpen] = useState(false);
-  const btnRef = useRef<HTMLButtonElement | null>(null);
-  const portalRef = useRef<HTMLDivElement | null>(null);
-  const [menuPos, setMenuPos] = useState<{ left: number; top: number } | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const langRef = useRef<HTMLDivElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    if (!langOpen) return;
-    const btn = btnRef.current;
-    if (!btn) return;
-
-    const rect = btn.getBoundingClientRect();
-    setMenuPos({
-      left: rect.right - 112,
-      top: rect.bottom + window.scrollY + 8,
-    });
-  }, [langOpen]);
-
-  useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      const node = e.target as Node;
-      if (btnRef.current?.contains(node)) return;
-      if (portalRef.current?.contains(node)) return;
-      setLangOpen(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setLangOpen(false);
+      }
+      if (userRef.current && !userRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
     };
 
-    if (langOpen) document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, [langOpen]);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
+    setUserMenuOpen(false);
   };
 
   const changeLanguage = (lang: string) => {
@@ -59,88 +60,136 @@ export default function TopBar() {
          .then(() => setUser({ ...user, language: lang }))
          .catch(() => {});
     }
-
     setLangOpen(false);
+  };
+
+  const getInitials = () => {
+    if (!user) return "";
+    if (user.firstName && user.lastName) return `${user.firstName[0]}${user.lastName[0]}`;
+    return user.username?.substring(0, 2).toUpperCase() || "U";
   };
 
   if (hideTopBar) return null;
 
   return (
-    <>
-      <div className="w-full px-6 py-4 bg-white/70 backdrop-blur-lg shadow-sm flex items-center justify-between z-50">
-        {/* Logo */}
-        <div
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <span className="text-2xl font-bold text-indigo-600">DoveNet</span>
-          <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow" />
-        </div>
-
-        <div className="flex items-center gap-6">
-          {!loading && (
-            <>
-              {!isLoggedIn ? (
-                <>
-                  <button
-                    onClick={() => navigate("/login")}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
-                  >
-                    {t("topBar.login")}
-                  </button>
-                  <button
-                    onClick={() => navigate("/register")}
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg shadow hover:bg-gray-300 transition font-semibold"
-                  >
-                    {t("topBar.signup")}
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
-                >
-                  {t("topBar.logout")}
-                </button>
-              )}
-            </>
-          )}
-
-          {/* Language */}
-          <button
-            ref={btnRef}
-            onClick={() => setLangOpen((v) => !v)}
-            className="text-2xl text-gray-700 hover:text-indigo-600 transition"
+    <header
+      className={`sticky top-0 z-[100] w-full transition-all duration-300 ${
+        isScrolled ? "bg-white/95 backdrop-blur-md shadow-md border-b border-blue-200" : "bg-white/80 backdrop-blur-sm border-b border-blue-50 shadow-none"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 cursor-pointer group"
           >
-            🌐
-          </button>
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-105 transition-transform">
+              <span className="text-white font-bold text-lg">D</span>
+            </div>
+            <span className="text-xl font-bold text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors">
+              DoveNet
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Language Selector */}
+            <div className="relative" ref={langRef}>
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"
+                title={t("common.language") || "Language"}
+              >
+                <Globe className="w-5 h-5" />
+              </button>
+
+              {langOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-gray-100 py-1 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+                  <button
+                    onClick={() => changeLanguage("en")}
+                    className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center justify-between ${i18n.language === 'en' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700'}`}
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => changeLanguage("bg")}
+                    className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center justify-between ${i18n.language === 'bg' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700'}`}
+                  >
+                    Български
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="h-6 w-px bg-gray-200 mx-1" />
+
+            {!loading && (
+              <>
+                {!isLoggedIn ? (
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                    >
+                      {t("topBar.login")}
+                    </button>
+                    <button
+                      onClick={() => navigate("/register")}
+                      className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow-md shadow-indigo-200 hover:bg-indigo-700 hover:shadow-lg transition-all"
+                    >
+                      {t("topBar.signup")}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative" ref={userRef}>
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
+                    >
+                      <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-sm border border-indigo-200">
+                        {getInitials()}
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 hidden sm:block max-w-[100px] truncate">
+                        {user?.firstName || user?.username}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {userMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="px-4 py-2 border-b border-gray-100 mb-1">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {user?.firstName} {user?.lastName}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                        </div>
+                        
+                        <button
+                          onClick={() => { navigate("/dashboard?tab=profile"); setUserMenuOpen(false); }}
+                          className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        >
+                          <Settings className="w-4 h-4 text-gray-400" />
+                          {t("userSettingsPage.profileInfo") || "Profile"}
+                        </button>
+                        
+                        <div className="my-1 border-t border-gray-100" />
+                        
+                        <button
+                          onClick={handleLogout}
+                          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          {t("topBar.logout")}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
-
-      {langOpen && menuPos &&
-        createPortal(
-          <div
-            ref={(el) => {
-              portalRef.current = el;
-            }}
-            className="absolute bg-white shadow-lg rounded-lg border p-2 w-28"
-            style={{ left: menuPos.left, top: menuPos.top, zIndex: 999999 }}
-          >
-            <button
-              onClick={() => changeLanguage("en")}
-              className="w-full px-3 py-2 text-left hover:bg-gray-100 rounded"
-            >
-              English
-            </button>
-            <button
-              onClick={() => changeLanguage("bg")}
-              className="w-full px-3 py-2 text-left hover:bg-gray-100 rounded"
-            >
-              Български
-            </button>
-          </div>,
-          document.body
-        )}
-    </>
+    </header>
   );
 }

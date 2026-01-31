@@ -11,6 +11,7 @@ import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
 import BulkCompetitionModal from "../components/pigeons/BulkCompetitionModal";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
+import Button from "../components/utilities/Button";
 
 interface PigeonsTabProps {
   loftId?: number;
@@ -282,20 +283,17 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   actions={
     <div className="flex gap-2">
       {onNavigateBack && (
-        <button
+        <Button
+          variant="secondary"
           onClick={onNavigateBack}
-          className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-gray-800 transition"
         >
           ← {t("common.back")}
-        </button>
+        </Button>
       )}
 
-      <button
-        onClick={() => { setEditingPigeon(null); setOpenForm(true); }}
-        className="px-4 py-2 bg-indigo-500 text-white rounded-lg border border-indigo-600 hover:bg-indigo-400 transition"
-      >
+      <Button onClick={() => { setEditingPigeon(null); setOpenForm(true); }}>
         + {t("pigeonsPage.createPigeon")}
-      </button>
+      </Button>
     </div>
   }
 />
@@ -347,7 +345,7 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
 )}
 
     {/* ========================= Table ========================= */}
-<div className="overflow-x-auto rounded-2xl shadow-lg bg-white mt-6">
+<div className="overflow-x-auto rounded-2xl shadow-lg bg-white mt-6 relative z-0">
   <table className="min-w-full divide-y divide-gray-200">
     <thead className="bg-gray-50 sticky top-0 z-10">
       <tr>
@@ -560,4 +558,3 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
     </div>
   );
 }
-
