@@ -5,6 +5,7 @@ import './index.css';
 import './i18n';
 import { UserProvider } from './components/utilities/UserContext';
 
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <UserProvider>

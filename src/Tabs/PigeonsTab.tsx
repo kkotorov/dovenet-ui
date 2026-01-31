@@ -6,12 +6,12 @@ import ParentModal from "../components/pigeons/ParentModal";
 import BulkUpdateModal from "../components/pigeons/BulkUpdateModal";
 import api from "../api/api";
 import { Edit2, Trash2, Download, Users, Eye, Square, Trophy } from "lucide-react";
-import PageHeader from "../components/utilities/PageHeader";
 import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
 import BulkCompetitionModal from "../components/pigeons/BulkCompetitionModal";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import Button from "../components/utilities/Button";
+import { usePageHeader } from "../components/utilities/PageHeaderContext";
 
 interface PigeonsTabProps {
   loftId?: number;
@@ -49,6 +49,8 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
 
   const [showBulkCompetitionModal, setShowBulkCompetitionModal] = useState(false);
+
+  const { setHeader, clearHeader } = usePageHeader();
 
   /** Fetch pigeons **/
   const fetchPigeons = async () => {
@@ -265,38 +267,37 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
       }
     };
 
+  useEffect(() => {
+    setHeader({
+      title: null,
+      right: (
+        <input
+          type="text"
+          placeholder={t("pigeonsPage.searchPlaceholder")}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-gray-50 focus:bg-white transition-colors"
+        />
+      ),
+      actions: (
+        <div className="flex gap-2">
+          {onNavigateBack && (
+            <Button variant="secondary" onClick={onNavigateBack}>
+              ← {t("common.back")}
+            </Button>
+          )}
+          <Button onClick={() => { setEditingPigeon(null); setOpenForm(true); }}>
+            + {t("pigeonsPage.createPigeon")}
+          </Button>
+        </div>
+      ),
+    });
+    return () => clearHeader();
+  }, [loftName, searchTerm, onNavigateBack, t, setHeader]);
 
   return (
   <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
     <Toaster position="top-right" />
-<PageHeader
-  title={loftName ? `${t("pigeonsPage.managePigeons")} in ${loftName}` : t("pigeonsPage.managePigeons")}
-  right={
-    <input
-      type="text"
-      placeholder={t("pigeonsPage.searchPlaceholder")}
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="px-3 py-2 w-64 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-    />
-  }
-  actions={
-    <div className="flex gap-2">
-      {onNavigateBack && (
-        <Button
-          variant="secondary"
-          onClick={onNavigateBack}
-        >
-          ← {t("common.back")}
-        </Button>
-      )}
-
-      <Button onClick={() => { setEditingPigeon(null); setOpenForm(true); }}>
-        + {t("pigeonsPage.createPigeon")}
-      </Button>
-    </div>
-  }
-/>
 
 
 {/* ========================= Bulk Actions Toolbar ========================= */}

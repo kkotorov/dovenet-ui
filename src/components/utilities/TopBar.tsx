@@ -5,6 +5,7 @@ import { useUser } from "./UserContext";
 import api from "../../api/api";
 import i18n from "../../i18n";
 import { LogOut, Settings, Globe, ChevronDown } from "lucide-react";
+import { usePageHeader } from "./PageHeaderContext";
 
 export default function TopBar() {
   const { t } = useTranslation();
@@ -14,6 +15,8 @@ export default function TopBar() {
   const { user, setUser, loading } = useUser();
   const isLoggedIn = !!user;
   const hideTopBar = location.pathname === "/";
+
+  const { title, right, actions } = usePageHeader();
 
   const [langOpen, setLangOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -61,6 +64,7 @@ export default function TopBar() {
          .catch(() => {});
     }
     setLangOpen(false);
+    setUserMenuOpen(false);
   };
 
   const getInitials = () => {
@@ -77,7 +81,7 @@ export default function TopBar() {
         isScrolled ? "bg-white/95 backdrop-blur-md shadow-md border-b border-blue-200" : "bg-white/80 backdrop-blur-sm border-b border-blue-50 shadow-none"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div
@@ -90,10 +94,25 @@ export default function TopBar() {
             <span className="text-xl font-bold text-gray-900 tracking-tight group-hover:text-indigo-600 transition-colors">
               DoveNet
             </span>
+            {title && (
+              <>
+                <div className="hidden md:block h-6 w-px bg-gray-300 mx-2" />
+                <span className="hidden md:block text-lg font-medium text-gray-700 whitespace-nowrap">{title}</span>
+              </>
+            )}
+          </div>
+
+          {/* Center: Dynamic Search/Filters */}
+          <div className="flex-1 flex justify-center px-4 min-w-0">
+            {right && <div className="w-full max-w-md">{right}</div>}
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Dynamic Actions */}
+            {actions && <div className="hidden md:flex items-center gap-2 mr-2">{actions}</div>}
+
             {/* Language Selector */}
+            {!isLoggedIn && (
             <div className="relative" ref={langRef}>
               <button
                 onClick={() => setLangOpen(!langOpen)}
@@ -120,8 +139,9 @@ export default function TopBar() {
                 </div>
               )}
             </div>
+            )}
 
-            <div className="h-6 w-px bg-gray-200 mx-1" />
+            {!isLoggedIn && <div className="h-6 w-px bg-gray-200 mx-1" />}
 
             {!loading && (
               <>
@@ -170,6 +190,24 @@ export default function TopBar() {
                         >
                           <Settings className="w-4 h-4 text-gray-400" />
                           {t("userSettingsPage.profileInfo") || "Profile"}
+                        </button>
+                        
+                        <div className="my-1 border-t border-gray-100" />
+                        
+                        <div className="px-4 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                          {t("common.language") || "Language"}
+                        </div>
+                        <button
+                          onClick={() => changeLanguage("en")}
+                          className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between ${i18n.language === 'en' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700 hover:bg-gray-50'}`}
+                        >
+                          English
+                        </button>
+                        <button
+                          onClick={() => changeLanguage("bg")}
+                          className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between ${i18n.language === 'bg' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700 hover:bg-gray-50'}`}
+                        >
+                          Български
                         </button>
                         
                         <div className="my-1 border-t border-gray-100" />

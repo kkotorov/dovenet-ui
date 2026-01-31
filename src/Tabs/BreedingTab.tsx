@@ -12,8 +12,8 @@ import {
   updateBreedingSeason,
   deleteBreedingSeason,
 } from "../api/breeding";
-import PageHeader from "../components/utilities/PageHeader";
 import Button from "../components/utilities/Button";
+import { usePageHeader } from "../components/utilities/PageHeaderContext";
 
 
 export function BreedingTab() {
@@ -29,6 +29,8 @@ export function BreedingTab() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteSeasonId, setDeleteSeasonId] = useState<number | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const { setHeader, clearHeader } = usePageHeader();
 
   const fetchSeasons = async () => {
     try {
@@ -109,51 +111,54 @@ export function BreedingTab() {
     seasons.filter((s) => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  useEffect(() => {
+    setHeader({
+      title: null,
+      right: (
+        <input
+          type="text"
+          placeholder={t("breedingPage.searchPlaceholder")}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none bg-gray-50 focus:bg-white transition-colors"
+        />
+      ),
+      actions: (
+        <>
+          <div className="flex gap-2 items-center">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-400 focus:outline-none text-sm"
+            >
+              <option value="date">{t("breedingPage.sortByDate")}</option>
+              <option value="name">{t("breedingPage.sortByName")}</option>
+              <option value="pairs">{t("breedingPage.sortByPairs")}</option>
+              <option value="offspring">{t("breedingPage.sortByOffspring")}</option>
+            </select>
+            <Button
+              variant="secondary"
+              onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
+              className="px-3"
+            >
+              {sortDirection === "asc" ? "↑" : "↓"}
+            </Button>
+          </div>
+          <Button onClick={() => { setEditingSeason(null); setOpenModal(true); }}>
+            + {t("breedingPage.createSeason")}
+          </Button>
+        </>
+      ),
+    });
+    return () => clearHeader();
+  }, [searchTerm, sortBy, sortDirection, t, setHeader]);
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      <PageHeader
-        title={t("breedingPage.manageSeasons")}
-        right={
-          <input
-            type="text"
-            placeholder={t("breedingPage.searchPlaceholder")}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-          />
-        }
-        actions={
-          <>
-            <div className="flex gap-2 items-center">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="date">{t("breedingPage.sortByDate")}</option>
-                <option value="name">{t("breedingPage.sortByName")}</option>
-                <option value="pairs">{t("breedingPage.sortByPairs")}</option>
-                <option value="offspring">{t("breedingPage.sortByOffspring")}</option>
-              </select>
-              <Button
-                variant="secondary"
-                onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
-                className="px-3"
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </Button>
-            </div>
-            <Button onClick={() => { setEditingSeason(null); setOpenModal(true); }}>
-              + {t("breedingPage.createSeason")}
-            </Button>
-          </>
-        }
-      />
-
       {/* List */}
-      <div className="flex flex-col gap-4 relative z-0">
+      <div className="flex flex-col gap-4 relative z-0 mt-4">
         {filteredSeasons.map((s) => (
           <div
             key={s.id}
