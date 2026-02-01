@@ -153,12 +153,12 @@ export function CompetitionsTab() {
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      {/* Vertical list of competitions */}
-      <div className="flex flex-col gap-4 relative z-0 mt-4">
+      {/* Grid of competitions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-0 mt-4">
         {filteredCompetitions.map((c) => (
           <div
             key={c.id}
-            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer"
+            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer flex flex-col h-full"
             onClick={() => c.id && navigate(`/competitions/${c.id}`)}
           >
             <div className="flex justify-between items-start mb-3">
@@ -199,7 +199,7 @@ export function CompetitionsTab() {
             </div>
 
             {/* Optional info */}
-            <div className="flex flex-col gap-2 text-sm text-gray-700">
+            <div className="flex flex-col gap-2 text-sm text-gray-700 flex-grow">
               {c.distanceKm != null && (
                 <p>
                   <strong>{t("competitionFormModal.distance")}:</strong> {c.distanceKm} km

@@ -296,7 +296,7 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   }, [loftName, searchTerm, onNavigateBack, t, setHeader]);
 
   return (
-  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+  <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
     <Toaster position="top-right" />
 
 
@@ -346,9 +346,9 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
 )}
 
     {/* ========================= Table ========================= */}
-<div className="overflow-x-auto rounded-2xl shadow-lg bg-white mt-6 relative z-0">
+<div className="rounded-2xl shadow-lg bg-white mt-6 relative z-0 border border-gray-100">
   <table className="min-w-full divide-y divide-gray-200">
-    <thead className="bg-gray-50 sticky top-0 z-10">
+    <thead className="bg-gray-100 sticky top-14 z-10 shadow-sm">
       <tr>
         {/* Checkbox for select all */}
         <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
@@ -387,13 +387,19 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
     </thead>
 
     <tbody className="divide-y divide-gray-100">
-      {sortedPigeons.map((p, index) => (
+      {sortedPigeons.length === 0 ? (
+        <tr>
+          <td colSpan={7} className="px-4 py-8 text-center text-gray-500 italic">
+            {t("pigeonsPage.noPigeonsFound") || "No pigeons found."}
+          </td>
+        </tr>
+      ) : sortedPigeons.map((p, index) => (
         <tr
           key={p.id}
           className={`
             cursor-pointer transition 
-            hover:shadow-md hover:bg-gray-50
-            ${selectedPigeons.includes(p.id!) ? "bg-blue-50 shadow-md" : index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+            hover:bg-indigo-50/40
+            ${selectedPigeons.includes(p.id!) ? "bg-indigo-50 shadow-sm ring-1 ring-indigo-100 inset-0" : index % 2 === 0 ? "bg-white" : "bg-gray-50/50"}
           `}
           onClick={(e) => toggleSelect(p.id, index, e)}
         >

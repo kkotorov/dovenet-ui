@@ -428,7 +428,8 @@
     "save": "Save",
     "create": "Create",
     "update": "Update",
-    "back": "Back"
+    "back": "Back",
+    "language": "Language"
   },
   "competitionDetailsPage": {
     "title": "Competition Details",

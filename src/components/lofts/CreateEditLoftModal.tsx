@@ -59,8 +59,8 @@ export default function CreateEditLoftModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeInUp">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-40 p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeInUp max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">
           {initialData ? t("createEditLoftModal.titleEdit") : t("createEditLoftModal.titleCreate")}
         </h2>

@@ -427,7 +427,8 @@
     "save": "Запази",
     "create": "Създай",
     "update": "Актуализирай",
-    "back": "Назад"
+    "back": "Назад",
+    "language": "Език"
   },
   "competitionDetailsPage": {
     "title": "Детайли за състезанието",

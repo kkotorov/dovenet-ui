@@ -157,12 +157,12 @@ export function BreedingTab() {
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      {/* List */}
-      <div className="flex flex-col gap-4 relative z-0 mt-4">
+      {/* Grid of seasons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-0 mt-4">
         {filteredSeasons.map((s) => (
           <div
             key={s.id}
-            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer"
+            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer flex flex-col h-full"
             onClick={() => navigate(`/breeding/${s.id}`)}
           >
             <div className="flex justify-between items-start mb-3">
