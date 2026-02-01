@@ -54,13 +54,17 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
 
       const node: TreeNode = { ...p };
 
-      // Fetch competitions for parents (Generation 1)
-      // Root is at `generations`, Parents are at `generations - 1`
-      if (p.id && level === generations - 1) {
+      // Fetch competitions for parents (Gen 2) and grandparents (Gen 3)
+      if (p.id) {
+        let limit = 0;
+        if (level === generations - 1) limit = 6; // Gen 2 (Parents)
+        else if (level === generations - 2) limit = 3; // Gen 3 (Grandparents)
+
+        if (limit > 0) {
         try {
           const res = await api.get<CompetitionEntry[]>(`/pigeons/${p.id}/competitions`);
           const comps = res.data || [];
-          node.customCompetitions = comps.slice(0, 3).map((c) => {
+          node.customCompetitions = comps.slice(0, limit).map((c) => {
             const parts = [];
             if (c.competition?.name) parts.push(c.competition.name);
             if (c.place !== undefined && c.place !== null) parts.push(`${c.place}`);
@@ -70,6 +74,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
             };
           });
         } catch (e) { /* ignore */ }
+        }
       }
       
       const hasFatherObj = (p as any).father && typeof (p as any).father === "object";
@@ -281,7 +286,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
           {monthYear && node?.color && <span> - </span>}
           {node?.color && <span>{node.color}</span>}
         </div>
-        {(isMain || genIndex === 1) && renderCompetitions(node, genIndex, nodeIndex)}
+        {genIndex < 3 && renderCompetitions(node, genIndex, nodeIndex)}
       </div>
     );
   };

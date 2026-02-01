@@ -32,7 +32,7 @@ export default function PigeonPage() {
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [generations, setGenerations] = useState(3);
+  const [generations, setGenerations] = useState(4);
 
   const sortedCompetitions = [...competitions];
   if (sortConfig) {
