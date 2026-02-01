@@ -233,7 +233,8 @@
     "selectOption": "Избери опция",
     "submit": "Изпрати",
     "bulkCompetitionSuccess": "Всички избрани гълъби бяха успешно добавени към състезанието.",
-    "noPigeonsFound": "Не са намерени гълъби"
+    "noPigeonsFound": "Не са намерени гълъби",
+    "selectCompetitionsForPedigree": "Отбележете състезанията, които искате да се появят в родословието."
   },
   "pigeonForm": {
     "createPigeon": "Създай гълъб",
@@ -519,7 +520,8 @@
     "score": "Резултат",
     "distance": "Разстояние (км)",
     "showOwnerInfo": "Покажи информация за собственика",
-    "generations": "Поколения"
+    "generations": "Поколения",
+    "selectCompetitionsForPedigree": "Отбележете състезанията, които искате да се появят в родословието."
   },
   "breedingPage": {
     "title": "Развъждане",

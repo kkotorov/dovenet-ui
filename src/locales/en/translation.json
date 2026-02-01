@@ -234,7 +234,8 @@
     "submit":"Submit",
     "viewPigeon":"View Pigeon Details",
     "bulkCompetitionSuccess": "All selected pigeons have been successfully added to the competition.",
-    "noPigeonsFound": "No pigeons found"
+    "noPigeonsFound": "No pigeons found",
+    "selectCompetitionsForPedigree": "Check the competitions you want to appear in the pedigree tree."
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
@@ -519,7 +520,8 @@
     "distance": "Distance (km)",
     "score": "Score",
     "showOwnerInfo": "Show Owner Info",
-    "generations": "Generations"
+    "generations": "Generations",
+    "selectCompetitionsForPedigree": "Check the competitions you want to appear in the pedigree tree."
   },
   "breedingPage": {
     "title": "Breeding Seasons",

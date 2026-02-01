@@ -23,10 +23,11 @@ export default function PigeonPage() {
   const [parents, setParents] = useState<Pigeon[]>([]);
   const [children, setChildren] = useState<Pigeon[]>([]);
   const [competitions, setCompetitions] = useState<CompetitionEntry[]>([]);
+  const [selectedCompetitionIds, setSelectedCompetitionIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [openForm, setOpenForm] = useState(false);
   const [editingPigeon, setEditingPigeon] = useState<Pigeon | null>(null);
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>({ key: "date", direction: "desc" });
   const [lofts, setLofts] = useState<Loft[]>([]);
   const { user } = useUser();
   const [showOwnerInfo, setShowOwnerInfo] = useState(false);
@@ -69,6 +70,20 @@ export default function PigeonPage() {
     setSortConfig({ key, direction });
   };
 
+  const toggleCompetitionSelect = (id: number) => {
+    setSelectedCompetitionIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllCompetitions = () => {
+    if (selectedCompetitionIds.length === competitions.length) {
+      setSelectedCompetitionIds([]);
+    } else {
+      setSelectedCompetitionIds(competitions.map((c) => c.id!).filter(Boolean));
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
 
@@ -86,6 +101,7 @@ export default function PigeonPage() {
         setPigeon(fetchedPigeon);
         setChildren(childrenRes.data || []);
         setCompetitions(competitionsRes.data || []);
+        setSelectedCompetitionIds([]);
 
         // Merge parents from DB + ring numbers
         const parentsFromDB = parentsRes.data || [];
@@ -162,7 +178,42 @@ export default function PigeonPage() {
   const downloadPedigreePdf = async () => {
     if (!treeRef.current) return;
 
-    const canvas = await html2canvas(treeRef.current, { scale: 2 });
+    const canvas = await html2canvas(treeRef.current, {
+      scale: 2,
+      useCORS: true,
+      onclone: (clonedDoc) => {
+        // Replace inputs with spans for clean rendering
+        const inputs = clonedDoc.querySelectorAll("input");
+        inputs.forEach((input) => {
+          const span = clonedDoc.createElement("span");
+          span.textContent = input.value;
+          span.className = input.className;
+          span.style.cssText = input.style.cssText;
+          span.style.display = "inline-block";
+          if (input.parentElement) {
+            input.parentElement.replaceChild(span, input);
+          }
+        });
+
+        // Replace selects with spans
+        const selects = clonedDoc.querySelectorAll("select");
+        selects.forEach((select) => {
+          const span = clonedDoc.createElement("span");
+          const selectedOption = select.options[select.selectedIndex];
+          span.textContent = selectedOption ? selectedOption.text : "";
+          span.className = select.className;
+          span.style.cssText = select.style.cssText;
+          span.style.display = "inline-block";
+          if (select.parentElement) {
+            select.parentElement.replaceChild(span, select);
+          }
+        });
+
+        // Remove buttons and ignored elements
+        const toRemove = clonedDoc.querySelectorAll("button, [data-html2canvas-ignore]");
+        toRemove.forEach((el) => el.remove());
+      },
+    });
     const imgData = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF("landscape", "pt", "a4");
@@ -412,24 +463,37 @@ export default function PigeonPage() {
 
        {/* Competitions */}
       <div className="bg-white rounded-3xl shadow-xl border border-white/50 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <div className="flex items-center gap-3">
-                <div className="p-2 bg-yellow-100 text-yellow-700 rounded-xl">
-                    <Award className="w-5 h-5" />
+        <div className="p-6 border-b border-gray-100 bg-gray-50/50">
+            <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-100 text-yellow-700 rounded-xl">
+                        <Award className="w-5 h-5" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800">{t("pigeonPage.competitions")}</h2>
                 </div>
-                <h2 className="text-xl font-bold text-gray-800">{t("pigeonPage.competitions")}</h2>
+                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-bold">
+                    {competitions.length}
+                </span>
             </div>
-            <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-bold">
-                {competitions.length}
-            </span>
+            <p className="text-sm text-gray-500 ml-1">
+                {t("pigeonPage.selectCompetitionsForPedigree")}
+            </p>
         </div>
         {competitions.length === 0 ? (
           <div className="p-8 text-center text-gray-500">{t("pigeonPage.noCompetitions")}</div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[450px] overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
                 <tr>
+                  <th className="px-4 py-3 w-10 text-center">
+                    <input
+                      type="checkbox"
+                      checked={competitions.length > 0 && selectedCompetitionIds.length === competitions.length}
+                      onChange={toggleSelectAllCompetitions}
+                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                  </th>
                   <th
                     className="px-4 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer"
                     onClick={() => handleSort("name")}
@@ -469,6 +533,14 @@ export default function PigeonPage() {
                     className="hover:bg-gray-50 cursor-pointer"
                     onClick={() => navigate(`/competitions/${c.competition?.id}`)}
                   >
+                    <td className="px-4 py-2 text-center" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedCompetitionIds.includes(c.id!)}
+                        onChange={() => toggleCompetitionSelect(c.id!)}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      />
+                    </td>
                     <td className="px-4 py-2">{c.competition?.name || "-"}</td>
                     <td className="px-4 py-2">{c.competition?.date || "-"}</td>
                     <td className="px-4 py-2">{c.actualDistanceKm ?? "-"}</td>
@@ -521,7 +593,7 @@ export default function PigeonPage() {
               <PedigreeTree
                 pigeon={{ ...pigeon }}
                 generations={generations}
-                competitions={sortedCompetitions}
+                competitions={sortedCompetitions.filter((c) => selectedCompetitionIds.includes(c.id!))}
                 owner={showOwnerInfo && user ? user : undefined}  // <-- filter out null
               />
             )}

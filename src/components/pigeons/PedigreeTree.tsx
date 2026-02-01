@@ -17,6 +17,7 @@ interface TreeNode extends Pigeon {
   father?: TreeNode;
   mother?: TreeNode;
   competitions?: CompetitionEntry[];
+  customCompetitions?: { id: string | number; text: string }[];
 }
 
 export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
@@ -52,6 +53,24 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
       if (key) seen.add(key);
 
       const node: TreeNode = { ...p };
+
+      // Fetch competitions for parents (Generation 1)
+      // Root is at `generations`, Parents are at `generations - 1`
+      if (p.id && level === generations - 1) {
+        try {
+          const res = await api.get<CompetitionEntry[]>(`/pigeons/${p.id}/competitions`);
+          const comps = res.data || [];
+          node.customCompetitions = comps.slice(0, 3).map((c) => {
+            const parts = [];
+            if (c.competition?.name) parts.push(c.competition.name);
+            if (c.place !== undefined && c.place !== null) parts.push(`${c.place}`);
+            return {
+              id: c.id || Math.random(),
+              text: parts.join(" - "),
+            };
+          });
+        } catch (e) { /* ignore */ }
+      }
       
       const hasFatherObj = (p as any).father && typeof (p as any).father === "object";
       const hasMotherObj = (p as any).mother && typeof (p as any).mother === "object";
@@ -69,7 +88,19 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
 
     (async () => {
       const built = await buildTree(pigeon, generations);
-      if (!cancelled) setTree(built ?? null);
+      if (!cancelled && built) {
+        // Initialize root competitions from prop
+        built.customCompetitions = (competitions || []).map((c) => {
+          const parts = [];
+          if (c.competition?.name) parts.push(c.competition.name);
+          if (c.place !== undefined && c.place !== null) parts.push(`${c.place}`);
+          return {
+            id: c.id || Math.random(),
+            text: parts.join(" - "),
+          };
+        });
+        setTree(built);
+      } else if (!cancelled) setTree(null);
     })();
 
     return () => {
@@ -77,6 +108,88 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     };
   }, [pigeon, generations]);
   
+  // Sync competitions prop to root node when it changes (e.g. checkboxes)
+  useEffect(() => {
+    setTree((prev) => {
+      if (!prev) return null;
+      const newTree = { ...prev };
+      newTree.customCompetitions = (competitions || []).map((c) => {
+          const parts = [];
+          if (c.competition?.name) parts.push(c.competition.name);
+          if (c.place !== undefined && c.place !== null) parts.push(`${c.place}`);
+          return {
+            id: c.id || Math.random(),
+            text: parts.join(" - "),
+          };
+      });
+      return newTree;
+    });
+  }, [competitions]);
+
+  const getPath = (genIndex: number, nodeIndex: number) => {
+    const path: ('father' | 'mother')[] = [];
+    let currIdx = nodeIndex;
+    for (let g = genIndex; g > 0; g--) {
+      path.unshift(currIdx % 2 === 0 ? 'father' : 'mother');
+      currIdx = Math.floor(currIdx / 2);
+    }
+    return path;
+  };
+
+  const getOrCreateNode = (root: TreeNode, path: ('father' | 'mother')[]) => {
+    let curr = root;
+    for (const dir of path) {
+      if (!curr[dir]) curr[dir] = { ringNumber: "", name: "", gender: "" } as TreeNode;
+      curr = curr[dir]!;
+    }
+    return curr;
+  };
+
+  const handleCompetitionChange = (genIndex: number, nodeIndex: number, compIndex: number, value: string) => {
+    if (!tree) return;
+    const newTree = JSON.parse(JSON.stringify(tree));
+    const node = getOrCreateNode(newTree, getPath(genIndex, nodeIndex));
+    
+    if (node.customCompetitions && node.customCompetitions[compIndex]) {
+        node.customCompetitions[compIndex].text = value;
+    }
+    setTree(newTree);
+  };
+
+  const addCompetitionRow = (genIndex: number, nodeIndex: number) => {
+    if (!tree) return;
+    const newTree = JSON.parse(JSON.stringify(tree));
+    const node = getOrCreateNode(newTree, getPath(genIndex, nodeIndex));
+    
+    if (!node.customCompetitions) node.customCompetitions = [];
+    node.customCompetitions.push({ id: Math.random(), text: "" });
+    setTree(newTree);
+  };
+
+  const removeCompetitionRow = (genIndex: number, nodeIndex: number, compIndex: number) => {
+    if (!tree) return;
+    const newTree = JSON.parse(JSON.stringify(tree));
+    const node = getOrCreateNode(newTree, getPath(genIndex, nodeIndex));
+    
+    if (node.customCompetitions) {
+      node.customCompetitions = node.customCompetitions.filter((_, i) => i !== compIndex);
+    }
+    setTree(newTree);
+  };
+
+  const handleNodeChange = (genIndex: number, nodeIndex: number, field: keyof Pigeon, value: string) => {
+    if (!tree) return;
+
+    // Deep clone tree to avoid mutation
+    const newTree = JSON.parse(JSON.stringify(tree));
+
+    const path = getPath(genIndex, nodeIndex);
+    const curr = getOrCreateNode(newTree, path);
+
+    (curr as any)[field] = value;
+    setTree(newTree);
+  };
+
   const genderClass = (gender?: string) => {
     if (!gender) return "pigeon-gender-unknown";
     const lower = gender.toLowerCase();
@@ -93,44 +206,82 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
     return "";
   }
 
-  const renderCompetitions = (comps?: CompetitionEntry[]) => {
-    if (!comps || comps.length === 0) return null;
+  const renderCompetitions = (node: TreeNode | undefined, genIndex: number, nodeIndex: number) => {
+    const compRows = node?.customCompetitions || [];
     return (
-      <table className="pigeon-competitions">
-        <tbody>
-          {comps.slice(0, 3).map((c) => ( // Limit to 3 competitions for space
-            <tr key={c.id}>
-              <td>{c.competition?.name || "-"}</td>
-              <td style={{ textAlign: "right" }}>{c.place ?? "-"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="w-full text-xs mt-1 px-1">
+        <table className="w-full border-collapse">
+          <tbody>
+            {compRows.map((row, idx) => (
+              <tr key={row.id}>
+                <td className="p-0 align-middle">
+                  <input
+                    type="text"
+                    value={row.text}
+                    onChange={(e) => handleCompetitionChange(genIndex, nodeIndex, idx, e.target.value)}
+                    className="w-full bg-transparent outline-none px-1 py-0.5 text-xs text-gray-800 placeholder-gray-400"
+                    placeholder="Competition details..."
+                  />
+                </td>
+                <td className="p-0 w-4 text-center align-middle" data-html2canvas-ignore="true">
+                   <button onClick={() => removeCompetitionRow(genIndex, nodeIndex, idx)} className="text-red-400 hover:text-red-600 font-bold leading-none">×</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <button
+          onClick={() => addCompetitionRow(genIndex, nodeIndex)}
+          className="mt-1 text-[10px] text-blue-600 hover:underline w-full text-center block"
+          data-html2canvas-ignore="true"
+        >
+          + Add Row
+        </button>
+      </div>
     );
   };
 
-  const renderPigeonBox = (node: TreeNode | undefined, isMain: boolean, key: number) => {
-    if (!node) {
-      // Render a placeholder box
-      return <div key={key} className="pedigree-pigeon placeholder" />;
-    }
-
-    const birthDate = node.birthDate ? new Date(node.birthDate) : null;
+  const renderPigeonBox = (node: TreeNode | undefined, isMain: boolean, nodeIndex: number, genIndex: number) => {
+    const birthDate = node?.birthDate ? new Date(node.birthDate) : null;
     const monthYear = birthDate ? birthDate.toLocaleString("default", { month: "short", year: "numeric" }) : null;
 
+    let displayGender = node?.gender;
+    if (genIndex > 0) {
+      displayGender = nodeIndex % 2 === 0 ? "male" : "female";
+    }
+
     return (
-      <div key={key} className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
+      <div key={nodeIndex} className={`pedigree-pigeon ${isMain ? "main-pigeon" : ""}`}>
         <div className="pigeon-header">
-          <span className={`pigeon-ring ${genderClass(node.gender)}`}>{node.ringNumber || "-"}</span>
-          {node.name && <span className="pigeon-name">{node.name}</span>}
-          <span className={`pigeon-gender ${genderClass(node.gender)}`}>{genderSymbol(node.gender)}</span>
+          <input
+            className={`pigeon-ring ${genderClass(displayGender)}`}
+            value={node?.ringNumber || ""}
+            onChange={(e) => handleNodeChange(genIndex, nodeIndex, "ringNumber", e.target.value)}
+            placeholder="Ring"
+            style={{ background: "transparent", border: "none", width: "100%", textAlign: "center", fontWeight: "bold" }}
+          />
+          
+          <input
+            className="pigeon-name"
+            value={node?.name || ""}
+            onChange={(e) => handleNodeChange(genIndex, nodeIndex, "name", e.target.value)}
+            placeholder="Name"
+            style={{ background: "transparent", border: "none", width: "100%", textAlign: "center", fontSize: "0.9em" }}
+          />
+
+          <span
+            className={`pigeon-gender ${genderClass(displayGender)}`}
+            style={{ fontWeight: "bold", textAlign: "center", width: "20px", display: "inline-block" }}
+          >
+             {genderSymbol(displayGender)}
+          </span>
         </div>
         <div className="pigeon-details-row">
           {monthYear && <span>{monthYear}</span>}
-          {monthYear && node.color && <span> - </span>}
-          {node.color && <span>{node.color}</span>}
+          {monthYear && node?.color && <span> - </span>}
+          {node?.color && <span>{node.color}</span>}
         </div>
-        {isMain && renderCompetitions(competitions)}
+        {(isMain || genIndex === 1) && renderCompetitions(node, genIndex, nodeIndex)}
       </div>
     );
   };
@@ -156,7 +307,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
         {generationsList.map((nodes, genIndex) => (
           <div key={genIndex} className={`pedigree-generation g${genIndex + 1}`}>
             {nodes.map((node, nodeIndex) => (
-              renderPigeonBox(node, genIndex === 0, nodeIndex)
+              renderPigeonBox(node, genIndex === 0, nodeIndex, genIndex)
             ))}
           </div>
         ))}
