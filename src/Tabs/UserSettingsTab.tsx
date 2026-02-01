@@ -6,12 +6,15 @@ import {
   LockIcon,
   PhoneIcon,
   MapPinIcon,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import i18n from "../i18n";
 import { useUser } from "../components/utilities/UserContext";
 import { fetchCurrentUser, sendVerificationEmail, updateEmail, updatePassword, updateProfile } from "../api/auth";
-
+import Button from "../components/utilities/Button";
+import { usePageHeader } from "../components/utilities/PageHeaderContext";
 
 export function UserSettingsTab() {
   const { t } = useTranslation();
@@ -41,6 +44,17 @@ export function UserSettingsTab() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const currentLanguage = i18n.language;
+
+  const { setHeader, clearHeader } = usePageHeader();
+
+  useEffect(() => {
+    setHeader({
+      title: null,
+      right: null,
+      actions: null,
+    });
+    return () => clearHeader();
+  }, [setHeader, clearHeader]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -169,28 +183,32 @@ export function UserSettingsTab() {
   };
 
   return (
-    <div className="px-6 py-6 max-w-3xl mx-auto">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
       <Toaster position="top-right" />
 
-      {/* Profile Header */}
-      <div className="bg-indigo-50 flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 rounded-2xl shadow-md mb-6 gap-4">
-        <div className="flex items-start md:items-center gap-4">
-          <UserIcon className="w-12 h-12 text-indigo-600" />
+      <div className="max-w-3xl mx-auto space-y-6">
+        {/* Profile Header */}
+        <div className="bg-white flex flex-col md:flex-row items-center justify-between p-8 rounded-3xl shadow-lg gap-6">
+          <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+            <div className="p-4 bg-indigo-50 rounded-full">
+              <UserIcon className="w-10 h-10 text-indigo-600" />
+            </div>
           <div className="flex flex-col gap-2">
             {/* Full Name */}
-            <p className="font-extrabold text-2xl text-gray-800">
+              <h1 className="font-extrabold text-3xl text-gray-900">
               {user.firstName || ""} {user.lastName || ""}
-            </p>
+              </h1>
 
             {/* Email */}
-            <div className="flex items-center gap-2 text-gray-600">
+              <div className="flex flex-wrap justify-center md:justify-start gap-4 text-gray-500 text-sm font-medium">
+                <div className="flex items-center gap-1.5">
               <MailIcon className="w-4 h-4 text-gray-500" />
               <span>{user.email}</span>
             </div>
 
             {/* Phone */}
             {user.phoneNumber && (
-              <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-1.5">
                 <PhoneIcon className="w-4 h-4 text-gray-500" />
                 <span>{user.phoneNumber}</span>
               </div>
@@ -198,19 +216,20 @@ export function UserSettingsTab() {
 
             {/* Address */}
             {user.address && (
-              <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-1.5">
                 <MapPinIcon className="w-4 h-4 text-gray-500" />
                 <span>{user.address}</span>
               </div>
             )}
           </div>
         </div>
+        </div>
 
         {/* Email Verification Button */}
         <button
           onClick={!user.emailVerified ? handleSendVerificationEmail : undefined}
-          className={`px-4 py-2 rounded-full text-sm font-semibold transition
-            ${user.emailVerified ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"}`}
+            className={`px-5 py-2 rounded-full text-sm font-bold transition shadow-sm
+            ${user.emailVerified ? "bg-green-100 text-green-700 cursor-default" : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"}`}
         >
           {user.emailVerified ? t("userSettingsPage.verified") : t("userSettingsPage.notVerified")}
         </button>
@@ -220,168 +239,187 @@ export function UserSettingsTab() {
       <div className="space-y-6">
 
         {/* Edit Profile Info */}
-        <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4 md:p-6">
-          <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowProfileEdit(!showProfileEdit)}>
+          <div className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50/50 transition-colors" 
+              onClick={() => setShowProfileEdit(!showProfileEdit)}
+            >
             <div className="flex items-center gap-2">
-              <UserIcon className="w-6 h-6 text-indigo-600" />
-              <h3 className="font-semibold text-lg">{t("userSettingsPage.profileInfo")}</h3>
+                <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                  <UserIcon className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-lg text-gray-800">{t("userSettingsPage.profileInfo")}</h3>
             </div>
-            <span className="text-indigo-500">{showProfileEdit ? "-" : "+"}</span>
+              {showProfileEdit ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
           </div>
 
           {showProfileEdit && (
-            <div className="mt-4 grid gap-3 md:grid-cols-2" onClick={e => e.stopPropagation()}>
+              <div className="px-6 pb-8 grid gap-5 md:grid-cols-2 animate-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.firstName")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.firstName")}</label>
                 <input
                   value={user.firstName || ""}
                   onChange={e => setUser(prev => ({ ...prev, firstName: e.target.value }))}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.lastName")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.lastName")}</label>
                 <input
                   value={user.lastName || ""}
                   onChange={e => setUser(prev => ({ ...prev, lastName: e.target.value }))}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.phoneNumber")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.phoneNumber")}</label>
                 <input
                   value={user.phoneNumber || ""}
                   onChange={e => setUser(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.address")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.address")}</label>
                 <input
                   value={user.address || ""}
                   onChange={e => setUser(prev => ({ ...prev, address: e.target.value }))}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col md:col-span-2">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.language")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.language")}</label>
                 <select
                   value={newLanguage}
                   onChange={e => setNewLanguage(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 >
                   <option value="en">{t("userSettingsPage.languageEnglish")}</option>
                   <option value="bg">{t("userSettingsPage.languageBulgarian")}</option>
                 </select>
               </div>
-              <button
+                <div className="md:col-span-2 flex justify-end mt-2">
+                  <Button
                 onClick={handleProfileUpdate}
-                className="md:col-span-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
               >
                 {t("userSettingsPage.saveProfile")}
-              </button>
+                  </Button>
+                </div>
             </div>
           )}
         </div>
 
         {/* Change Email */}
-        <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
-          <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowEmailEdit(!showEmailEdit)}>
+          <div className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50/50 transition-colors" 
+              onClick={() => setShowEmailEdit(!showEmailEdit)}
+            >
             <div className="flex items-center gap-2">
-              <MailIcon className="w-6 h-6 text-indigo-600" />
-              <h3 className="font-semibold text-lg">{t("userSettingsPage.changeEmail")}</h3>
+                <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                  <MailIcon className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-lg text-gray-800">{t("userSettingsPage.changeEmail")}</h3>
             </div>
-            <span className="text-indigo-500">{showEmailEdit ? "-" : "+"}</span>
+              {showEmailEdit ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
           </div>
 
           {showEmailEdit && (
-            <div className="mt-4 grid gap-4 md:grid-cols-2" onClick={e => e.stopPropagation()}>
+              <div className="px-6 pb-8 grid gap-5 md:grid-cols-2 animate-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.newEmail")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.newEmail")}</label>
                 <input
                   type="email"
                   value={newEmail}
                   onChange={e => setNewEmail(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.confirmEmail")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.confirmEmail")}</label>
                 <input
                   type="email"
                   value={confirmEmail}
                   onChange={e => setConfirmEmail(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col md:col-span-2">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.currentPassword")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.currentPassword")}</label>
                 <input
                   type="password"
                   value={currentPasswordForEmail}
                   onChange={e => setCurrentPasswordForEmail(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
-              <button
+                <div className="md:col-span-2 flex justify-end mt-2">
+                  <Button
                 onClick={handleEmailUpdate}
-                className="md:col-span-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
               >
                 {t("userSettingsPage.saveEmail")}
-              </button>
+                  </Button>
+                </div>
             </div>
           )}
         </div>
 
         {/* Change Password */}
-        <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6">
-          <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowPasswordEdit(!showPasswordEdit)}>
+          <div className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50/50 transition-colors" 
+              onClick={() => setShowPasswordEdit(!showPasswordEdit)}
+            >
             <div className="flex items-center gap-2">
-              <LockIcon className="w-6 h-6 text-indigo-600" />
-              <h3 className="font-semibold text-lg">{t("userSettingsPage.changePassword")}</h3>
+                <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                  <LockIcon className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-lg text-gray-800">{t("userSettingsPage.changePassword")}</h3>
             </div>
-            <span className="text-indigo-500">{showPasswordEdit ? "-" : "+"}</span>
+              {showPasswordEdit ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
           </div>
 
           {showPasswordEdit && (
-            <div className="mt-4 grid gap-4 md:grid-cols-2" onClick={e => e.stopPropagation()}>
+              <div className="px-6 pb-8 grid gap-5 md:grid-cols-2 animate-in slide-in-from-top-2 duration-200" onClick={e => e.stopPropagation()}>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.currentPassword")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.currentPassword")}</label>
                 <input
                   type="password"
                   value={oldPassword}
                   onChange={e => setOldPassword(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.newPassword")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.newPassword")}</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-gray-500 text-sm">{t("userSettingsPage.confirmPassword")}</label>
+                  <label className="text-gray-700 text-sm font-semibold mb-1.5">{t("userSettingsPage.confirmPassword")}</label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
-                  className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 transition"
+                    className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition outline-none"
                 />
               </div>
-              <button
+                <div className="md:col-span-2 flex justify-end mt-2">
+                  <Button
                 onClick={handlePasswordUpdate}
-                className="md:col-span-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
               >
                 {t("userSettingsPage.savePassword")}
-              </button>
+                  </Button>
+                </div>
             </div>
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

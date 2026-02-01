@@ -232,7 +232,8 @@
     "selectCompetition": "Избери състезание",
     "selectOption": "Избери опция",
     "submit": "Изпрати",
-    "bulkCompetitionSuccess": "Всички избрани гълъби бяха успешно добавени към състезанието."
+    "bulkCompetitionSuccess": "Всички избрани гълъби бяха успешно добавени към състезанието.",
+    "noPigeonsFound": "Не са намерени гълъби"
   },
   "pigeonForm": {
     "createPigeon": "Създай гълъб",

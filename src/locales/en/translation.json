@@ -233,7 +233,8 @@
     "selectOption":"Select Option",
     "submit":"Submit",
     "viewPigeon":"View Pigeon Details",
-    "bulkCompetitionSuccess": "All selected pigeons have been successfully added to the competition."
+    "bulkCompetitionSuccess": "All selected pigeons have been successfully added to the competition.",
+    "noPigeonsFound": "No pigeons found"
   },
   "pigeonForm": {
     "createPigeon": "Create Pigeon",
