@@ -13,6 +13,8 @@ import CompetitionDetailsPage from '../pages/details/CompetitionDetailsPage';
 import PigeonPage from '../pages/details/PigeonPage';
 import BreedingSeasonDetailsPage from '../pages/details/BreedingDetailsPage';
 import PublicPigeonPage from '../pages/details/PublicPigeonPage';
+import PaymentSuccessPage from '../pages/main/PaymentSuccessPage';
+import PaymentCancelPage from '../pages/main/PaymentCancelPage';
 
 export default function AppRouter() {
   return (
@@ -36,6 +38,8 @@ export default function AppRouter() {
           <Route path="/competitions/:competitionId" element={<CompetitionDetailsPage />}/>
           <Route path="/pigeons/:id" element={<PigeonPage />} />
           <Route path="/breeding/:id" element={<BreedingSeasonDetailsPage />} />
+          <Route path="/billing/success" element={<PaymentSuccessPage />} />
+          <Route path="/billing/cancel" element={<PaymentCancelPage />} />
         </Route>
 
         {/* FALLBACK */}

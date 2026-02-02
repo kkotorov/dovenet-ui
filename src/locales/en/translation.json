@@ -578,5 +578,13 @@
     "title": "Subscription Required",
     "message": "Your subscription has expired or is inactive. Please renew your plan to continue accessing all features.",
     "button": "Manage Subscription"
+  },
+  "billing": {
+    "successTitle": "Payment Successful!",
+    "successMessage": "Thank you for your purchase. Your subscription is now active.",
+    "cancelTitle": "Payment Cancelled",
+    "cancelMessage": "The payment process was cancelled. No charges were made.",
+    "backToDashboard": "Back to Dashboard",
+    "backToSubscriptions": "Back to Subscriptions"
   }
 }
