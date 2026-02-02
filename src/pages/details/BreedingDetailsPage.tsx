@@ -4,13 +4,12 @@ import { useTranslation } from "react-i18next";
 import toast, { Toaster } from "react-hot-toast";
 import PairForm from "../../components/breeding/PairForm";
 import PigeonForm from "../../components/pigeons/PigeonForm";
-import type { BreedingPairDTO, Pigeon, BreedingSeasonDTO } from "../../types";
+import type { BreedingPairDTO, Pigeon } from "../../types";
 import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
 import PairCard from "../../components/breeding/PairCard";
 import { getUserPigeons, createPigeon } from "../../api/pigeon";
 import {
   getPairsForSeason,
-  getBreedingSeason,
   deletePair,
   createPair,
   updatePair,
@@ -27,7 +26,6 @@ export default function BreedingSeasonDetailsPage() {
 
   const [pairs, setPairs] = useState<BreedingPairDTO[]>([]);
   const [userPigeons, setUserPigeons] = useState<Pigeon[]>([]);
-  const [seasonMeta, setSeasonMeta] = useState<BreedingSeasonDTO | null>(null);
 
   const [openPairForm, setOpenPairForm] = useState(false);
   const [editingPair, setEditingPair] = useState<BreedingPairDTO | null>(null);
@@ -56,17 +54,6 @@ export default function BreedingSeasonDetailsPage() {
     }
   };
 
-  const fetchSeason = async () => {
-    if (!seasonId) return;
-    try {
-      const res = await getBreedingSeason(seasonId);
-      setSeasonMeta(res.data);
-    } catch (err) {
-      console.error("Failed to fetch season", err);
-      setSeasonMeta(null);
-    }
-  };
-
   const fetchUserPigeons = async () => {
     try {
       const res = await getUserPigeons();
@@ -80,7 +67,6 @@ export default function BreedingSeasonDetailsPage() {
 
   useEffect(() => {
     fetchPairs();
-    fetchSeason();
     fetchUserPigeons();
   }, [seasonId]);
 
