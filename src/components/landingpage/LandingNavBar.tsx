@@ -48,12 +48,12 @@ export default function LandingNavbar() {
         <a href="#faq" className="hover:text-indigo-600 transition">
           {t("landingNavbar.faq")}
         </a>
-        <a href="#support" className="hover:text-indigo-600 transition">
-          {t("landingNavbar.support")}
-        </a>
-        <a href="#about" className="hover:text-indigo-600 transition">
+        <Link to="/contact" className="hover:text-indigo-600 transition">
+          {t("landingNavbar.contact")}
+        </Link>
+        <Link to="/about" className="hover:text-indigo-600 transition">
           {t("landingNavbar.aboutUs")}
-        </a>
+        </Link>
       </div>
 
       {/* Right side buttons */}

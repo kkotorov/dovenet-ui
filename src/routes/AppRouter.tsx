@@ -15,7 +15,11 @@ import BreedingSeasonDetailsPage from '../pages/details/BreedingDetailsPage';
 import PublicPigeonPage from '../pages/details/PublicPigeonPage';
 import PaymentSuccessPage from '../pages/main/PaymentSuccessPage';
 import PaymentCancelPage from '../pages/main/PaymentCancelPage';
-
+import ContactPage from '../pages/main/ContactPage';
+import AboutPage from '../pages/main/AboutPage';
+import TermsOfServicePage from '../pages/main/legal/TermsOfServicePage';
+import PrivacyPolicyPage from '../pages/main/legal/PrivacyPolicyPage';
+import CookiePolicyPage from '../pages/main/legal/CookiePolicyPage';
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -31,6 +35,11 @@ export default function AppRouter() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/public/pigeons/:id" element={<PublicPigeonPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
+        <Route path="/cookies" element={<CookiePolicyPage />} />
 
         {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>

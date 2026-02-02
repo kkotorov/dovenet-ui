@@ -14,7 +14,7 @@ export default function TopBar() {
 
   const { user, setUser, loading } = useUser();
   const isLoggedIn = !!user;
-  const hideTopBar = location.pathname === "/";
+  const hideTopBar = location.pathname === "/" || location.pathname === "/contact" || location.pathname === "/about" || location.pathname === "/privacy" || location.pathname === "/terms" || location.pathname === "/cookies";
 
   const { title, right, actions } = usePageHeader();
 
