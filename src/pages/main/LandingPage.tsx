@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import LandingNavbar from "../../components/landingpage/LandingNavBar";
 import { useTranslation, Trans } from "react-i18next";
 import {
@@ -16,17 +16,30 @@ import LandingFooter from "../../components/landingpage/LandingFooter";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { hash } = useLocation();
   const { t } = useTranslation();
   const isLoggedIn = !!localStorage.getItem("token");
 
   const [billing, setBilling] = useState<"MONTHLY" | "YEARLY">("YEARLY");
 
+  useEffect(() => {
+    if (hash) {
+      const element = document.getElementById(hash.replace("#", ""));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, [hash]);
+
   return (
     <div className="font-sans text-gray-900 bg-white">
-      <LandingNavbar />
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 text-white overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">
+        <div className="absolute top-0 left-0 w-full z-50">
+          <LandingNavbar />
+        </div>
         <div className="container mx-auto px-6 relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-extrabold mb-8 leading-tight animate-fadeInUp">

@@ -8,10 +8,11 @@ export default function AboutPage() {
 
   return (
     <div className="font-sans text-gray-900 bg-white">
-      <LandingNavbar />
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 text-white py-32 lg:py-48 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full z-50">
+          <LandingNavbar />
+        </div>
         <div className="container mx-auto px-6 relative z-10 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6 animate-fadeInUp">
             {t("aboutPage.title")}

@@ -20,6 +20,7 @@ import AboutPage from '../pages/main/AboutPage';
 import TermsOfServicePage from '../pages/main/legal/TermsOfServicePage';
 import PrivacyPolicyPage from '../pages/main/legal/PrivacyPolicyPage';
 import CookiePolicyPage from '../pages/main/legal/CookiePolicyPage';
+import NotFoundPage from '../pages/main/NotFoundPage';
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -52,7 +53,7 @@ export default function AppRouter() {
         </Route>
 
         {/* FALLBACK */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

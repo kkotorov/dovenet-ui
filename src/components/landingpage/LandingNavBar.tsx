@@ -31,27 +31,24 @@ export default function LandingNavbar() {
     <nav className="w-full py-6 px-8 flex items-center justify-between bg-transparent absolute top-0 left-0 z-50">
       {/* Logo */}
       <div
-        className="text-2xl font-bold text-indigo-600 cursor-pointer"
+        className="text-2xl font-bold text-white cursor-pointer"
         onClick={() => navigate("/")}
       > 
         {t("appName")}
       </div>
 
       {/* Center Menu */}
-      <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
-        <a href="#features" className="hover:text-indigo-600 transition">
+      <div className="hidden md:flex items-center gap-8 text-blue-100 font-medium">
+        <Link to="/#features" className="hover:text-white transition">
           {t("landingNavbar.features")}
-        </a>
-        <a href="#pricing" className="hover:text-indigo-600 transition">
+        </Link>
+        <Link to="/#pricing" className="hover:text-white transition">
           {t("landingNavbar.pricing")}
-        </a>
-        <a href="#faq" className="hover:text-indigo-600 transition">
-          {t("landingNavbar.faq")}
-        </a>
-        <Link to="/contact" className="hover:text-indigo-600 transition">
+        </Link>
+        <Link to="/contact" className="hover:text-white transition">
           {t("landingNavbar.contact")}
         </Link>
-        <Link to="/about" className="hover:text-indigo-600 transition">
+        <Link to="/about" className="hover:text-white transition">
           {t("landingNavbar.aboutUs")}
         </Link>
       </div>
@@ -60,13 +57,13 @@ export default function LandingNavbar() {
       <div className="flex items-center gap-6">
         {!isLoggedIn ? (
           <>
-            <Link to="/login" className="text-gray-700 hover:text-indigo-600 font-medium">
+            <Link to="/login" className="text-blue-100 hover:text-white font-medium">
               {t("topBar.login")}
             </Link>
 
             <Link
               to="/register"
-              className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-white text-indigo-600 font-semibold rounded-lg shadow hover:bg-blue-50 transition"
             >
               {t("topBar.signup")}
             </Link>
@@ -74,7 +71,7 @@ export default function LandingNavbar() {
         ) : (
           <button
             onClick={() => navigate("/dashboard")}
-            className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
+            className="px-4 py-2 bg-white text-indigo-600 font-semibold rounded-lg shadow hover:bg-blue-50 transition"
           >
             {t("landingNavbar.goToDashboard")}
           </button>
@@ -84,7 +81,7 @@ export default function LandingNavbar() {
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setLangOpen(!langOpen)}
-            className="text-2xl text-gray-700 hover:text-indigo-600 transition"
+            className="text-2xl text-blue-100 hover:text-white transition"
           >
             🌐
           </button>

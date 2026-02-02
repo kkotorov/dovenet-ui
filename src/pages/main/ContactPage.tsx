@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../../api/api";
 import { toast, Toaster } from "react-hot-toast";
-import { Mail, MessageSquare, FileText, Send } from "lucide-react";
+import { Mail, MessageSquare, FileText, Send, ChevronDown, ChevronUp } from "lucide-react";
 import LandingNavbar from "../../components/landingpage/LandingNavBar";
 import LandingFooter from "../../components/landingpage/LandingFooter";
 
@@ -10,6 +10,30 @@ export default function ContactPage() {
   const { t } = useTranslation();
   const [contactForm, setContactForm] = useState({ email: "", subject: "", message: "" });
   const [sending, setSending] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      question: t("contactPage.faq.q1", "How do I reset my password?"),
+      answer: t("contactPage.faq.a1", "You can reset your password by clicking on 'Forgot Password' at the login screen."),
+    },
+    {
+      question: t("contactPage.faq.q2", "Can I manage multiple lofts?"),
+      answer: t("contactPage.faq.a2", "Yes, the Premium and Pro plans support multiple lofts."),
+    },
+    {
+      question: t("contactPage.faq.q3", "Is there a free trial?"),
+      answer: t("contactPage.faq.a3", "Yes, we offer a 10-day free trial with limited features."),
+    },
+    {
+      question: t("contactPage.faq.q4", "How do I contact support?"),
+      answer: t("contactPage.faq.a4", "You can use the form above or email us directly at support@dovenet.com."),
+    },
+    {
+      question: t("contactPage.faq.q5", "How do I change my subscription plan?"),
+      answer: t("contactPage.faq.a5", "If you want to change subscription’s monthly/yearly you need to cancel the active one, then after it is not valid anymore you can pay for the new one."),
+    },
+  ];
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +138,40 @@ export default function ContactPage() {
               )}
             </button>
           </form>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mt-20">
+          <h2 className="text-3xl font-bold text-white text-center mb-10">
+            {t("contactPage.faqTitle", "Frequently Asked Questions")}
+          </h2>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden transition-all duration-300"
+              >
+                <button
+                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between text-white font-semibold hover:bg-white/5 transition-colors"
+                >
+                  <span>{faq.question}</span>
+                  {openFaqIndex === index ? (
+                    <ChevronUp className="w-5 h-5 text-blue-200" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-blue-200" />
+                  )}
+                </button>
+                <div
+                  className={`px-6 text-blue-100 overflow-hidden transition-all duration-300 ${
+                    openFaqIndex === index ? "max-h-40 py-4 opacity-100" : "max-h-0 py-0 opacity-0"
+                  }`}
+                >
+                  {faq.answer}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
