@@ -1,13 +1,20 @@
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
 import LandingNavbar from "../../components/landingpage/LandingNavBar";
 import LandingFooter from "../../components/landingpage/LandingFooter";
 import { Users, Target, Heart } from "lucide-react";
 
 export default function AboutPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <div className="font-sans text-gray-900 bg-white">
+      <Helmet>
+        <html lang={i18n.language} />
+        <title>{t("seo.about.title", "About DoveNet | Pigeon Racing Software")}</title>
+        <meta name="description" content={t("seo.about.description", "Learn about DoveNet's mission to modernize pigeon racing. We provide tools to manage pigeons, track results, and generate pedigrees.")} />
+      </Helmet>
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 text-white py-32 lg:py-48 overflow-hidden">
         <div className="absolute top-0 left-0 w-full z-50">

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import LandingNavbar from "../../components/landingpage/LandingNavBar";
 import { useTranslation, Trans } from "react-i18next";
 import {
@@ -17,7 +18,7 @@ import LandingFooter from "../../components/landingpage/LandingFooter";
 export default function LandingPage() {
   const navigate = useNavigate();
   const { hash } = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isLoggedIn = !!localStorage.getItem("token");
 
   const [billing, setBilling] = useState<"MONTHLY" | "YEARLY">("YEARLY");
@@ -35,6 +36,13 @@ export default function LandingPage() {
 
   return (
     <div className="font-sans text-gray-900 bg-white">
+      <Helmet>
+        <html lang={i18n.language} />
+        <title>{t("seo.landing.title", "DoveNet | Pigeon Management System & Pedigree Creator")}</title>
+        <meta name="description" content={t("seo.landing.description", "The ultimate pigeon management system. Track racing pigeons, manage lofts, and create, print, and download professional pedigrees instantly.")} />
+        <meta name="keywords" content="pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking" />
+        <meta name="keywords" content={t("seo.landing.keywords", "pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking")} />
+      </Helmet>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 text-white overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">
         <div className="absolute top-0 left-0 w-full z-50">

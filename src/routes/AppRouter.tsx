@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 
 import RegisterPage from '../pages/authentication/RegisterPage';
 import LoginPage from '../pages/authentication/LoginPage';
@@ -23,13 +24,14 @@ import CookiePolicyPage from '../pages/main/legal/CookiePolicyPage';
 import NotFoundPage from '../pages/main/NotFoundPage';
 export default function AppRouter() {
   return (
-    <BrowserRouter>
-      {/* TopBar is global */}
-      <TopBar />
+    <HelmetProvider>
+      <BrowserRouter>
+        {/* TopBar is global */}
+        <TopBar />
 
-      <Routes>
-        {/* PUBLIC pages */}
-        <Route path="/" element={<LandingPage />} />
+        <Routes>
+          {/* PUBLIC pages */}
+          <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -55,6 +57,7 @@ export default function AppRouter() {
         {/* FALLBACK */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }

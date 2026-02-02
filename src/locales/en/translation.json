@@ -1,5 +1,22 @@
 {
   "appName": "DoveNet",
+  "seo": {
+    "landing": {
+      "title": "DoveNet | Pigeon Management System & Pedigree Creator",
+      "description": "The ultimate pigeon management system. Track racing pigeons, manage lofts, and create, print, and download professional pedigrees instantly.",
+      "keywords": "pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking"
+    },
+    "about": {
+      "title": "About DoveNet | Pigeon Racing Software",
+      "description": "Learn about DoveNet's mission to modernize pigeon racing. We provide tools to manage pigeons, track results, and generate pedigrees.",
+      "keywords": "about dovenet, pigeon racing software, pigeon management team, loft management"
+    },
+    "contact": {
+      "title": "Contact DoveNet | Pigeon Management Support",
+      "description": "Contact DoveNet support for help with pigeon tracking, pedigree generation, or account management.",
+      "keywords": "contact support, pigeon software help, dovenet support, pigeon tracking questions"
+    }
+  },
   "landingPage": {
     "heroTitle": "Manage Your Loft Like a <highlight>Pro</highlight>",
     "heroSubtitle": "The all-in-one platform for pigeon fanciers. Track pedigrees, manage breeding, analyze competition results, and more.",
@@ -71,7 +88,20 @@
     "messagePlaceholder": "Describe your issue or question here...",
     "send": "Send Message",
     "messageSent": "Message sent successfully! We will get back to you soon.",
-    "messageError": "Failed to send message. Please try again later."
+    "messageError": "Failed to send message. Please try again later.",
+    "faqTitle": "Frequently Asked Questions",
+    "faq": {
+      "q1": "How do I reset my password?",
+      "a1": "You can reset your password by clicking on 'Forgot Password' at the login screen.",
+      "q2": "Can I manage multiple lofts?",
+      "a2": "Yes, the Premium and Pro plans support multiple lofts.",
+      "q3": "Is there a free trial?",
+      "a3": "Yes, we offer a 10-day free trial with limited features.",
+      "q4": "How do I contact support?",
+      "a4": "You can use the form above or email us directly at support@dovenet.com.",
+      "q5": "How do I change my subscription plan?",
+      "a5": "To switch between monthly and yearly billing, please cancel your active subscription first. Once your current period expires, you can resubscribe with the new billing cycle."
+    }
   },
   "aboutPage": {
     "title": "About DoveNet",
@@ -671,5 +701,10 @@
     "cancelMessage": "The payment process was cancelled. No charges were made.",
     "backToDashboard": "Back to Dashboard",
     "backToSubscriptions": "Back to Subscriptions"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Oops! The page you are looking for does not exist. It might have been moved or deleted.",
+    "backHome": "Back to Home"
   }
 }

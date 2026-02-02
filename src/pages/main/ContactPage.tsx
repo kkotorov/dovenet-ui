@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
 import api from "../../api/api";
 import { toast, Toaster } from "react-hot-toast";
 import { Mail, MessageSquare, FileText, Send, ChevronDown, ChevronUp } from "lucide-react";
@@ -7,31 +8,31 @@ import LandingNavbar from "../../components/landingpage/LandingNavBar";
 import LandingFooter from "../../components/landingpage/LandingFooter";
 
 export default function ContactPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [contactForm, setContactForm] = useState({ email: "", subject: "", message: "" });
   const [sending, setSending] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const faqs = [
     {
-      question: t("contactPage.faq.q1", "How do I reset my password?"),
-      answer: t("contactPage.faq.a1", "You can reset your password by clicking on 'Forgot Password' at the login screen."),
+      question: t("contactPage.faq.q1"),
+      answer: t("contactPage.faq.a1"),
     },
     {
-      question: t("contactPage.faq.q2", "Can I manage multiple lofts?"),
-      answer: t("contactPage.faq.a2", "Yes, the Premium and Pro plans support multiple lofts."),
+      question: t("contactPage.faq.q2"),
+      answer: t("contactPage.faq.a2"),
     },
     {
-      question: t("contactPage.faq.q3", "Is there a free trial?"),
-      answer: t("contactPage.faq.a3", "Yes, we offer a 10-day free trial with limited features."),
+      question: t("contactPage.faq.q3"),
+      answer: t("contactPage.faq.a3"),
     },
     {
-      question: t("contactPage.faq.q4", "How do I contact support?"),
-      answer: t("contactPage.faq.a4", "You can use the form above or email us directly at support@dovenet.com."),
+      question: t("contactPage.faq.q4"),
+      answer: t("contactPage.faq.a4"),
     },
     {
-      question: t("contactPage.faq.q5", "How do I change my subscription plan?"),
-      answer: t("contactPage.faq.a5", "If you want to change subscription’s monthly/yearly you need to cancel the active one, then after it is not valid anymore you can pay for the new one."),
+      question: t("contactPage.faq.q5"),
+      answer: t("contactPage.faq.a5"),
     },
   ];
 
@@ -53,6 +54,12 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 font-sans relative overflow-hidden">
+      <Helmet>
+        <html lang={i18n.language} />
+        <title>{t("seo.contact.title", "Contact DoveNet | Pigeon Management Support")}</title>
+        <meta name="description" content={t("seo.contact.description", "Contact DoveNet support for help with pigeon tracking, pedigree generation, or account management.")} />
+      </Helmet>
+
       <LandingNavbar />
       <Toaster position="top-right" />
       
