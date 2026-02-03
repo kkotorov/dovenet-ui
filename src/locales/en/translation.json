@@ -3,8 +3,8 @@
   "seo": {
     "landing": {
       "title": "DoveNet | Pigeon Management System & Pedigree Creator",
-      "description": "The ultimate pigeon management system. Track racing pigeons, manage lofts, and create, print, and download professional pedigrees instantly.",
-      "keywords": "pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking"
+      "description": "The ultimate pigeon management system. Track your pigeons, manage lofts, and create, print, and download professional pedigrees instantly.",
+      "keywords": "pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking, pigeon breeding"
     },
     "about": {
       "title": "About DoveNet | Pigeon Racing Software",
@@ -18,7 +18,7 @@
     }
   },
   "landingPage": {
-    "heroTitle": "Manage Your Loft Like a <highlight>Pro</highlight>",
+    "heroTitle": "Manage Your Lofts Like a <highlight>Pro</highlight>",
     "heroSubtitle": "The all-in-one platform for pigeon fanciers. Track pedigrees, manage breeding, analyze competition results, and more.",
     "getStarted": "Get Started for Free",
     "goToDashboard": "Go to Dashboard",
