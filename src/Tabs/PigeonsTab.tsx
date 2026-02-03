@@ -17,9 +17,11 @@ interface PigeonsTabProps {
   loftId?: number;
   loftName?: string;
   onNavigateBack?: () => void;
+  adminUserId?: number;
+  className?: string;
 }
 
-export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps) {
+export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, className }: PigeonsTabProps) {
   const navigate = useNavigate();
     
   const { t } = useTranslation();
@@ -55,7 +57,12 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   /** Fetch pigeons **/
   const fetchPigeons = async () => {
     try {
-      const url = loftId ? `/pigeons/loft/${loftId}` : "/pigeons";
+      let url;
+      if (adminUserId) {
+        url = `/admin/users/${adminUserId}/pigeons`;
+      } else {
+        url = loftId ? `/pigeons/loft/${loftId}` : "/pigeons";
+      }
       const res = await api.get<Pigeon[]>(url);
       setPigeons(res.data);
       setSelectedPigeons([]);
@@ -70,7 +77,8 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   /** Fetch lofts **/
   const fetchLofts = async () => {
     try {
-      const res = await api.get<Loft[]>("/lofts");
+      const url = adminUserId ? `/admin/users/${adminUserId}/lofts` : "/lofts";
+      const res = await api.get<Loft[]>(url);
       setLofts(res.data);
     } catch (err) {
       console.error("Failed to fetch lofts", err);
@@ -88,7 +96,11 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   const createPigeon = async (pigeon: Pigeon) => {
     try {
       if (loftId) pigeon.loftId = loftId;
-      await api.post("/pigeons", pigeon);
+      if (adminUserId) {
+        await api.post(`/admin/users/${adminUserId}/pigeons`, pigeon);
+      } else {
+        await api.post("/pigeons", pigeon);
+      }
       toast.success(t("pigeonsPage.createSuccess"));
       fetchPigeons();
     } catch (err) {
@@ -100,7 +112,11 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   const updatePigeon = async (pigeon: Pigeon) => {
     try {
       if (!pigeon.id) throw new Error(t("pigeonsPage.idRequired"));
-      await api.patch(`/pigeons/${pigeon.id}`, pigeon);
+      if (adminUserId) {
+        await api.put(`/admin/pigeons/${pigeon.id}`, pigeon);
+      } else {
+        await api.patch(`/pigeons/${pigeon.id}`, pigeon);
+      }
       toast.success(t("pigeonsPage.updateSuccess"));
       fetchPigeons();
     } catch (err) {
@@ -113,11 +129,13 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
     setDeleteLoading(true);
     try {
       if (bulkDelete) {
-        await Promise.all(selectedPigeons.map((id) => api.delete(`/pigeons/${id}`)));
+        const deleteUrl = (id: number) => adminUserId ? `/admin/pigeons/${id}` : `/pigeons/${id}`;
+        await Promise.all(selectedPigeons.map((id) => api.delete(deleteUrl(id))));
         toast.success(t("pigeonsPage.bulkDeleteSuccess"));
         setSelectedPigeons([]);
       } else if (pigeonToDelete?.id) {
-        await api.delete(`/pigeons/${pigeonToDelete.id}`);
+        const url = adminUserId ? `/admin/pigeons/${pigeonToDelete.id}` : `/pigeons/${pigeonToDelete.id}`;
+        await api.delete(url);
         toast.success(t("pigeonsPage.deleteSuccess"));
       }
       fetchPigeons();
@@ -296,7 +314,7 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
   }, [loftName, searchTerm, onNavigateBack, t, setHeader]);
 
   return (
-  <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+  <div className={className || "min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans"}>
     <Toaster position="top-right" />
 
 
@@ -520,7 +538,11 @@ export function PigeonsTab({ loftId, loftName,onNavigateBack }: PigeonsTabProps)
         onSubmit={async (data) => {
           try {
             await Promise.all(
-              selectedPigeons.map((id) => api.patch(`/pigeons/${id}`, data))
+              selectedPigeons.map((id) => {
+                return adminUserId 
+                  ? api.put(`/admin/pigeons/${id}`, data) 
+                  : api.patch(`/pigeons/${id}`, data);
+              })
             );
 
             toast.success(t("pigeonsPage.bulkUpdateSuccess"));

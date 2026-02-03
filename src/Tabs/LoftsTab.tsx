@@ -6,7 +6,6 @@ import CreateEditLoftModal from "../components/lofts/CreateEditLoftModal";
 import toast, { Toaster } from "react-hot-toast";
 import { PigeonsTab } from "./PigeonsTab"; 
 import {
-  getLofts,
   createLoft,
   updateLoft,
   deleteLoft
@@ -14,8 +13,14 @@ import {
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
+import api from "../api/api";
 
-export function LoftsTab() {
+interface LoftsTabProps {
+  adminUserId?: number;
+  className?: string;
+}
+
+export function LoftsTab({ adminUserId, className }: LoftsTabProps) {
   const { t } = useTranslation();
 
   const [lofts, setLofts] = useState<Loft[]>([]);
@@ -36,7 +41,8 @@ export function LoftsTab() {
   // Fetch lofts
   const fetchLofts = async () => {
     try {
-      const res = await getLofts();
+      const url = adminUserId ? `/admin/users/${adminUserId}/lofts` : "/lofts";
+      const res = await api.get<Loft[]>(url);
       setLofts(res.data);
     } catch (err) {
       setLofts([]);
@@ -69,7 +75,11 @@ export function LoftsTab() {
     setDeleteLoading(true);
 
     try {
-      await deleteLoft(loftToDelete.id);
+      if (adminUserId) {
+        await api.delete(`/admin/lofts/${loftToDelete.id}`);
+      } else {
+        await deleteLoft(loftToDelete.id);
+      }
       setLofts((prev) => prev.filter((l) => l.id !== loftToDelete.id));
       toast.success(t("loftsPage.deleteSuccess"));
       setDeleteModalOpen(false);
@@ -84,13 +94,21 @@ export function LoftsTab() {
   const handleSubmit = async (loft: Partial<Loft>) => {
     try {
       if (editingLoft) {
-        const res = await updateLoft(editingLoft.id, loft);
+        let res;
+        if (adminUserId) {
+          res = await api.put(`/admin/lofts/${editingLoft.id}`, loft);
+        } else {
+          res = await updateLoft(editingLoft.id, loft);
+        }
         setLofts((prev) =>
           prev.map((l) => (l.id === editingLoft.id ? res.data : l))
         );
         toast.success(t("loftsPage.updateSuccess"));
       } else {
-        const res = await createLoft(loft);
+        const res = adminUserId 
+          ? await api.post(`/admin/users/${adminUserId}/lofts`, loft)
+          : await createLoft(loft);
+          
         setLofts((prev) => [...prev, res.data]);
         toast.success(t("loftsPage.createSuccess"));
       }
@@ -171,13 +189,14 @@ export function LoftsTab() {
         loftId={selectedLoft.id}
         loftName={selectedLoft.name}
         onNavigateBack={handleBackToLofts}
+        adminUserId={adminUserId}
       />
     );
   }
 
   // ====== Original LoftsTab content ======
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+    <div className={className || "min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans"}>
       <Toaster position="top-right" />
 
       {/* Loft Cards */}

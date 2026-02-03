@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Home, Users, Trophy, Settings, CreditCard, Feather,
-  BarChart2, Archive, FileText, ChevronLeft, ChevronRight, Menu
+  BarChart2, Archive, FileText, ChevronLeft, ChevronRight, Menu, Shield
 } from "lucide-react";
 
 import { PigeonsTab } from "../../Tabs/PigeonsTab";
@@ -11,6 +11,7 @@ import { UserSettingsTab } from "../../Tabs/UserSettingsTab";
 import { LoftsTab } from "../../Tabs/LoftsTab";
 import { SubscriptionsTab } from "../../Tabs/SubscriptionsTab";
 import { BreedingTab } from "../../Tabs/BreedingTab";
+import { AdminTab } from "../../Tabs/AdminTab";
 import SubscriptionWallPage from "./SubscriptionWallPage";
 import { useSearchParams } from "react-router-dom";
 import { useUser } from "../../components/utilities/UserContext";
@@ -54,6 +55,15 @@ export default function DashboardPage() {
     { key: "subscriptions", title: t("dashboardPage.subscriptions"), icon: <CreditCard />, content: <SubscriptionsTab /> },
   ];
 
+  if (user?.role === "ADMIN") {
+    tabs.push({
+      key: "admin",
+      title: "Admin Panel",
+      icon: <Shield />,
+      content: <AdminTab />
+    });
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -71,7 +81,7 @@ export default function DashboardPage() {
   const hasAccess = isSubscriptionActive || isTrialActive;
 
   const content =
-    !hasAccess && activeTab !== "subscriptions" && activeTab !== "profile" ? (
+    !hasAccess && activeTab !== "subscriptions" && activeTab !== "profile" && activeTab !== "admin" ? (
       <SubscriptionWallPage />
     ) : (
       tabs.find((tab) => tab.key === activeTab)?.content

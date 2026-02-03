@@ -7,16 +7,20 @@ import CreateEditSeasonModal from "../components/breeding/CreateEditSeasonModal"
 import type { BreedingSeasonDTO, BreedingSeasonCard } from "../types";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import {
-  getBreedingSeasons,
   createBreedingSeason,
   updateBreedingSeason,
   deleteBreedingSeason,
 } from "../api/breeding";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
+import api from "../api/api";
 
+interface BreedingTabProps {
+  adminUserId?: number;
+  className?: string;
+}
 
-export function BreedingTab() {
+export function BreedingTab({ adminUserId, className }: BreedingTabProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -34,7 +38,8 @@ export function BreedingTab() {
 
   const fetchSeasons = async () => {
     try {
-    const res = await getBreedingSeasons();
+    const url = adminUserId ? `/admin/users/${adminUserId}/breeding-seasons` : "/breeding-seasons";
+    const res = await api.get<BreedingSeasonDTO[]>(url);
     const mapped = res.data.map((s) => ({
       id: s.id,
       name: s.name,
@@ -60,10 +65,18 @@ export function BreedingTab() {
   const handleCreateOrUpdate = async (season: BreedingSeasonDTO) => {
     try {
       if (season.id) {
-        await updateBreedingSeason(season);
+        if (adminUserId) {
+          await api.put(`/admin/breeding-seasons/${season.id}`, season);
+        } else {
+          await updateBreedingSeason(season);
+        }
         toast.success(t("breedingPage.updateSuccess"));
       } else {
-        await createBreedingSeason(season);
+        if (adminUserId) {
+          await api.post(`/admin/users/${adminUserId}/breeding-seasons`, season);
+        } else {
+          await createBreedingSeason(season);
+        }
         toast.success(t("breedingPage.createSuccess"));
       }
 
@@ -81,7 +94,11 @@ export function BreedingTab() {
     setDeleteLoading(true);
 
     try {
-      await deleteBreedingSeason(deleteSeasonId);
+      if (adminUserId) {
+        await api.delete(`/admin/breeding-seasons/${deleteSeasonId}`);
+      } else {
+        await deleteBreedingSeason(deleteSeasonId);
+      }
       setSeasons((prev) => prev.filter((s) => s.id !== deleteSeasonId));
       toast.success(t("breedingPage.seasonDeleted"));
       setDeleteModalOpen(false);
@@ -154,7 +171,7 @@ export function BreedingTab() {
   }, [searchTerm, sortBy, sortDirection, t, setHeader]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+    <div className={className || "min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans"}>
       <Toaster position="top-right" />
 
       {/* Grid of seasons */}
@@ -162,8 +179,8 @@ export function BreedingTab() {
         {filteredSeasons.map((s) => (
           <div
             key={s.id}
-            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer flex flex-col h-full"
-            onClick={() => navigate(`/breeding/${s.id}`)}
+            className={`relative bg-white shadow-lg rounded-2xl p-5 transition flex flex-col h-full ${!adminUserId ? "hover:shadow-2xl cursor-pointer" : ""}`}
+            onClick={() => !adminUserId && navigate(`/breeding/${s.id}`)}
           >
             <div className="flex justify-between items-start mb-3">
               <div>

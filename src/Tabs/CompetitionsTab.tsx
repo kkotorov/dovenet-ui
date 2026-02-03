@@ -8,15 +8,20 @@ import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import type { Competition } from "../types";
 
 import {
-  getCompetitions,
   createCompetition,
   updateCompetition,
   deleteCompetition,
 } from "../api/competition";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
+import api from "../api/api";
 
-export function CompetitionsTab() {
+interface CompetitionsTabProps {
+  adminUserId?: number;
+  className?: string;
+}
+
+export function CompetitionsTab({ adminUserId, className }: CompetitionsTabProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -36,7 +41,8 @@ export function CompetitionsTab() {
 
   const fetchCompetitionsList = async () => {
     try {
-      const data = await getCompetitions();
+      const url = adminUserId ? `/admin/users/${adminUserId}/competitions` : "/competitions";
+      const { data } = await api.get<Competition[]>(url);
       setCompetitions(data);
     } catch (err) {
       console.error("Failed to fetch competitions", err);
@@ -51,8 +57,19 @@ export function CompetitionsTab() {
 
   const handleCreateOrUpdate = async (competition: Competition) => {
     try {
-      if (competition.id) await updateCompetition(competition);
-      else await createCompetition(competition);
+      if (competition.id) {
+        if (adminUserId) {
+          await api.put(`/admin/competitions/${competition.id}`, competition);
+        } else {
+          await updateCompetition(competition);
+        }
+      } else {
+        if (adminUserId) {
+          await api.post(`/admin/users/${adminUserId}/competitions`, competition);
+        } else {
+          await createCompetition(competition);
+        }
+      }
 
       toast.success(
         competition.id ? t("competitionsPage.updated") : t("competitionsPage.created")
@@ -70,7 +87,11 @@ export function CompetitionsTab() {
     if (!deleteCompetitionId) return;
     setDeleteLoading(true);
     try {
-      await deleteCompetition(deleteCompetitionId);
+      if (adminUserId) {
+        await api.delete(`/admin/competitions/${deleteCompetitionId}`);
+      } else {
+        await deleteCompetition(deleteCompetitionId);
+      }
       setCompetitions((prev) => prev.filter((c) => c.id !== deleteCompetitionId));
       toast.success(t("competitionsPage.deleted"));
       setDeleteModalOpen(false);
@@ -150,7 +171,7 @@ export function CompetitionsTab() {
   }, [searchTerm, sortBy, sortDirection, t, setHeader]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans">
+    <div className={className || "min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 to-blue-100 p-6 font-sans"}>
       <Toaster position="top-right" />
 
       {/* Grid of competitions */}
@@ -158,8 +179,8 @@ export function CompetitionsTab() {
         {filteredCompetitions.map((c) => (
           <div
             key={c.id}
-            className="relative bg-white shadow-lg rounded-2xl p-5 hover:shadow-2xl transition cursor-pointer flex flex-col h-full"
-            onClick={() => c.id && navigate(`/competitions/${c.id}`)}
+            className={`relative bg-white shadow-lg rounded-2xl p-5 transition flex flex-col h-full ${!adminUserId ? "hover:shadow-2xl cursor-pointer" : ""}`}
+            onClick={() => !adminUserId && c.id && navigate(`/competitions/${c.id}`)}
           >
             <div className="flex justify-between items-start mb-3">
               <div>

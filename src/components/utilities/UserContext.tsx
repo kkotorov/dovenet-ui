@@ -24,6 +24,7 @@ export type AppUser = {
   subscriptionValidUntil?: string;
   subscriptionActive?: boolean;
   autoRenew?: boolean;
+  role?: string;
 };
 
 type UserContextType = {
