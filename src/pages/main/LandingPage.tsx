@@ -21,7 +21,7 @@ export default function LandingPage() {
   const { t, i18n } = useTranslation();
   const isLoggedIn = !!localStorage.getItem("token");
 
-  const [billing, setBilling] = useState<"MONTHLY" | "YEARLY">("YEARLY");
+  const [billing, setBilling] = useState<"MONTHLY" | "YEARLY">("MONTHLY");
 
   useEffect(() => {
     if (hash) {
