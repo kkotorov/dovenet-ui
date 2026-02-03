@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "./UserContext";
 import api from "../../api/api";
 import i18n from "../../i18n";
-import { LogOut, Settings, Globe, ChevronDown } from "lucide-react";
+import { LogOut, Settings, Globe, ChevronDown, LifeBuoy } from "lucide-react";
 import { usePageHeader } from "./PageHeaderContext";
 
 export default function TopBar() {
@@ -190,6 +190,14 @@ export default function TopBar() {
                         >
                           <Settings className="w-4 h-4 text-gray-400" />
                           {t("userSettingsPage.profileInfo") || "Profile"}
+                        </button>
+                        
+                        <button
+                          onClick={() => { navigate("/contact"); setUserMenuOpen(false); }}
+                          className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        >
+                          <LifeBuoy className="w-4 h-4 text-gray-400" />
+                          {t("topBar.support") || "Support"}
                         </button>
                         
                         <div className="my-1 border-t border-gray-100" />

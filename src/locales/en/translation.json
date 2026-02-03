@@ -288,7 +288,8 @@
     "signup": "Sign up",
     "logout": "Logout",
     "languageEnglish": "English",
-    "languageBulgarian": "Bulgarian"
+    "languageBulgarian": "Bulgarian",
+    "support": "Support"
   },
   "pigeonsPage": {
     "managePigeons": "Manage Pigeons",
