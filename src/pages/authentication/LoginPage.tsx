@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { refreshUser } = useUser();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await loginUser(username, password);
+      await loginUser(email, password);
       await refreshUser();
       navigate("/dashboard");
     } catch (err: any) {
@@ -49,10 +49,10 @@ export default function LoginPage() {
 
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           <input
-            type="text"
-            placeholder={t("loginPage.usernameLabel")}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder={t("loginPage.emailLabel")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />

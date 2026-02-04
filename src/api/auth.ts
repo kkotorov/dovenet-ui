@@ -8,10 +8,10 @@ export const registerUser = (username: string, email: string, password: string) 
 
 // Login — store token only, UserContext will fetch the profile
 export const loginUser = async (
-  username: string,
+  email: string,
   password: string
 ): Promise<{ token: string }> => {
-  const res = await api.post("/auth/login", { username, password });
+  const res = await api.post("/auth/login", { email, password });
 
   const token = res.data?.token;
   if (!token) throw new Error("No token received");

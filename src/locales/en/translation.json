@@ -150,7 +150,7 @@
   "loginPage": {
     "title": "Welcome Back",
     "description": "Sign in to manage your pigeons 🕊️",
-    "usernameLabel": "Username",
+    "emailLabel": "Email Address",
     "passwordLabel": "Password",
     "loginButton": "Login",
     "loggingInButton": "Signing in...",

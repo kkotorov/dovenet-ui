@@ -38,7 +38,7 @@ export function BreedingTab({ adminUserId, className }: BreedingTabProps) {
 
   const fetchSeasons = async () => {
     try {
-    const url = adminUserId ? `/admin/users/${adminUserId}/breeding-seasons` : "/breeding-seasons";
+    const url = adminUserId ? `/admin/users/${adminUserId}/breeding-seasons` : "breeding/seasons";
     const res = await api.get<BreedingSeasonDTO[]>(url);
     const mapped = res.data.map((s) => ({
       id: s.id,
