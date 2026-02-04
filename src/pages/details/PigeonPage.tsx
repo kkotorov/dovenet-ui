@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import api from "../../api/api";
-import { Users, Trash2, Edit2, Download, Calendar, Hash, Palette, Activity, Award, Home } from "lucide-react";
+import { Users, Trash2, Edit2, Download, Calendar, Hash, Palette, Activity, Award, Home, Share2 } from "lucide-react";
 import BackButton from "../../components/utilities/BackButton";
 import PigeonForm from "../../components/pigeons/PigeonForm";
 import type { Pigeon, CompetitionEntry, Loft } from "../../types";
@@ -160,6 +160,13 @@ export default function PigeonPage() {
     };
     fetchLofts();
   }, [t]);
+
+  const handleShare = () => {
+    if (!pigeon?.id) return;
+    const url = `${window.location.origin}/public/pigeons/${pigeon.id}`;
+    navigator.clipboard.writeText(url);
+    toast.success(t("pigeonPage.linkCopied"));
+  };
 
   const handleDelete = async () => {
   if (!pigeon?.id) return;
@@ -328,6 +335,16 @@ export default function PigeonPage() {
             >
               <Trash2 className="w-4 h-4" />
               <span className="font-medium hidden sm:inline">{t("pigeonsPage.delete")}</span>
+            </button>
+
+            {/* Share */}
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 rounded-full shadow-sm hover:shadow-md transition-all"
+              title={t("pigeonPage.share")}
+            >
+              <Share2 className="w-4 h-4" />
+              <span className="font-medium hidden sm:inline">{t("pigeonPage.share")}</span>
             </button>
 
             {/* Download Pedigree */}

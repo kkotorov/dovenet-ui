@@ -637,7 +637,9 @@
     "score": "Score",
     "showOwnerInfo": "Show Owner Info",
     "generations": "Generations",
-    "selectCompetitionsForPedigree": "Check the competitions you want to appear in the pedigree tree."
+    "selectCompetitionsForPedigree": "Check the competitions you want to appear in the pedigree tree.",
+    "share": "Share your pigeon",
+    "linkCopied": "Copied link"
   },
   "breedingPage": {
     "title": "Breeding Seasons",
