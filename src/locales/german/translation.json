@@ -711,5 +711,15 @@
     "title": "Seite nicht gefunden",
     "message": "Hoppla! Die Seite, die Sie suchen, existiert nicht. Sie wurde möglicherweise verschoben oder gelöscht.",
     "backHome": "Zurück zur Startseite"
+  },
+  "confirmEmailChange": {
+    "verifying": "E-Mail-Änderung wird überprüft...",
+    "titleSuccess": "E-Mail geändert!",
+    "successMessage": "Ihre E-Mail-Adresse wurde erfolgreich aktualisiert. Bitte melden Sie sich mit Ihrer neuen E-Mail an.",
+    "titleError": "Verifizierung fehlgeschlagen",
+    "errorMessage": "Der Verifizierungslink ist ungültig oder abgelaufen.",
+    "invalidToken": "Kein Verifizierungstoken angegeben.",
+    "goToLogin": "Zur Anmeldung",
+    "backHome": "Zurück zur Startseite"
   }
 }

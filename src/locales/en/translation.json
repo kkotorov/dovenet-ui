@@ -711,5 +711,15 @@
     "title": "Page Not Found",
     "message": "Oops! The page you are looking for does not exist. It might have been moved or deleted.",
     "backHome": "Back to Home"
+  },
+  "confirmEmailChange": {
+    "verifying": "Verifying email change...",
+    "titleSuccess": "Email Changed!",
+    "successMessage": "Your email address has been successfully updated. Please log in with your new email.",
+    "titleError": "Verification Failed",
+    "errorMessage": "The verification link is invalid or has expired.",
+    "invalidToken": "No verification token provided.",
+    "goToLogin": "Go to Login",
+    "backHome": "Back to Home"
   }
 }

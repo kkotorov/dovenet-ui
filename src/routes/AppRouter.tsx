@@ -22,6 +22,8 @@ import TermsOfServicePage from '../pages/main/legal/TermsOfServicePage';
 import PrivacyPolicyPage from '../pages/main/legal/PrivacyPolicyPage';
 import CookiePolicyPage from '../pages/main/legal/CookiePolicyPage';
 import NotFoundPage from '../pages/main/NotFoundPage';
+import ConfirmEmailChangePage from '../pages/ConfirmEmailChangePage';
+
 export default function AppRouter() {
   return (
     <HelmetProvider>
@@ -43,6 +45,7 @@ export default function AppRouter() {
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
         <Route path="/cookies" element={<CookiePolicyPage />} />
+        <Route path="/confirm-email-change" element={<ConfirmEmailChangePage />} />
 
         {/* PROTECTED pages */}
         <Route element={<ProtectedRoute />}>
