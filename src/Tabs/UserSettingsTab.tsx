@@ -12,9 +12,10 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import i18n from "../i18n";
 import { useUser } from "../components/utilities/UserContext";
-import { fetchCurrentUser, sendVerificationEmail, updateEmail, updatePassword, updateProfile } from "../api/auth";
+import { fetchCurrentUser, sendVerificationEmail, updatePassword, updateProfile } from "../api/auth";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
+import api from "../api/api";
 
 export function UserSettingsTab() {
   const { t } = useTranslation();
@@ -102,10 +103,12 @@ export function UserSettingsTab() {
       return toast.error(t("userSettingsPage.enterCurrentPassword"));
 
     try {
-      await updateEmail(newEmail, currentPasswordForEmail)
+      await api.post("/users/me/initiate-email-change", {
+        newEmail,
+        password: currentPasswordForEmail
+      });
 
-      toast.success(t("userSettingsPage.emailUpdated"));
-      setUser((prev) => ({ ...prev, email: newEmail, emailVerified: false }));
+      toast.success(t("userSettingsPage.verificationEmailSent"));
       setNewEmail("");
       setConfirmEmail("");
       setCurrentPasswordForEmail("");
