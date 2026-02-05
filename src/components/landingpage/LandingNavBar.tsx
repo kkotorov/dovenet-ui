@@ -100,6 +100,12 @@ export default function LandingNavbar() {
               >
                 {t("topBar.languageBulgarian")}
               </button>
+              <button
+                onClick={() => changeLanguage("de")}
+                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+              >
+                {t("topBar.languageGerman")}
+              </button>
             </div>
           )}
         </div>

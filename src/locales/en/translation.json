@@ -280,6 +280,7 @@
     "language": "Language",
     "languageEnglish": "English",
     "languageBulgarian": "Bulgarian",
+    "languageGerman": "German",
     "saveProfile": "Save Profile",
     "profileUpdated": "Profile updated"
   },
@@ -289,6 +290,7 @@
     "logout": "Logout",
     "languageEnglish": "English",
     "languageBulgarian": "Bulgarian",
+    "languageGerman": "Deutsch",
     "support": "Support"
   },
   "pigeonsPage": {

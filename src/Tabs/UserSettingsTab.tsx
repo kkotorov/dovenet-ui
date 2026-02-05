@@ -296,6 +296,7 @@ export function UserSettingsTab() {
                 >
                   <option value="en">{t("userSettingsPage.languageEnglish")}</option>
                   <option value="bg">{t("userSettingsPage.languageBulgarian")}</option>
+                  <option value="de">{t("userSettingsPage.languageGerman")}</option>
                 </select>
               </div>
                 <div className="md:col-span-2 flex justify-end mt-2">

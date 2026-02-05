@@ -136,6 +136,12 @@ export default function TopBar() {
                   >
                     Български
                   </button>
+                  <button
+                    onClick={() => changeLanguage("de")}
+                    className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center justify-between ${i18n.language === 'de' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700'}`}
+                  >
+                    Deutsch
+                  </button>
                 </div>
               )}
             </div>
@@ -216,6 +222,12 @@ export default function TopBar() {
                           className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between ${i18n.language === 'bg' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700 hover:bg-gray-50'}`}
                         >
                           Български
+                        </button>
+                        <button
+                          onClick={() => changeLanguage("de")}
+                          className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between ${i18n.language === 'de' ? 'text-indigo-600 font-medium bg-indigo-50' : 'text-gray-700 hover:bg-gray-50'}`}
+                        >
+                          Deutsch
                         </button>
                         
                         <div className="my-1 border-t border-gray-100" />
