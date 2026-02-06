@@ -40,8 +40,8 @@ export default function LandingPage() {
         <html lang={i18n.language} />
         <title>{t("seo.landing.title", "DoveNet | Pigeon Management System & Pedigree Creator")}</title>
         <meta name="description" content={t("seo.landing.description", "The ultimate pigeon management system. Track racing pigeons, manage lofts, and create, print, and download professional pedigrees instantly.")} />
-        <meta name="keywords" content="pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking" />
         <meta name="keywords" content={t("seo.landing.keywords", "pigeon management, racing pigeons, pedigrees, create pedigrees, print pedigrees, download pedigrees, loft tracking")} />
+        <link rel="canonical" href="https://www.dovenet.eu/" />
       </Helmet>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 text-white overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">

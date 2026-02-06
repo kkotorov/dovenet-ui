@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
 import LandingNavbar from "../../../components/landingpage/LandingNavBar";
 import LandingFooter from "../../../components/landingpage/LandingFooter";
 
@@ -8,6 +9,11 @@ export default function TermsOfServicePage() {
 
   return (
     <div className="font-sans text-gray-900 bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 min-h-screen relative overflow-hidden">
+      <Helmet>
+        <title>{t("termsOfService.title")} | DoveNet</title>
+        <meta name="description" content={t("termsOfService.intro")} />
+        <link rel="canonical" href="https://www.dovenet.eu/terms" />
+      </Helmet>
       <LandingNavbar />
       
       {/* Abstract Background Shapes */}
