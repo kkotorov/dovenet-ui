@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
 import RegisterPage from '../pages/authentication/RegisterPage';
+import AnalyticsTracker from '../components/utilities/AnalyticsTracker';
 import LoginPage from '../pages/authentication/LoginPage';
 import DashboardPage from '../pages/main/DashboardPage';
 import ForgotPasswordPage from '../pages/authentication/ForgotPasswordPage';
@@ -23,11 +24,13 @@ import PrivacyPolicyPage from '../pages/main/legal/PrivacyPolicyPage';
 import CookiePolicyPage from '../pages/main/legal/CookiePolicyPage';
 import NotFoundPage from '../pages/main/NotFoundPage';
 import ConfirmEmailChangePage from '../pages/ConfirmEmailChangePage';
+import CookieConsent from '../components/utilities/CookieConsent';
 
 export default function AppRouter() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <AnalyticsTracker />
         {/* TopBar is global */}
         <TopBar />
 
@@ -60,6 +63,7 @@ export default function AppRouter() {
         {/* FALLBACK */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <CookieConsent />
       </BrowserRouter>
     </HelmetProvider>
   );

@@ -7,6 +7,7 @@ import { useUser } from "../components/utilities/UserContext";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
+import ReactGA from "react-ga4";
 
 interface Plan {
   id: string;
@@ -128,6 +129,11 @@ export function SubscriptionsTab() {
 
   // Handle checkout session
   const handleChoosePlan = async (planId: string) => {
+    ReactGA.event({
+      category: "Subscription",
+      action: "Initiate Checkout",
+      label: `${planId} (${billing})`
+    });
     try {
       const res = await api.post(`/billing/checkout`, null, {
         params: { type: planId, period: billing },
@@ -148,6 +154,10 @@ export function SubscriptionsTab() {
     try {
       await api.post("/billing/cancel-subscription");
       await refreshUser();
+      ReactGA.event({
+        category: "Subscription",
+        action: "Cancel Subscription"
+      });
       toast.success(t("subscriptionPage.cancelSuccess"));
       setCancelModalOpen(false);
     } catch (err) {

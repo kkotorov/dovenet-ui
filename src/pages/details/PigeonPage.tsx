@@ -13,6 +13,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useUser } from "../../components/utilities/UserContext";
 import ConfirmDeleteModal from "../../components/utilities/ConfirmDeleteModal";
+import ReactGA from "react-ga4";
 
 export default function PigeonPage() {
   const { t } = useTranslation();
@@ -166,12 +167,22 @@ export default function PigeonPage() {
     const url = `${window.location.origin}/public/pigeons/${pigeon.id}`;
     navigator.clipboard.writeText(url);
     toast.success(t("pigeonPage.linkCopied"));
+
+    ReactGA.event({
+      category: "Pigeon",
+      action: "Share Pigeon",
+      label: pigeon.ringNumber
+    });
   };
 
   const handleDelete = async () => {
   if (!pigeon?.id) return;
     try {
       await api.delete(`/pigeons/${pigeon.id}`);
+      ReactGA.event({
+        category: "Pigeon",
+        action: "Delete Pigeon"
+      });
       toast.success(t("pigeonPage.deleteSuccess"));
       navigate(-1);
     } catch (err) {
@@ -229,6 +240,12 @@ export default function PigeonPage() {
 
     pdf.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, pdfHeight - 40);
     pdf.save(`pedigree_${pigeon?.ringNumber}.pdf`);
+
+    ReactGA.event({
+      category: "Pigeon",
+      action: "Download Pedigree",
+      label: pigeon?.ringNumber
+    });
   };
 
   const genderSymbol = (gender: string) => {
@@ -248,6 +265,10 @@ export default function PigeonPage() {
     if (!updated.id) return;
     try {
       await api.patch(`/pigeons/${updated.id}`, updated);
+      ReactGA.event({
+        category: "Pigeon",
+        action: "Update Pigeon"
+      });
       toast.success(t("pigeonPage.updateSuccess"));
       setPigeon(updated);
       setOpenForm(false);

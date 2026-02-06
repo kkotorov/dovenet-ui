@@ -721,5 +721,11 @@
     "invalidToken": "Kein Verifizierungstoken angegeben.",
     "goToLogin": "Zur Anmeldung",
     "backHome": "Zurück zur Startseite"
+  },
+  "cookieBanner": {
+    "message": "Wir verwenden Cookies, um Ihr Erlebnis zu verbessern und den Website-Verkehr zu analysieren. Durch die Nutzung unserer Website stimmen Sie unserer",
+    "policy": "Cookie-Richtlinie zu",
+    "accept": "Akzeptieren",
+    "decline": "Ablehnen"
   }
 }

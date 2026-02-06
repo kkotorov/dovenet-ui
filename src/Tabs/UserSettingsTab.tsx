@@ -16,6 +16,7 @@ import { fetchCurrentUser, sendVerificationEmail, updatePassword, updateProfile 
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
 import api from "../api/api";
+import ReactGA from "react-ga4";
 
 export function UserSettingsTab() {
   const { t } = useTranslation();
@@ -108,6 +109,11 @@ export function UserSettingsTab() {
         password: currentPasswordForEmail
       });
 
+      ReactGA.event({
+        category: "User Settings",
+        action: "Initiate Email Change"
+      });
+
       toast.success(t("userSettingsPage.verificationEmailSent"));
       setNewEmail("");
       setConfirmEmail("");
@@ -127,6 +133,11 @@ export function UserSettingsTab() {
 
     try {
       await updatePassword(oldPassword, newPassword);
+
+      ReactGA.event({
+        category: "User Settings",
+        action: "Update Password"
+      });
 
       toast.success(t("userSettingsPage.passwordUpdated"));
       setOldPassword("");
@@ -173,6 +184,12 @@ export function UserSettingsTab() {
       });
       setCtxUser(data); // sync context
       toast.success(t("userSettingsPage.profileUpdated"));
+      
+      ReactGA.event({
+        category: "User Settings",
+        action: "Update Profile Info"
+      });
+
       setShowProfileEdit(false);
 
       if (data.language && data.language !== i18n.language) {

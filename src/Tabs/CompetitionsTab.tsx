@@ -15,6 +15,7 @@ import {
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
 import api from "../api/api";
+import ReactGA from "react-ga4";
 
 interface CompetitionsTabProps {
   adminUserId?: number;
@@ -63,12 +64,20 @@ export function CompetitionsTab({ adminUserId, className }: CompetitionsTabProps
         } else {
           await updateCompetition(competition);
         }
+        ReactGA.event({
+          category: "Competition",
+          action: "Update Competition"
+        });
       } else {
         if (adminUserId) {
           await api.post(`/admin/users/${adminUserId}/competitions`, competition);
         } else {
           await createCompetition(competition);
         }
+        ReactGA.event({
+          category: "Competition",
+          action: "Create Competition"
+        });
       }
 
       toast.success(
@@ -93,6 +102,10 @@ export function CompetitionsTab({ adminUserId, className }: CompetitionsTabProps
         await deleteCompetition(deleteCompetitionId);
       }
       setCompetitions((prev) => prev.filter((c) => c.id !== deleteCompetitionId));
+      ReactGA.event({
+        category: "Competition",
+        action: "Delete Competition"
+      });
       toast.success(t("competitionsPage.deleted"));
       setDeleteModalOpen(false);
       setDeleteCompetitionId(null);

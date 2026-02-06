@@ -14,6 +14,7 @@ import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
 import api from "../api/api";
+import ReactGA from "react-ga4";
 
 interface LoftsTabProps {
   adminUserId?: number;
@@ -81,6 +82,10 @@ export function LoftsTab({ adminUserId, className }: LoftsTabProps) {
         await deleteLoft(loftToDelete.id);
       }
       setLofts((prev) => prev.filter((l) => l.id !== loftToDelete.id));
+      ReactGA.event({
+        category: "Loft",
+        action: "Delete Loft"
+      });
       toast.success(t("loftsPage.deleteSuccess"));
       setDeleteModalOpen(false);
       setLoftToDelete(null);
@@ -103,6 +108,10 @@ export function LoftsTab({ adminUserId, className }: LoftsTabProps) {
         setLofts((prev) =>
           prev.map((l) => (l.id === editingLoft.id ? res.data : l))
         );
+        ReactGA.event({
+          category: "Loft",
+          action: "Update Loft"
+        });
         toast.success(t("loftsPage.updateSuccess"));
       } else {
         const res = adminUserId 
@@ -110,6 +119,10 @@ export function LoftsTab({ adminUserId, className }: LoftsTabProps) {
           : await createLoft(loft);
           
         setLofts((prev) => [...prev, res.data]);
+        ReactGA.event({
+          category: "Loft",
+          action: "Create Loft"
+        });
         toast.success(t("loftsPage.createSuccess"));
       }
       setModalOpen(false);

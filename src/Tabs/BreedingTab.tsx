@@ -14,6 +14,7 @@ import {
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
 import api from "../api/api";
+import ReactGA from "react-ga4";
 
 interface BreedingTabProps {
   adminUserId?: number;
@@ -70,6 +71,10 @@ export function BreedingTab({ adminUserId, className }: BreedingTabProps) {
         } else {
           await updateBreedingSeason(season);
         }
+        ReactGA.event({
+          category: "Breeding",
+          action: "Update Season"
+        });
         toast.success(t("breedingPage.updateSuccess"));
       } else {
         if (adminUserId) {
@@ -77,6 +82,10 @@ export function BreedingTab({ adminUserId, className }: BreedingTabProps) {
         } else {
           await createBreedingSeason(season);
         }
+        ReactGA.event({
+          category: "Breeding",
+          action: "Create Season"
+        });
         toast.success(t("breedingPage.createSuccess"));
       }
 
@@ -100,6 +109,10 @@ export function BreedingTab({ adminUserId, className }: BreedingTabProps) {
         await deleteBreedingSeason(deleteSeasonId);
       }
       setSeasons((prev) => prev.filter((s) => s.id !== deleteSeasonId));
+      ReactGA.event({
+        category: "Breeding",
+        action: "Delete Season"
+      });
       toast.success(t("breedingPage.seasonDeleted"));
       setDeleteModalOpen(false);
       setDeleteSeasonId(null);

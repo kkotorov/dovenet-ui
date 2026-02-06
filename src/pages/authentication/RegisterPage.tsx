@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { registerUser } from "../../api/auth";
+import ReactGA from "react-ga4";
 
 export default function RegisterPage() {
   const { t } = useTranslation();
@@ -28,6 +29,10 @@ export default function RegisterPage() {
 
     try {
       await registerUser(username, email, password);
+      ReactGA.event({
+        category: "Growth",
+        action: "Sign Up Success"
+      });
       setShowDialog(true);
     } catch (err: any) {
       setError(err.response?.data?.message || t("registerPage.registrationFailed"));

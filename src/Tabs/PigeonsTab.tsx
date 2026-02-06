@@ -12,6 +12,7 @@ import BulkCompetitionModal from "../components/pigeons/BulkCompetitionModal";
 import ConfirmDeleteModal from "../components/utilities/ConfirmDeleteModal";
 import Button from "../components/utilities/Button";
 import { usePageHeader } from "../components/utilities/PageHeaderContext";
+import ReactGA from "react-ga4";
 
 interface PigeonsTabProps {
   loftId?: number;
@@ -101,6 +102,10 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
       } else {
         await api.post("/pigeons", pigeon);
       }
+      ReactGA.event({
+        category: "Pigeon",
+        action: "Create Pigeon"
+      });
       toast.success(t("pigeonsPage.createSuccess"));
       fetchPigeons();
     } catch (err) {
@@ -117,6 +122,10 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
       } else {
         await api.patch(`/pigeons/${pigeon.id}`, pigeon);
       }
+      ReactGA.event({
+        category: "Pigeon",
+        action: "Update Pigeon"
+      });
       toast.success(t("pigeonsPage.updateSuccess"));
       fetchPigeons();
     } catch (err) {
@@ -131,11 +140,20 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
       if (bulkDelete) {
         const deleteUrl = (id: number) => adminUserId ? `/admin/pigeons/${id}` : `/pigeons/${id}`;
         await Promise.all(selectedPigeons.map((id) => api.delete(deleteUrl(id))));
+        ReactGA.event({
+          category: "Pigeon",
+          action: "Bulk Delete Pigeons",
+          value: selectedPigeons.length
+        });
         toast.success(t("pigeonsPage.bulkDeleteSuccess"));
         setSelectedPigeons([]);
       } else if (pigeonToDelete?.id) {
         const url = adminUserId ? `/admin/pigeons/${pigeonToDelete.id}` : `/pigeons/${pigeonToDelete.id}`;
         await api.delete(url);
+        ReactGA.event({
+          category: "Pigeon",
+          action: "Delete Pigeon"
+        });
         toast.success(t("pigeonsPage.deleteSuccess"));
       }
       fetchPigeons();
@@ -171,6 +189,10 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
       document.body.appendChild(link);
       link.click();
       link.remove();
+      ReactGA.event({
+        category: "Pigeon",
+        action: "Download Pedigree PDF"
+      });
       toast.success(t("pigeonsPage.downloadSuccess"));
     } catch (err) {
       console.error(t("pigeonsPage.downloadFailed"), err);
@@ -544,6 +566,12 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
                   : api.patch(`/pigeons/${id}`, data);
               })
             );
+
+            ReactGA.event({
+              category: "Pigeon",
+              action: "Bulk Update Pigeons",
+              value: selectedPigeons.length
+            });
 
             toast.success(t("pigeonsPage.bulkUpdateSuccess"));
 

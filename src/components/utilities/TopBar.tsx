@@ -6,6 +6,7 @@ import api from "../../api/api";
 import i18n from "../../i18n";
 import { LogOut, Settings, Globe, ChevronDown, LifeBuoy } from "lucide-react";
 import { usePageHeader } from "./PageHeaderContext";
+import ReactGA from "react-ga4";
 
 export default function TopBar() {
   const { t } = useTranslation();
@@ -48,6 +49,11 @@ export default function TopBar() {
   }, []);
 
   const handleLogout = () => {
+    ReactGA.event({
+      category: "Authentication",
+      action: "Logout"
+    });
+
     localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
@@ -57,6 +63,12 @@ export default function TopBar() {
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     localStorage.setItem("lang", lang);
+
+    ReactGA.event({
+      category: "User Settings",
+      action: "Change Language",
+      label: lang
+    });
 
     if (user) {
       api.patch("/users/me/update-settings", { language: lang })
