@@ -4,6 +4,7 @@ import LandingFooter from "../../../components/landingpage/LandingFooter";
 
 export default function CookiePolicyPage() {
   const { t } = useTranslation();
+  const sections = t("cookiePolicy.sections", { returnObjects: true }) as Array<{ title: string; content: string }>;
 
   return (
     <div className="font-sans text-gray-900 bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-600 min-h-screen relative overflow-hidden">
@@ -21,13 +22,17 @@ export default function CookiePolicyPage() {
           <h1 className="text-4xl font-extrabold mb-8 text-gray-900">{t("cookiePolicy.title")}</h1>
           
           <div className="prose prose-lg text-gray-600 max-w-none">
-            <p className="mb-6">{t("cookiePolicy.intro")}</p>
-            s
-            <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">{t("cookiePolicy.whatAreCookiesTitle")}</h2>
-            <p className="mb-4">{t("cookiePolicy.whatAreCookiesText")}</p>
+            <p><strong>{t("legal.effectiveDate")}:</strong> February 6, 2026</p>
+            <p><strong>{t("legal.lastUpdated")}:</strong> February 6, 2026</p>
 
-            <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">{t("cookiePolicy.usageTitle")}</h2>
-            <p className="mb-4">{t("cookiePolicy.usageText")}</p>
+            {sections.map((section, index) => (
+              <div key={index}>
+                <h2 className="text-2xl font-bold text-gray-800 mt-8 mb-4">{section.title}</h2>
+                <div dangerouslySetInnerHTML={{ __html: section.content }} />
+              </div>
+            ))}
+            
+            <p className="text-sm text-gray-500 mt-8 italic">{t("legal.generatedFooter")}</p>
           </div>
         </div>
       </div>

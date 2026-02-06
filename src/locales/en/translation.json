@@ -113,29 +113,104 @@
     "valuesTitle": "Our Values",
     "valuesText": "We believe in transparency, community, and continuous improvement. We listen to our users and constantly evolve our platform to meet the changing needs of the sport."
   },
+  "legal": {
+    "effectiveDate": "Effective Date",
+    "lastUpdated": "Last Updated",
+    "generatedFooter": "This document was generated on February 6, 2026 and should be reviewed by a legal professional to ensure compliance with applicable laws in your jurisdiction."
+  },
   "privacyPolicy": {
     "title": "Privacy Policy",
     "intro": "At DoveNet, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information.",
-    "collectionTitle": "Information We Collect",
-    "collectionText": "We collect information you provide directly to us, such as when you create an account, update your profile, or use our services. This may include your name, email address, and pigeon data.",
-    "usageTitle": "How We Use Your Information",
-    "usageText": "We use the information we collect to provide, maintain, and improve our services, to communicate with you, and to protect our users."
+    "sections": [
+      {
+        "title": "1. Introduction",
+        "content": "<p>Welcome to DoveNet (\"we,\" \"our,\" or \"us\"). We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This Privacy Policy explains how we collect, use, and protect your information when you visit our website at https://www.dovenet.eu (the \"Service\").</p>"
+      },
+      {
+        "title": "2. Information We Collect",
+        "content": "<p>We may collect the following types of information:</p><ul class=\"list-disc pl-6 mb-4\"><li><strong>Personal Information:</strong> Name, email address, postal address, phone number, and other contact details when you provide them to us.</li><li><strong>Device Information:</strong> IP address, browser type, operating system, device identifiers, and other technical information.</li><li><strong>Usage Data:</strong> Information about how you use our website, including pages visited, time spent, and interaction patterns.</li><li><strong>Cookies and Tracking Data:</strong> Information collected through cookies, web beacons, and similar tracking technologies.</li><li><strong>Payment Information:</strong> Credit card details, billing address, and transaction history when you make purchases.</li><li><strong>Location Data:</strong> Approximate geographic location based on your IP address or precise location if you grant permission.</li></ul>"
+      },
+      {
+        "title": "3. How We Use Your Information",
+        "content": "<p>We use the collected information for the following purposes:</p><ul class=\"list-disc pl-6 mb-4\"><li>To provide, operate, and maintain our website and services</li><li>To improve, personalize, and expand our website</li><li>To understand and analyze how you use our website</li><li>To develop new products, services, features, and functionality</li><li>To communicate with you, either directly or through one of our partners</li><li>To process your transactions and manage your orders</li><li>To find and prevent fraud</li><li>To comply with legal obligations</li></ul>"
+      },
+      {
+        "title": "4. Third-Party Services",
+        "content": "<p>We may use third-party services that collect, monitor, and analyze data. These services include:</p><ul class=\"list-disc pl-6 mb-4\"><li><strong>Google Analytics:</strong> We use Google Analytics to analyze website traffic and usage patterns. Google Analytics may collect information such as your IP address, browser type, and pages visited.</li><li><strong>Email Marketing Services:</strong> We use email marketing platforms to send newsletters and promotional materials.</li><li><strong>Payment Processors:</strong> We use secure third-party payment processors to handle transactions.</li></ul>"
+      },
+      {
+        "title": "5. Cookies and Tracking Technologies",
+        "content": "<p>We use cookies and similar tracking technologies to track activity on our website and store certain information. Cookies are files with small amounts of data which may include an anonymous unique identifier.</p><p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our website.</p>"
+      },
+      {
+        "title": "6. Data Security",
+        "content": "<p>The security of your personal information is important to us, but remember that no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.</p>"
+      },
+      {
+        "title": "7. Your Privacy Rights",
+        "content": "<p>Depending on your location, you may have the following rights:</p><ul class=\"list-disc pl-6 mb-4\"><li>The right to access your personal information</li><li>The right to correct or update your personal information</li><li>The right to delete your personal information</li><li>The right to restrict processing of your personal information</li><li>The right to data portability</li><li>The right to object to processing</li><li>The right to withdraw consent</li></ul><h3 class=\"text-xl font-bold text-gray-800 mt-6 mb-3\">GDPR (General Data Protection Regulation)</h3><p>If you are a resident of the European Economic Area (EEA), you have additional data protection rights under the GDPR.</p><h3 class=\"text-xl font-bold text-gray-800 mt-6 mb-3\">CCPA (California Consumer Privacy Act)</h3><p>If you are a California resident, you have specific rights regarding your personal information under the CCPA.</p>"
+      },
+      {
+        "title": "8. Children's Privacy",
+        "content": "<p>Our service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13.</p>"
+      },
+      {
+        "title": "9. International Data Transfers",
+        "content": "<p>Your information, including personal data, may be transferred to and maintained on computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction.</p>"
+      },
+      {
+        "title": "10. Changes to This Privacy Policy",
+        "content": "<p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date.</p>"
+      },
+      {
+        "title": "11. Contact Us",
+        "content": "<p>If you have any questions about this Privacy Policy, please contact us:</p><ul class=\"list-disc pl-6 mb-4\"><li>By email: dovenet.info@gmail.com</li><li>On our website: https://www.dovenet.eu</li></ul>"
+      }
+    ]
   },
   "termsOfService": {
     "title": "Terms of Service",
     "intro": "By accessing or using DoveNet, you agree to be bound by these Terms of Service.",
-    "usageTitle": "Use of Service",
-    "usageText": "You agree to use DoveNet only for lawful purposes and in accordance with these Terms. You are responsible for maintaining the security of your account.",
-    "liabilityTitle": "Limitation of Liability",
-    "liabilityText": "DoveNet is provided 'as is' without any warranties. We shall not be liable for any indirect, incidental, or consequential damages arising from your use of the service."
+    "sections": [
+      { "title": "1. Acceptance of Terms", "content": "<p>By accessing and using DoveNet (\"we,\" \"our,\" or \"us\") and our website at https://www.dovenet.eu (the \"Service\"), you accept and agree to be bound by the terms and provision of this agreement (\"Terms of Service\"). If you do not agree to abide by the above, please do not use this service.</p>" },
+      { "title": "2. Description of Service", "content": "<p>DoveNet provides software as a service (SaaS) solutions and related technology services through our website and related services. Our Service allows users to access and use our platform in accordance with these Terms of Service.</p>" },
+      { "title": "3. Age Requirements", "content": "<p>You must be at least 13 years old to use our Service. By using our Service, you represent and warrant that you are at least 13 years of age. If you are under 13, you may not use our Service.</p>" },
+      { "title": "4. User Accounts", "content": "<p>To access certain features of our Service, you may be required to create an account. You are responsible for:</p><ul class=\"list-disc pl-6 mb-4\"><li>Maintaining the confidentiality of your account credentials</li><li>All activities that occur under your account</li><li>Providing accurate and complete information</li><li>Updating your information to keep it current</li><li>Notifying us immediately of any unauthorized use of your account</li></ul><p>We reserve the right to suspend or terminate accounts that violate these Terms of Service.</p>" },
+      { "title": "5. User-Generated Content", "content": "<p>Our Service may allow you to post, upload, or submit content (\"User Content\"). By submitting User Content, you:</p><ul class=\"list-disc pl-6 mb-4\"><li>Retain ownership of your intellectual property rights</li><li>Grant us a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content in connection with our Service</li><li>Represent that you have the right to submit such content</li><li>Agree that your content does not violate any third-party rights</li></ul><p>We reserve the right to remove any User Content that violates these Terms or is otherwise objectionable.</p>" },
+      { "title": "6. Prohibited Uses", "content": "<p>You may not use our Service for any of the following prohibited activities:</p><ul class=\"list-disc pl-6 mb-4\"><li>Any unlawful purpose or to solicit others to perform unlawful acts</li><li>Posting or transmitting harmful, offensive, obscene, abusive, invasive of privacy, defamatory, hateful or otherwise objectionable content</li><li>Sending spam, unsolicited communications, or engaging in other forms of commercial solicitation</li><li>Infringing upon or violating our intellectual property rights or the intellectual property rights of others</li><li>Attempting to gain unauthorized access to our Service or related systems or networks</li><li>Impersonating any person or entity or falsely stating or misrepresenting your affiliation with a person or entity</li><li>Using our Service for unauthorized commercial purposes</li><li>Using automated means, including spiders, robots, crawlers, or data mining tools to download data from our Service</li></ul><p>We reserve the right to terminate your access to our Service for violating any of these prohibited uses.</p>" },
+      { "title": "7. Payment Terms", "content": "<p>If you purchase products or services through our Service, the following payment terms apply:</p><ul class=\"list-disc pl-6 mb-4\"><li>All fees are stated in EURO and are non-refundable unless otherwise specified</li><li>You agree to pay all charges incurred by you or any users of your account</li><li>You are responsible for all applicable taxes</li><li>We reserve the right to change our fees at any time</li><li>Subscription fees are billed in advance on a recurring basis</li><li>You may cancel your subscription at any time, but no refunds will be provided for partial periods</li><li>Your subscription will automatically renew unless cancelled</li></ul>" },
+      { "title": "8. Third-Party Services", "content": "<p>Our Service may contain links to third-party websites or services that are not owned or controlled by DoveNet. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services.</p><p>You acknowledge and agree that DoveNet shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such websites or services.</p>" },
+      { "title": "9. API Usage", "content": "<p>If you access our Service through our API, additional terms apply:</p><ul class=\"list-disc pl-6 mb-4\"><li>You must comply with our API documentation and usage guidelines</li><li>We may impose rate limits and usage restrictions</li><li>We reserve the right to modify or discontinue API access at any time</li><li>You may not use our API to compete with our Service</li></ul>" },
+      { "title": "10. Intellectual Property Rights", "content": "<p>The Service and its original content, features, and functionality are and will remain the exclusive property of DoveNet and its licensors. The Service is protected by copyright, trademark, and other laws. Our trademarks and trade dress may not be used in connection with any product or service without our prior written consent.</p>" },
+      { "title": "11. Disclaimer of Warranties", "content": "<p>The information on this Service is provided on an \"as is\" basis. To the fullest extent permitted by law, this Company:</p><ul class=\"list-disc pl-6 mb-4\"><li>Excludes all representations and warranties relating to this Service and its contents</li><li>Does not warrant that the functions contained in this Service will be uninterrupted or error-free</li><li>Does not warrant that defects will be corrected, or that this Service or the server that makes it available are free of viruses or bugs</li><li>Does not warrant the accuracy, reliability, or completeness of any information</li></ul>" },
+      { "title": "12. Limitation of Liability", "content": "<p>In no event shall DoveNet, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, punitive, special, or consequential damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use of the Service.</p>" },
+      { "title": "13. Indemnification", "content": "<p>You agree to defend, indemnify, and hold harmless DoveNet and its licensee and licensors, and their employees, contractors, agents, officers and directors, from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees).</p>" },
+      { "title": "14. Termination", "content": "<p>We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.</p><p>If you wish to terminate your account, you may simply discontinue using the Service.</p>" },
+      { "title": "15. Dispute Resolution", "content": "<p>Before pursuing formal dispute resolution, we encourage you to contact us directly to seek a resolution.</p>" },
+      { "title": "16. Governing Law", "content": "<p>These Terms shall be interpreted and governed by the laws of the applicable jurisdiction, without regard to its conflict of law provisions.</p>" },
+      { "title": "17. Changes to Terms", "content": "<p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.</p>" },
+      { "title": "18. Severability", "content": "<p>If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect.</p>" },
+      { "title": "19. Entire Agreement", "content": "<p>These Terms constitute the sole and entire agreement between you and DoveNet regarding the Service and supersede all prior and contemporaneous understandings, agreements, representations, and warranties.</p>" },
+      { "title": "20. Assignment", "content": "<p>You may not assign or transfer these Terms, by operation of law or otherwise, without our prior written consent. We may assign these Terms at any time without notice.</p>" },
+      { "title": "21. Electronic Communications", "content": "<p>By using our Service, you consent to receiving electronic communications from us. These communications may include notices about your account and information concerning or related to our Service.</p>" },
+      { "title": "22. Contact Information", "content": "<p>If you have any questions about these Terms of Service, please contact us:</p><ul class=\"list-disc pl-6 mb-4\"><li>Email: dovenet.info@gmail.com</li><li>Website: https://www.dovenet.eu</li></ul>" }
+    ]
   },
   "cookiePolicy": {
     "title": "Cookie Policy",
     "intro": "This policy explains how we use cookies and similar technologies to recognize you when you visit our website.",
-    "whatAreCookiesTitle": "What are cookies?",
-    "whatAreCookiesText": "Cookies are small data files that are placed on your computer or mobile device when you visit a website.",
-    "usageTitle": "How We Use Cookies",
-    "usageText": "We use cookies to authenticate users, remember user preferences and settings, and analyze site traffic and trends."
+    "sections": [
+      { "title": "1. What Are Cookies?", "content": "<p>Cookies are small text files that are stored on your browser or device by websites, apps, online media, and advertisements. They are used for a variety of purposes, such as remembering your preferences, analyzing website traffic, and providing personalized content and advertisements.</p>" },
+      { "title": "2. How We Use Cookies", "content": "<p>We use cookies on https://www.dovenet.eu to enhance your browsing experience, analyze website performance, and provide personalized content. This Cookie Policy explains what cookies we use and how we use them.</p>" },
+      { "title": "3. Types of Cookies We Use", "content": "<p>We use the following types of cookies on our website:</p><ul class=\"list-disc pl-6 mb-4\"><li><strong>Necessary Cookies:</strong> These cookies are essential for the website to function properly. They enable core functionality such as security, network management, and accessibility. Without these cookies, the website cannot function properly.</li><li><strong>Preferences Cookies:</strong> These cookies allow the website to remember choices you make (such as your username, language, or region) and provide enhanced, more personal features.</li><li><strong>Analytics Cookies:</strong> These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. This helps us improve our website's performance and user experience.</li><li><strong>Marketing Cookies:</strong> These cookies are used to track visitors across websites to display ads that are relevant and engaging for individual users. They may be set by us or by third-party providers whose services we use.</li><li><strong>Social Media Cookies:</strong> These cookies are set by social media services that we have added to the site to enable you to share our content with your friends and networks.</li><li><strong>Functional Cookies:</strong> These cookies enable the website to provide enhanced functionality and personalization, such as remembering your settings and preferences.</li></ul>" },
+      { "title": "4. Third-Party Cookies", "content": "<p>We may use third-party services that set cookies on our website. These services include:</p><ul class=\"list-disc pl-6 mb-4\"><li><strong>Google Analytics:</strong> We use Google Analytics to analyze website traffic and usage patterns. Google Analytics uses cookies to collect information about how visitors use our site.</li><li><strong>Stripe, Gmail login (OAuth):</strong> Third-party service that may use cookies for various purposes.</li></ul>" },
+      { "title": "5. Cookie Consent", "content": "<p>When you first visit our website, you will see a cookie consent banner that allows you to accept or decline non-essential cookies. You can change your cookie preferences at any time by accessing the cookie settings on our website.</p>" },
+      { "title": "6. Managing Cookies", "content": "<p>You have several options for managing cookies:</p><ul class=\"list-disc pl-6 mb-4\"><li><strong>Browser Settings:</strong> Most web browsers allow you to control cookies through their settings preferences. You can set your browser to refuse cookies or to alert you when cookies are being sent.</li><li><strong>Third-Party Opt-Out:</strong> You can opt out of third-party cookies by visiting the respective service provider's privacy settings.</li><li><strong>Our Cookie Settings:</strong> You can manage your cookie preferences through our cookie settings panel, which can be accessed at any time.</li></ul><p>Please note that if you choose to disable cookies, some features of our website may not function properly, and your user experience may be limited.</p>" },
+      { "title": "7. Cookie Retention", "content": "<p>Different cookies have different retention periods:</p><ul class=\"list-disc pl-6 mb-4\"><li><strong>Session Cookies:</strong> These are temporary cookies that are deleted when you close your browser.</li><li><strong>Persistent Cookies:</strong> These cookies remain on your device for a set period or until you delete them manually.</li><li><strong>Third-Party Cookies:</strong> The retention period for third-party cookies is determined by the respective service providers.</li></ul>" },
+      { "title": "8. GDPR Compliance", "content": "<p>If you are located in the European Economic Area (EEA), you have certain rights regarding your personal data under the General Data Protection Regulation (GDPR):</p><ul class=\"list-disc pl-6 mb-4\"><li>The right to be informed about data collection and use</li><li>The right to access your personal data</li><li>The right to rectify inaccurate data</li><li>The right to erase your personal data</li><li>The right to restrict processing</li><li>The right to data portability</li><li>The right to object to processing</li></ul><p>To exercise any of these rights, please contact us using the information provided below.</p>" },
+      { "title": "10. Changes to This Cookie Policy", "content": "<p>We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the updated policy on our website with a new effective date.</p>" },
+      { "title": "11. Contact Us", "content": "<p>If you have any questions about this Cookie Policy or our use of cookies, please contact us:</p><ul class=\"list-disc pl-6 mb-4\"><li>Email: <strong>dovenet.info@gmail.com</strong></li><li>Website: <a href=\"https://www.dovenet.eu\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-blue-600 hover:underline\">https://www.dovenet.eu</a></li></ul>" }
+    ]
   },
   "landingNavbar": {
     "features": "Features",
