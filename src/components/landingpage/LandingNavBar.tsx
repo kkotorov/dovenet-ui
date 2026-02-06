@@ -90,19 +90,19 @@ export default function LandingNavbar() {
             <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg border p-2 w-28">
               <button
                 onClick={() => changeLanguage("en")}
-                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-gray-700"
               >
                 {t("topBar.languageEnglish")}
               </button>
               <button
                 onClick={() => changeLanguage("bg")}
-                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-gray-700"
               >
                 {t("topBar.languageBulgarian")}
               </button>
               <button
                 onClick={() => changeLanguage("de")}
-                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-gray-700"
               >
                 {t("topBar.languageGerman")}
               </button>
