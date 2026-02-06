@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -23,6 +24,12 @@ export default function RegisterPage() {
 
     if (password !== confirmPassword) {
       setError(t("registerPage.passwordsMismatch"));
+      setLoading(false);
+      return;
+    }
+
+    if (!acceptedTerms) {
+      setError(t("registerPage.mustAcceptTerms"));
       setLoading(false);
       return;
     }
@@ -96,6 +103,26 @@ export default function RegisterPage() {
             required
             className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           />
+
+          <div className="flex items-start gap-2 px-1">
+            <input
+              id="terms"
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
+            />
+            <label htmlFor="terms" className="text-sm text-gray-500 cursor-pointer">
+              {t("registerPage.agreeTo")}{" "}
+              <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                {t("registerPage.terms")}
+              </a>{" "}
+              {t("registerPage.and")}{" "}
+              <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                {t("registerPage.privacy")}
+              </a>
+            </label>
+          </div>
 
           <button
             type="submit"
