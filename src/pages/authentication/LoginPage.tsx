@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { loginUser } from "../../api/auth";
 import { useUser } from "../../components/utilities/UserContext";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import type {CredentialResponse} from "@react-oauth/google";
+import axios from "axios";
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -25,6 +28,29 @@ export default function LoginPage() {
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || t("loginPage.errorMessage"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    setLoading(true);
+    setError("");
+    try {
+      const { credential } = credentialResponse;
+      // Send the Google token to the backend
+      // Note: Ensure your backend is running on the expected port or configure a proxy
+      const response = await axios.post("http://localhost:8080/api/auth/google", { token: credential });
+      
+      // Store the token if the backend returns one (adjust key if needed)
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+
+      await refreshUser();
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Google Login Failed");
     } finally {
       setLoading(false);
     }
@@ -74,6 +100,21 @@ export default function LoginPage() {
             {loading ? t("loginPage.loggingInButton") : t("loginPage.loginButton")}
           </button>
         </form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+            <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setError("Google Login Failed")} />
+          </GoogleOAuthProvider>
+        </div>
 
         <div className="flex flex-col gap-2 mt-4 text-center">
           <button

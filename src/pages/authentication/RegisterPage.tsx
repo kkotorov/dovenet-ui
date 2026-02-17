@@ -2,11 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { registerUser } from "../../api/auth";
+import { useUser } from "../../components/utilities/UserContext";
 import ReactGA from "react-ga4";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import type {CredentialResponse} from "@react-oauth/google";
+import axios from "axios";
 
 export default function RegisterPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { refreshUser } = useUser();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -43,6 +48,33 @@ export default function RegisterPage() {
       setShowDialog(true);
     } catch (err: any) {
       setError(err.response?.data?.message || t("registerPage.registrationFailed"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    setLoading(true);
+    setError("");
+    try {
+      const { credential } = credentialResponse;
+      // Send the Google token to the backend
+      const response = await axios.post("http://localhost:8080/api/auth/google", { token: credential });
+      
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+
+      ReactGA.event({
+        category: "Growth",
+        action: "Sign Up Success (Google)"
+      });
+
+      await refreshUser();
+      // Navigate directly to dashboard as Google Auth logs the user in
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Google Registration Failed");
     } finally {
       setLoading(false);
     }
@@ -132,6 +164,21 @@ export default function RegisterPage() {
             {loading ? t("registerPage.registering") : t("registerPage.register")}
           </button>
         </form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+            <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setError("Google Registration Failed")} />
+          </GoogleOAuthProvider>
+        </div>
 
         {/* Back to login */}
         <button
