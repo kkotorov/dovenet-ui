@@ -5,7 +5,7 @@ import PigeonForm from "../components/pigeons/PigeonForm";
 import ParentModal from "../components/pigeons/ParentModal";
 import BulkUpdateModal from "../components/pigeons/BulkUpdateModal";
 import api from "../api/api";
-import { Edit2, Trash2, Download, Users, Eye, Square, Trophy } from "lucide-react";
+import { Edit2, Trash2, Users, Eye, Square, Trophy } from "lucide-react";
 import type { Pigeon, Loft } from "../types";
 import { useNavigate } from "react-router-dom";
 import BulkCompetitionModal from "../components/pigeons/BulkCompetitionModal";
@@ -176,28 +176,6 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
       setBulkDelete(true);
     }
     setDeleteModalOpen(true);
-  };
-
-  /** Pedigree PDF **/
-  const downloadPedigreePdf = async (id: number) => {
-    try {
-      const res = await api.get(`/pigeons/${id}/pedigree/pdf`, { responseType: "blob" });
-      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `pedigree_${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      ReactGA.event({
-        category: "Pigeon",
-        action: "Download Pedigree PDF"
-      });
-      toast.success(t("pigeonsPage.downloadSuccess"));
-    } catch (err) {
-      console.error(t("pigeonsPage.downloadFailed"), err);
-      toast.error(t("pigeonsPage.downloadFailed"));
-    }
   };
 
   /** Parents modal **/
@@ -504,14 +482,6 @@ export function PigeonsTab({ loftId, loftName, onNavigateBack, adminUserId, clas
     <Edit2 className="w-4 h-4" />
   </button>
 
-  {/* Pedigree PDF */}
-  <button
-    onClick={() => downloadPedigreePdf(p.id!)}
-    title={t("pigeonsPage.download")}
-    className="p-2 rounded-md hover:bg-blue-100 text-blue-600 transition"
-  >
-    <Download className="w-4 h-4" />
-  </button>
 
   {/* Parents */}
   <button
