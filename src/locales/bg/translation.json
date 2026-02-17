@@ -710,6 +710,17 @@
     "share": "Сподели гълъба",
     "linkCopied": "Линкът е копиран успешно"
   },
+  "pedigreeTree": {
+    "addRow": "+ Добави ред",
+    "competitionDetails": "Детайли за състезанието...",
+    "ring": "Пръстен",
+    "name": "Име",
+    "loading": "Зареждане на родословие...",
+    "phone": "Телефон",
+    "email": "Имейл",
+    "address": "Адрес",
+    "loftLogo": "Лого на гълъбарник"
+  },
   "breedingPage": {
     "title": "Развъждане",
     "createSeason": "Създай развъдen сезон",

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import api from "../../api/api";
 import type { Pigeon, CompetitionEntry } from "../../types";
 import type { AppUser } from "../utilities/UserContext";
@@ -27,6 +28,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
   owner,
   logoUrl,
 }) => {
+  const { t } = useTranslation();
   const [tree, setTree] = useState<TreeNode | null>(null);
 
   useEffect(() => {
@@ -225,7 +227,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
                     value={row.text}
                     onChange={(e) => handleCompetitionChange(genIndex, nodeIndex, idx, e.target.value)}
                     className="w-full bg-transparent outline-none px-1 py-0.5 text-xs text-gray-800 placeholder-gray-400"
-                    placeholder="Competition details..."
+                    placeholder={t("pedigreeTree.competitionDetails", "Competition details...")}
                   />
                 </td>
                 <td className="p-0 w-4 text-center align-middle" data-html2canvas-ignore="true">
@@ -240,7 +242,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
           className="mt-1 text-[10px] text-blue-600 hover:underline w-full text-center block"
           data-html2canvas-ignore="true"
         >
-          + Add Row
+          {t("pedigreeTree.addRow", "+ Add Row")}
         </button>
       </div>
     );
@@ -262,7 +264,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
             className={`pigeon-ring ${genderClass(displayGender)}`}
             value={node?.ringNumber || ""}
             onChange={(e) => handleNodeChange(genIndex, nodeIndex, "ringNumber", e.target.value)}
-            placeholder="Ring"
+            placeholder={t("pedigreeTree.ring", "Ring")}
             style={{ background: "transparent", border: "none", width: "100%", textAlign: "center", fontWeight: "bold" }}
           />
           
@@ -270,7 +272,7 @@ export const PedigreeTree: React.FC<PedigreeTreeProps> = ({
             className="pigeon-name"
             value={node?.name || ""}
             onChange={(e) => handleNodeChange(genIndex, nodeIndex, "name", e.target.value)}
-            placeholder="Name"
+            placeholder={t("pedigreeTree.name", "Name")}
             style={{ background: "transparent", border: "none", width: "100%", textAlign: "center", fontSize: "0.9em" }}
           />
 
